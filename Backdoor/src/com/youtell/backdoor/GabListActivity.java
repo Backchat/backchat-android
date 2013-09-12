@@ -31,7 +31,7 @@ public class GabListActivity extends BaseActivity
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
         View cView = getLayoutInflater().inflate(R.layout.gab_list_activity_bar_layout, null);
-        actionBar.setCustomView(cView);
+        actionBar.setCustomView(cView);       
     }
     
     /**
