@@ -31,7 +31,8 @@ public class Tile {
 		 this.subtitleLabel = (TextView) this.views.findViewById(R.id.tile_subtitle);
 		 this.icon = (ImageView) this.views.findViewById(R.id.tile_icon);
 		 this.attributeIcon = (ImageView) this.views.findViewById(R.id.tile_attribute_icon);
-		 
+		 this.views.setTag(this);
+
 		 return views;
 	}
 
