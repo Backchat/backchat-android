@@ -28,10 +28,11 @@ public class Gab {
 		this.messages = new ArrayList<Message>();
 		this.sent = sent;
 		this.updated_at = updated_at;
-		this.messages.add(new Message(text, false, true));
-		this.messages.add(new Message("Mine", true, true));
-		this.messages.add(new Message("A longer message that is long", false, true));
-		this.messages.add(new Message("A shorter message that is delivered", true, true));		
+		Date d = new Date();
+		this.messages.add(new Message(text, false, d, true));
+		this.messages.add(new Message("Mine", true, new Date(d.getTime() + 10*1000), true));
+		this.messages.add(new Message("A longer message that is long", false, new Date(d.getTime() + 60*10*1000), true));
+		this.messages.add(new Message("A shorter message that is delivered", true, new Date(d.getTime() + 60*10*1000+1), true));		
 	}
 	
 	public String getID() {

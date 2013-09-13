@@ -35,7 +35,7 @@ public class GabListAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Gab message = (Gab) this.getItem(position);
+		Gab gab = (Gab) this.getItem(position);
 		 
 		Tile tile; 
 		if(convertView == null)
@@ -46,8 +46,8 @@ public class GabListAdapter extends BaseAdapter {
 		}
 		else
 			tile = (Tile) convertView.getTag();
-	 
-		tile.fillWithGab(message);		
+	 		
+		tile.fillWithGab(gab);
 		
 		return convertView;
 	}

@@ -3,6 +3,7 @@ package com.youtell.backdoor;
 import com.youtell.backdoor.models.Message;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,9 @@ public class MessageBubble {
 	private ViewGroup parent;
 	private TextView message;
 	private View views;
+	private TextView headerTextLabel;
 	private TextView statusLabel;
-
+	 
 	public MessageBubble(Context context, ViewGroup parent) {
 		this.context = context;
 		this.parent = parent;
@@ -27,11 +29,13 @@ public class MessageBubble {
 		this.views = LayoutInflater.from(context).inflate(R.layout.gab_detail_message_row_layout, parent, false);
 		this.message = (TextView) this.views.findViewById(R.id.gab_message_text);
 		this.statusLabel = (TextView) this.views.findViewById(R.id.gab_message_status_label);
+		this.headerTextLabel = (TextView) this.views.findViewById(R.id.gab_message_header_text);
+		 
 		this.views.setTag(this);
 		return this.views;
 	}
 	
-	public void fillWithMessage(Message m, boolean isLast)
+	public void fillWithMessage(Message m, boolean isLast, boolean showHeader)
 	{
 		this.message.setText(m.text);
 		
@@ -71,5 +75,11 @@ public class MessageBubble {
 		else {
 			this.statusLabel.setText("Pending");
 		}
+		
+		if(showHeader)
+			this.headerTextLabel.setText(DateUtils.formatDateTime(context, m.getCreatedAt().getTime(), 
+					DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME));
+		else 
+			this.headerTextLabel.setVisibility(View.GONE);
 	}
 }

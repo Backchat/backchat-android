@@ -3,6 +3,7 @@ package com.youtell.backdoor;
 import com.youtell.backdoor.models.Gab;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ public class Tile {
 		 this.subtitleLabel = (TextView) this.views.findViewById(R.id.tile_subtitle);
 		 this.icon = (ImageView) this.views.findViewById(R.id.tile_icon);
 		 this.attributeIcon = (ImageView) this.views.findViewById(R.id.tile_attribute_icon);
-		 this.timeLabel = (TextView) this.views.findViewById(R.id.tile_time);
+		 this.timeLabel = (TextView) this.views.findViewById(R.id.tile_time);		
 		 this.views.setTag(this);
 
 		 return views;
@@ -41,6 +42,6 @@ public class Tile {
 	public void fillWithGab(Gab gab) {
 		this.titleLabel.setText(gab.getTitle());
 		this.subtitleLabel.setText("A subtitle");
-		this.timeLabel.setText(Util.humanDateTime(context, gab.getUpdatedAt()));
+		this.timeLabel.setText(Util.humanDateTime(context, gab.getUpdatedAt()));		
 	}
 }

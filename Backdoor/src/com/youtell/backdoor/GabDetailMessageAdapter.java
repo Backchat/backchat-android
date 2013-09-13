@@ -56,7 +56,15 @@ public class GabDetailMessageAdapter extends BaseAdapter {
 		else
 			bubble = (MessageBubble) convertView.getTag();
 
-		bubble.fillWithMessage(message, position == getCount() - 1);
+		boolean showHeader = false;
+		if(position == 0)
+			showHeader = true;
+		else {
+			Message prevMessage = (Message)this.getItem(position-1);
+			long distance = message.getCreatedAt().getTime() - prevMessage.getCreatedAt().getTime();
+			showHeader = distance > 2*60*1000; // 2 minutes
+		}
+		bubble.fillWithMessage(message, position == getCount() - 1, showHeader);
 		
 		return convertView;
 	}
