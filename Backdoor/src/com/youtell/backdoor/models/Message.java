@@ -6,4 +6,8 @@ public class Message {
 	public Message(String text) {
 		this.text = text;
 	}
+	
+	public boolean isMine() {
+		return text == "Mine";
+	}
 }

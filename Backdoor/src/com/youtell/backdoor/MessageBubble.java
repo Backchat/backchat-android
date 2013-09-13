@@ -44,7 +44,7 @@ public class MessageBubble {
 		else
 		{*/		
 			//Check whether message is mine to show green background and align to right
-			if(true) 
+			if(m.isMine()) 
 			{
 				//holder.message.setBackgroundResource(R.drawable.speech_bubble_green);
 				lp.gravity = Gravity.RIGHT;

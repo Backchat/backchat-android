@@ -23,6 +23,8 @@ public class GabDetailMessageAdapter extends BaseAdapter {
 		this.messages = new ArrayList<Message>();
 		this.item = item;
 		this.messages.add(new Message(item.content));
+		this.messages.add(new Message("Test"));
+		this.messages.add(new Message("Mine"));
 	}
 	
 	@Override
@@ -38,6 +40,11 @@ public class GabDetailMessageAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(int position) {
 		return 0;
+	}
+	
+	@Override
+	public boolean isEnabled(int position) {
+		return false;
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package com.youtell.backdoor;
 
-import android.R;
 import android.support.v4.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -52,7 +51,7 @@ public class GabDetailFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
     	View view = super.onCreateView(inflater, container, savedInstanceState);
-    	ListView listView = (ListView) view.findViewById(R.id.list);
+    	ListView listView = (ListView) view.findViewById(android.R.id.list);
     	listView.setDivider(null);
     	listView.setDividerHeight(0);
     	return view;
