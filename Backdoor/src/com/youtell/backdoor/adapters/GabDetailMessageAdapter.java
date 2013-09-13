@@ -1,7 +1,8 @@
-package com.youtell.backdoor;
+package com.youtell.backdoor.adapters;
 
 import java.util.List;
 
+import com.youtell.backdoor.MessageBubble;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
 
@@ -35,6 +36,7 @@ public class GabDetailMessageAdapter extends BaseAdapter {
 
 	@Override
 	public long getItemId(int position) {
+		//TODO
 		return 0;
 	}
 	

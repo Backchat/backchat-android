@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.youtell.backdoor.adapters.GabListAdapter;
 import com.youtell.backdoor.dummy.DummyContent;
 
 /**

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
 
 /**
@@ -16,14 +17,9 @@ import com.youtell.backdoor.models.Gab;
  */
 public class DummyContent {
 
-    /**
-     * An array of sample (dummy) items.
-     */
+    public static List<Friend> FRIENDS = new ArrayList<Friend>();
+    public static Map<String, Friend> FRIENDS_MAP = new HashMap<String, Friend>();
     public static List<Gab> ITEMS = new ArrayList<Gab>();
-
-    /**
-     * A map of sample (dummy) items, by ID.
-     */
     public static Map<String, Gab> ITEM_MAP = new HashMap<String, Gab>();
 
     static {
@@ -31,8 +27,15 @@ public class DummyContent {
         addItem(new Gab("1", "", "Item 1", new Date("1/1/2013"), false));
         addItem(new Gab("2", "John", "Item 2", new Date("9/12/2013"), true));
         addItem(new Gab("3", "", "Item 3", new Date(), false));
+        
+        addFriend(new Friend("1", "John", "Smith"));
     }
 
+    private static void addFriend(Friend f) {
+    	FRIENDS.add(f);
+    	FRIENDS_MAP.put(f.getID(), f);
+    }
+    
     private static void addItem(Gab item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.getID(), item);

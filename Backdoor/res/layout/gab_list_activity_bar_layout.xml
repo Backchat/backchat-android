@@ -39,7 +39,6 @@
         <ImageView
             android:layout_width="32dp"
             android:layout_height="match_parent"
-            android:contentDescription="Backdoor icon"
             android:gravity="center" 
             android:background="#FFFFFF"/>
     </LinearLayout>
@@ -56,6 +55,7 @@
             android:id="@+id/gab_list_new_gab_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="newGabClick"
             android:text="N" />
 
     </LinearLayout>

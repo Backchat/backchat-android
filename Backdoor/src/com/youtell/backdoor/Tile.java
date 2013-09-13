@@ -1,9 +1,9 @@
 package com.youtell.backdoor;
 
+import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
 
 import android.content.Context;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,5 +43,10 @@ public class Tile {
 		this.titleLabel.setText(gab.getTitle());
 		this.subtitleLabel.setText("A subtitle");
 		this.timeLabel.setText(Util.humanDateTime(context, gab.getUpdatedAt()));		
+	}
+
+	public void fillWithFriend(Friend friend) {
+		this.titleLabel.setText(friend.getFullName());
+		this.subtitleLabel.setVisibility(View.GONE);
 	}
 }

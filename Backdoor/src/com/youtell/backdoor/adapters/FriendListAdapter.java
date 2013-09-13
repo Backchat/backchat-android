@@ -1,41 +1,46 @@
-package com.youtell.backdoor;
+package com.youtell.backdoor.adapters;
 
 import java.util.List;
 
+import com.youtell.backdoor.Tile;
+import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
 
-import android.content.Context;
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.content.Context;
 
-public class GabListAdapter extends BaseAdapter {
-	private List<Gab> gabs;
+public class FriendListAdapter extends BaseAdapter {
 	private Context context;
+	private List<Friend> friends;
 	
-	public GabListAdapter(Context context, List<Gab> items) {
-		this.gabs = items;
+	public FriendListAdapter(Context context, List<Friend> f) {
+		// TODO Auto-generated constructor stub
 		this.context = context;
+		this.friends = f;
 	}
 
 	@Override
 	public int getCount() {
-		return this.gabs.size();
+		return friends.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return this.gabs.get(position);
+		return friends.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
-		return position;
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Gab gab = (Gab) this.getItem(position);
+		Friend friend = (Friend) this.getItem(position);
 		 
 		Tile tile; 
 		if(convertView == null)
@@ -47,10 +52,9 @@ public class GabListAdapter extends BaseAdapter {
 		else
 			tile = (Tile) convertView.getTag();
 	 		
-		tile.fillWithGab(gab);
+		tile.fillWithFriend(friend);
 		
 		return convertView;
 	}
 
-	
 }

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:layout_weight="1"
-            android:hint="Write a message"
+            android:hint="@string/gab_detail_hint_send"
             android:inputType="textMultiLine"
             android:lines="5"
             android:minLines="1"
@@ -42,7 +42,7 @@
             android:paddingLeft="15sp"
             android:paddingRight="15sp"
             android:paddingTop="5sp"
-            android:text="Send"
+            android:text="@string/gab_detail_send"
             android:textColor="#FFF" />
     </LinearLayout>
 

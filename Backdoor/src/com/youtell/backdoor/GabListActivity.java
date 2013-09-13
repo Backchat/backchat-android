@@ -59,6 +59,10 @@ public class GabListActivity extends SlidingActivity
     	getSlidingMenu().toggle();
     }
     
+    public void newGabClick(View v) {
+    	Intent intent = new Intent(this, NewGabActivity.class);
+    	startActivity(intent);
+    }
     /**
      * Callback method from {@link GabListFragment.Callbacks}
      * indicating that the item with the given ID was selected.

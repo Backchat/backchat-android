@@ -1,7 +1,5 @@
 package com.youtell.backdoor;
 
-import java.util.ArrayList;
-
 import android.app.ListFragment;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
@@ -28,7 +26,7 @@ public class SettingsMenuFragment extends ListFragment {
 			versionName = "???";
 		}
 
-    	versionLabel.setText(String.format("Version %s",  versionName));
+    	versionLabel.setText(String.format(getResources().getString(R.string.version_string),  versionName));
     	
 		return view;
 	}

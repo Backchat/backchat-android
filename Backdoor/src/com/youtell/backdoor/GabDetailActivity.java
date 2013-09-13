@@ -7,19 +7,15 @@ import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NavUtils;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
 /**
  * An activity representing a single Gab detail screen. 
  */
-public class GabDetailActivity extends FragmentActivity {
+public class GabDetailActivity extends BaseActivity {
 
 	private Gab gab;
 	
@@ -47,7 +43,7 @@ public class GabDetailActivity extends FragmentActivity {
                     gabID);
             GabDetailFragment fragment = new GabDetailFragment();
             fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(R.id.gab_detail_container, fragment)
                     .commit();
         }
@@ -85,28 +81,18 @@ public class GabDetailActivity extends FragmentActivity {
     	tagName.setText(gab.getRelatedUserName());
 
     	new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
-    	  .setTitle("Tag")
-    	  .setMessage("Tag this conversation")
+    	  .setTitle(R.string.tag_dialog_title)
+    	  .setMessage(R.string.tag_dialog_body)
     	  .setView(tagName)
-    	  .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+    	  .setPositiveButton(R.string.save_button, new DialogInterface.OnClickListener() {
     	    public void onClick(DialogInterface dialog, int whichButton) {
     	      gab.setRelatedUserName(tagName.getText().toString());
     	    }
     	  })
-    	  .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+    	  .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
     	    public void onClick(DialogInterface dialog, int whichButton) {
     	    }
     	  })
     	  .show(); 	    
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpTo(this, new Intent(this, GabListActivity.class));
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+    }     
 }

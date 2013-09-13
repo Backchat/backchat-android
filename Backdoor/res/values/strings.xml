@@ -2,6 +2,15 @@
 <resources>
 
     <string name="app_name">Backdoor</string>
-    <string name="title_gab_detail">Gab Detail</string>
+    <string name="new_gab_title">New Message</string>
+    <string name="version_string">Version %s</string>
+    <string name="gab_detail_tag">Tag</string>
+    <string name="gab_detail_clue">Clues</string>
+    <string name="gab_detail_send">Send</string>
+    <string name="gab_detail_hint_send">Write a message</string>
+    <string name="tag_dialog_title">Tag</string>
+    <string name="tag_dialog_body">Tag this conversation</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
 
 </resources>

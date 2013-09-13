@@ -32,6 +32,15 @@
                 android:value=".GabListActivity" />
         </activity>
         <activity
+            android:name="com.youtell.backdoor.NewGabActivity"
+            android:label="@string/new_gab_title"
+            android:parentActivityName=".GabListActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".GabListActivity" />
+        </activity>
+        <activity
             android:name="com.youtell.backdoor.SettingsMenuActivity"
             android:screenOrientation="portrait" >
         </activity>
