@@ -1,9 +1,8 @@
 package com.youtell.backdoor;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.youtell.backdoor.dummy.DummyContent.DummyItem;
+import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
 
 import android.content.Context;
@@ -15,16 +14,13 @@ public class GabDetailMessageAdapter extends BaseAdapter {
 
 	private Context context;
 	private List<Message> messages;
-	private DummyItem item;
+	private Gab item;
 	
-	public GabDetailMessageAdapter(Context context, DummyItem item) 
+	public GabDetailMessageAdapter(Context context, Gab item) 
 	{
 		this.context = context;
-		this.messages = new ArrayList<Message>();
+		this.messages = item.getMessages();
 		this.item = item;
-		this.messages.add(new Message(item.content));
-		this.messages.add(new Message("Test"));
-		this.messages.add(new Message("Mine"));
 	}
 	
 	@Override

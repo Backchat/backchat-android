@@ -1,6 +1,6 @@
 package com.youtell.backdoor;
 
-import com.youtell.backdoor.dummy.DummyContent.DummyItem;
+import com.youtell.backdoor.models.Gab;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -36,8 +36,8 @@ public class Tile {
 		 return views;
 	}
 
-	public void fillWithGab(DummyItem message) {
-		this.titleLabel.setText(message.content);
+	public void fillWithGab(Gab gab) {
+		this.titleLabel.setText(gab.getTitle());
 		this.subtitleLabel.setText("A subtitle");
 	}
 }

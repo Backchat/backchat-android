@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.youtell.backdoor.dummy.DummyContent;
+import com.youtell.backdoor.models.Gab;
 
 /**
  * A fragment representing a single Gab detail screen.
@@ -19,10 +20,7 @@ public class GabDetailFragment extends ListFragment {
      */
     public static final String ARG_ITEM_ID = "item_id";
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    private DummyContent.DummyItem mItem;
+    private Gab gab;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -39,12 +37,14 @@ public class GabDetailFragment extends ListFragment {
         	// Load the dummy content specified by the fragment
         	// arguments. In a real-world scenario, use a Loader
         	// to load content from a content provider.
-        	mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+        	gab = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
         }
         
-        if(mItem != null)
+        if(gab != null) {
         	setListAdapter(new GabDetailMessageAdapter(getActivity(), 
-        			mItem));
+        			gab));
+        	getActivity().setTitle(gab.getTitle());
+        }
     }
 
     @Override 
