@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="settings_menu_values">
+        <item>Get Free Clues</item>
+        <item>Notification Settings</item>        
+        <item>Report Abuse</item>
+        <item>About us</item>
+        <item>Logout</item>
+    </string-array>
+
+</resources>

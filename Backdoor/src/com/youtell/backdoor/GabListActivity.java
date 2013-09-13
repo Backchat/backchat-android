@@ -1,11 +1,15 @@
 package com.youtell.backdoor;
 
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
+
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 
 /**
  * An activity representing a list of Gabs. 
@@ -18,11 +22,11 @@ import android.view.View;
  * {@link GabListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class GabListActivity extends BaseActivity
+public class GabListActivity extends SlidingActivity
         implements GabListFragment.Callbacks {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gab_list);
         
@@ -34,7 +38,25 @@ public class GabListActivity extends BaseActivity
         actionBar.setDisplayShowHomeEnabled(false);
         View cView = getLayoutInflater().inflate(R.layout.gab_list_activity_bar_layout, null);
         LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.LEFT);
-        actionBar.setCustomView(cView, lp);       
+        actionBar.setCustomView(cView, lp);      
+        
+        int ID_MENUFRAME = 1001110101;
+        FrameLayout frameLayout = new FrameLayout(this);
+        frameLayout.setId(ID_MENUFRAME);
+        setBehindContentView(frameLayout);
+        android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+        SettingsMenuFragment menuFragment = new SettingsMenuFragment();
+        ft.replace(ID_MENUFRAME, menuFragment);
+        ft.commit();
+        
+        SlidingMenu sm = getSlidingMenu();
+        sm.setBehindOffsetRes(R.dimen.sliding_menu_offset);
+        sm.setShadowWidthRes(R.dimen.sliding_menu_shadow_width);
+        sm.setShadowDrawable(R.drawable.sliding_menu_shadow);
+    }
+    
+    public void settingsClick(View v) {
+    	getSlidingMenu().toggle();
     }
     
     /**
