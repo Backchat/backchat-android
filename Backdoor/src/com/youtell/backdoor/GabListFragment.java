@@ -105,4 +105,5 @@ public class GabListFragment extends ListFragment {
         // fragment is attached to one) that an item has been selected.
         mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
     }
+
 }

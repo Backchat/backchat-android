@@ -50,7 +50,7 @@ public class GabDetailFragment extends ListFragment {
     @Override 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-    	View view = super.onCreateView(inflater, container, savedInstanceState);
+    	View view = inflater.inflate(R.layout.fragment_gab_detail, container, false);
     	ListView listView = (ListView) view.findViewById(android.R.id.list);
     	listView.setDivider(null);
     	listView.setDividerHeight(0);
