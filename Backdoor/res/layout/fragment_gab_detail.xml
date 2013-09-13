@@ -3,27 +3,39 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-
-     <LinearLayout
+    <LinearLayout
         android:id="@+id/gab_detail_input_bar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
+        android:layout_alignParentBottom="true" >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:onClick="showCameraPicker"
+            android:padding="5sp"
+            android:paddingLeft="15sp"
+            android:paddingRight="15sp"
+            android:text="C" />
 
         <EditText
             android:id="@+id/text"
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:layout_weight="1"
             android:hint="Write a message"
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:minLines="1"
             android:padding="5sp"
-   />	
+            android:scrollHorizontally="false"
+            android:scrollbars="vertical" />
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:onClick="sendMessage"
             android:paddingBottom="5sp"
@@ -40,7 +52,6 @@
         android:layout_height="0dp"
         android:layout_above="@id/gab_detail_input_bar"
         android:layout_alignParentTop="true" >
-
     </ListView>
-    
+
 </RelativeLayout>
