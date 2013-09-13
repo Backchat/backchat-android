@@ -1,19 +1,35 @@
 package com.youtell.backdoor;
 
+import java.util.ArrayList;
+
 import android.app.ListFragment;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 public class SettingsMenuFragment extends ListFragment {
+	private TextView versionLabel;
+	
 	@Override 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = super.onCreateView(inflater, container, savedInstanceState);
+    	View view = inflater.inflate(R.layout.fragment_settings_menu, container, false);
+    	versionLabel = (TextView) view.findViewById(R.id.settings_menu_version_label);
 		//ListView listView = (ListView) view.findViewById(android.R.id.list);
+    	String versionName;
+    	try {
+			versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+		} catch (NameNotFoundException e) {
+			versionName = "???";
+		}
+
+    	versionLabel.setText(String.format("Version %s",  versionName));
+    	
 		return view;
 	}
 	
