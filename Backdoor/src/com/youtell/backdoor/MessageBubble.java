@@ -15,6 +15,7 @@ public class MessageBubble {
 	private ViewGroup parent;
 	private TextView message;
 	private View views;
+	private TextView statusLabel;
 
 	public MessageBubble(Context context, ViewGroup parent) {
 		this.context = context;
@@ -25,6 +26,7 @@ public class MessageBubble {
 	{
 		this.views = LayoutInflater.from(context).inflate(R.layout.gab_detail_message_row_layout, parent, false);
 		this.message = (TextView) this.views.findViewById(R.id.gab_message_text);
+		this.statusLabel = (TextView) this.views.findViewById(R.id.gab_message_status_label);
 		this.views.setTag(this);
 		return this.views;
 	}
@@ -33,7 +35,7 @@ public class MessageBubble {
 	{
 		this.message.setText(m.text);
 		
-		LayoutParams lp = (LayoutParams) this.message.getLayoutParams();
+		int gravity;
 		//check if it is a status message then remove background, and change text color.
 		/*if(message.isStatusMessage())
 		{
@@ -47,15 +49,20 @@ public class MessageBubble {
 			if(m.isMine()) 
 			{
 				//holder.message.setBackgroundResource(R.drawable.speech_bubble_green);
-				lp.gravity = Gravity.RIGHT;
+				gravity = Gravity.RIGHT;
 			}
 			//If not mine then it is from sender to show orange background and align to left
 			else
 			{
 				//holder.message.setBackgroundResource(R.drawable.speech_bubble_orange);
-				lp.gravity = Gravity.LEFT;
+				gravity = Gravity.LEFT;
 			}
+			LayoutParams lp = (LayoutParams) this.message.getLayoutParams();
+			lp.gravity = gravity;
 			this.message.setLayoutParams(lp);
+			lp = (LayoutParams) this.statusLabel.getLayoutParams();
+			lp.gravity = gravity;
+			this.statusLabel.setLayoutParams(lp);
 			//holder.message.setTextColor(R.color.textColor);	
 		//}
 	}
