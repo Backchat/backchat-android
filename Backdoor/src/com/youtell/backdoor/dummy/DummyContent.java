@@ -1,6 +1,7 @@
 package com.youtell.backdoor.dummy;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +28,9 @@ public class DummyContent {
 
     static {
         // Add 3 sample items.
-        addItem(new Gab("1", "", "Item 1", false));
-        addItem(new Gab("2", "John", "Item 2", true));
-        addItem(new Gab("3", "", "Item 3", false));
+        addItem(new Gab("1", "", "Item 1", new Date("1/1/2013"), false));
+        addItem(new Gab("2", "John", "Item 2", new Date("9/12/2013"), true));
+        addItem(new Gab("3", "", "Item 3", new Date(), false));
     }
 
     private static void addItem(Gab item) {

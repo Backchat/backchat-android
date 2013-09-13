@@ -18,6 +18,7 @@ public class Tile {
 	private TextView subtitleLabel;
 	private ImageView icon;
 	private ImageView attributeIcon;
+	private TextView timeLabel;
 			
 	public Tile(Context context, ViewGroup parent) {
 		this.context = context;
@@ -31,6 +32,7 @@ public class Tile {
 		 this.subtitleLabel = (TextView) this.views.findViewById(R.id.tile_subtitle);
 		 this.icon = (ImageView) this.views.findViewById(R.id.tile_icon);
 		 this.attributeIcon = (ImageView) this.views.findViewById(R.id.tile_attribute_icon);
+		 this.timeLabel = (TextView) this.views.findViewById(R.id.tile_time);
 		 this.views.setTag(this);
 
 		 return views;
@@ -39,5 +41,6 @@ public class Tile {
 	public void fillWithGab(Gab gab) {
 		this.titleLabel.setText(gab.getTitle());
 		this.subtitleLabel.setText("A subtitle");
+		this.timeLabel.setText(Util.humanDateTime(context, gab.getUpdatedAt()));
 	}
 }
