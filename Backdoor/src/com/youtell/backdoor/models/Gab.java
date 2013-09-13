@@ -25,7 +25,10 @@ public class Gab {
 		this.id = id;
 		this.messages = new ArrayList<Message>();
 		this.sent = sent;
-		this.messages.add(new Message(text));
+		this.messages.add(new Message(text, false, true));
+		this.messages.add(new Message("Mine", true, true));
+		this.messages.add(new Message("A longer message that is long", false, true));
+		this.messages.add(new Message("A shorter message that is delivered", true, true));		
 	}
 	
 	public String getID() {

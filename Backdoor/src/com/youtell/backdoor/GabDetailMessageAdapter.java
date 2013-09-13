@@ -56,7 +56,7 @@ public class GabDetailMessageAdapter extends BaseAdapter {
 		else
 			bubble = (MessageBubble) convertView.getTag();
 
-		bubble.fillWithMessage(message);
+		bubble.fillWithMessage(message, position == getCount() - 1);
 		
 		return convertView;
 	}

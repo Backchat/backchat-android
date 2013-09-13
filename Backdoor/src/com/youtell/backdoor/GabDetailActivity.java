@@ -84,7 +84,7 @@ public class GabDetailActivity extends FragmentActivity {
     	// Set the default text to a link of the Queen
     	tagName.setText(gab.getRelatedUserName());
 
-    	new AlertDialog.Builder(this)
+    	new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
     	  .setTitle("Tag")
     	  .setMessage("Tag this conversation")
     	  .setView(tagName)

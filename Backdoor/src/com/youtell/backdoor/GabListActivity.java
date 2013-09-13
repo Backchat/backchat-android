@@ -1,8 +1,10 @@
 package com.youtell.backdoor;
 
 import android.app.ActionBar;
+import android.app.ActionBar.LayoutParams;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 
 /**
@@ -31,7 +33,8 @@ public class GabListActivity extends BaseActivity
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
         View cView = getLayoutInflater().inflate(R.layout.gab_list_activity_bar_layout, null);
-        actionBar.setCustomView(cView);       
+        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.LEFT);
+        actionBar.setCustomView(cView, lp);       
     }
     
     /**

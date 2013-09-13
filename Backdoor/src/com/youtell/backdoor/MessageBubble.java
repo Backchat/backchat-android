@@ -31,39 +31,45 @@ public class MessageBubble {
 		return this.views;
 	}
 	
-	public void fillWithMessage(Message m)
+	public void fillWithMessage(Message m, boolean isLast)
 	{
 		this.message.setText(m.text);
 		
 		int gravity;
-		//check if it is a status message then remove background, and change text color.
-		/*if(message.isStatusMessage())
+		int messageBackground;		
+		
+		if(m.isMine()) 
 		{
-			holder.message.setBackgroundDrawable(null);
-			lp.gravity = Gravity.LEFT;
-			holder.message.setTextColor(R.color.textFieldColor);
+			gravity = Gravity.RIGHT;
+			messageBackground = R.drawable.blue_bubble;
 		}
 		else
-		{*/		
-			//Check whether message is mine to show green background and align to right
-			if(m.isMine()) 
-			{
-				//holder.message.setBackgroundResource(R.drawable.speech_bubble_green);
-				gravity = Gravity.RIGHT;
+		{
+			gravity = Gravity.LEFT;
+			messageBackground = R.drawable.green_bubble;
+		}
+
+		LayoutParams lp = (LayoutParams) this.message.getLayoutParams();
+		lp.gravity = gravity;
+		this.message.setLayoutParams(lp);
+		this.message.setBackgroundResource(messageBackground);
+
+		//holder.message.setTextColor(R.color.textColor);	
+
+		lp = (LayoutParams) this.statusLabel.getLayoutParams();
+		lp.gravity = gravity;
+		this.statusLabel.setLayoutParams(lp);
+		
+		if(m.isSent()) {
+			if(isLast) {
+				this.statusLabel.setText("Delivered");
+			}		
+			else {
+				this.statusLabel.setVisibility(View.GONE);
 			}
-			//If not mine then it is from sender to show orange background and align to left
-			else
-			{
-				//holder.message.setBackgroundResource(R.drawable.speech_bubble_orange);
-				gravity = Gravity.LEFT;
-			}
-			LayoutParams lp = (LayoutParams) this.message.getLayoutParams();
-			lp.gravity = gravity;
-			this.message.setLayoutParams(lp);
-			lp = (LayoutParams) this.statusLabel.getLayoutParams();
-			lp.gravity = gravity;
-			this.statusLabel.setLayoutParams(lp);
-			//holder.message.setTextColor(R.color.textColor);	
-		//}
+		}
+		else {
+			this.statusLabel.setText("Pending");
+		}
 	}
 }

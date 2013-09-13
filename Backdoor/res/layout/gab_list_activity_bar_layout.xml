@@ -37,9 +37,10 @@
 
         <ImageView
             android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:contentDescription="Backdoor icon" />
-        
+            android:layout_height="match_parent"
+            android:contentDescription="Backdoor icon"
+            android:gravity="center" 
+            android:background="#FFFFFF"/>
     </LinearLayout>
 
     <LinearLayout
