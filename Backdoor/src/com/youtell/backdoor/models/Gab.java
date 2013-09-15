@@ -7,10 +7,10 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 
-import com.youtell.backdoor.BaseGabDetailActivity;
-import com.youtell.backdoor.GabAnonymousDetailActivity;
-import com.youtell.backdoor.GabDetailActivity;
-import com.youtell.backdoor.GabDetailFragment;
+import com.youtell.backdoor.activities.BaseGabDetailActivity;
+import com.youtell.backdoor.activities.GabAnonymousDetailActivity;
+import com.youtell.backdoor.activities.GabDetailActivity;
+import com.youtell.backdoor.fragments.GabDetailFragment;
 
 public class Gab {	
 	private String related_user_name;

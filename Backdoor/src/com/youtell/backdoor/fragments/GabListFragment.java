@@ -1,4 +1,4 @@
-package com.youtell.backdoor;
+package com.youtell.backdoor.fragments;
 
 import com.youtell.backdoor.adapters.GabListAdapter;
 import com.youtell.backdoor.dummy.DummyContent;

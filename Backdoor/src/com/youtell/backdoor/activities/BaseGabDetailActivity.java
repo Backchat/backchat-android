@@ -1,6 +1,8 @@
-package com.youtell.backdoor;
+package com.youtell.backdoor.activities;
 
+import com.youtell.backdoor.R;
 import com.youtell.backdoor.dummy.DummyContent;
+import com.youtell.backdoor.fragments.GabDetailFragment;
 import com.youtell.backdoor.models.Gab;
 
 import android.app.ActionBar;

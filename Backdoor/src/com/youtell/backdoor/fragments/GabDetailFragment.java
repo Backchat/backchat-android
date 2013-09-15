@@ -1,4 +1,4 @@
-package com.youtell.backdoor;
+package com.youtell.backdoor.fragments;
 
 import java.util.Date;
 
@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.youtell.backdoor.R;
 import com.youtell.backdoor.adapters.GabDetailMessageAdapter;
 import com.youtell.backdoor.dummy.DummyContent;
 import com.youtell.backdoor.models.Gab;

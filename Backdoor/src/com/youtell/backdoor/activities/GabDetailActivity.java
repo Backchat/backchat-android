@@ -1,4 +1,6 @@
-package com.youtell.backdoor;
+package com.youtell.backdoor.activities;
+
+import com.youtell.backdoor.R;
 
 import android.os.Bundle;
 

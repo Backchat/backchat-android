@@ -1,4 +1,10 @@
-package com.youtell.backdoor;
+package com.youtell.backdoor.fragments;
+
+import com.youtell.backdoor.R;
+import com.youtell.backdoor.R.array;
+import com.youtell.backdoor.R.id;
+import com.youtell.backdoor.R.layout;
+import com.youtell.backdoor.R.string;
 
 import android.app.ListFragment;
 import android.content.pm.PackageManager.NameNotFoundException;

@@ -1,4 +1,4 @@
-package com.youtell.backdoor;
+package com.youtell.backdoor.activities;
 
 import android.app.Activity;
 import android.content.Intent;
