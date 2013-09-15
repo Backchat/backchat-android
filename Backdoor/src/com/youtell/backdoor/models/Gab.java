@@ -103,5 +103,9 @@ public class Gab {
 	public String getContentSummary() {
 		return content_summary;
 	}
+
+	public void addMessage(Message m) {
+		messages.add(m);
+	}
 	
 }

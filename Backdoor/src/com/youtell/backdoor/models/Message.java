@@ -11,9 +11,9 @@ public class Message {
 	 * the ack back, we set it to true.
 	 */
 	
-	public Message(String text, boolean sent, Date created_at, boolean state) {
+	public Message(String text, boolean sentByMe, Date created_at, boolean state) {
 		this.text = text;
-		this.sent = sent;
+		this.sent = sentByMe;
 		this.state = state;
 		this.created_at = created_at;
 	}
