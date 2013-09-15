@@ -19,14 +19,17 @@ public class DummyContent {
 
     public static List<Friend> FRIENDS = new ArrayList<Friend>();
     public static Map<String, Friend> FRIENDS_MAP = new HashMap<String, Friend>();
-    public static List<Gab> ITEMS = new ArrayList<Gab>();
-    public static Map<String, Gab> ITEM_MAP = new HashMap<String, Gab>();
+    public static List<Gab> ITEMS; 
+    public static Map<String, Gab> ITEM_MAP;
 
     static {
         // Add 3 sample items.
-        addItem(new Gab("1", "", "Item 1", new Date("1/1/2013"), false));
-        addItem(new Gab("2", "John", "Item 2", new Date("9/12/2013"), true));
-        addItem(new Gab("3", "", "Item 3", new Date(), false));
+    	ITEMS = new ArrayList<Gab>();
+    	ITEM_MAP = new HashMap<String, Gab>();
+    	
+        addItem(new Gab(getNewGabID(), null, "Item 1", new Date("1/1/2013"), false));
+        addItem(new Gab(getNewGabID(), "John", "Item 2", new Date("9/12/2013"), true));
+        addItem(new Gab(getNewGabID(), null, "Item 3", new Date(), false));
         
         addFriend(new Friend("1", "John", "Smith"));
     }
@@ -36,7 +39,11 @@ public class DummyContent {
     	FRIENDS_MAP.put(f.getID(), f);
     }
     
-    private static void addItem(Gab item) {
+    public static String getNewGabID() {
+    	return String.format("%d", ITEMS.size());
+    }
+    
+    public static void addItem(Gab item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.getID(), item);
     }    

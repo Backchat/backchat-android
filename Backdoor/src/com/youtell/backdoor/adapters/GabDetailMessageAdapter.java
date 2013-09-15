@@ -16,12 +16,16 @@ public class GabDetailMessageAdapter extends BaseAdapter {
 	private Context context;
 	private List<Message> messages;
 	private Gab item;
+	private int fromMessageRes;
+	private int toMessageRes;
 	
-	public GabDetailMessageAdapter(Context context, Gab item) 
+	public GabDetailMessageAdapter(Context context, Gab item, int fromMessageRes, int toMessageRes) 
 	{
 		this.context = context;
 		this.messages = item.getMessages();
 		this.item = item;
+		this.fromMessageRes = fromMessageRes;
+		this.toMessageRes = toMessageRes;		
 	}
 	
 	@Override
@@ -66,7 +70,7 @@ public class GabDetailMessageAdapter extends BaseAdapter {
 			long distance = message.getCreatedAt().getTime() - prevMessage.getCreatedAt().getTime();
 			showHeader = distance > 2*60*1000; // 2 minutes
 		}
-		bubble.fillWithMessage(message, position == getCount() - 1, showHeader);
+		bubble.fillWithMessage(message, fromMessageRes, toMessageRes, position == getCount() - 1, showHeader);
 		
 		return convertView;
 	}

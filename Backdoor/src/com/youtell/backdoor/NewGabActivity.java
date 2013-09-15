@@ -1,9 +1,12 @@
 package com.youtell.backdoor;
 
+import com.youtell.backdoor.models.Friend;
+import com.youtell.backdoor.models.Gab;
+
 import android.app.ActionBar;
 import android.os.Bundle;
 
-public class NewGabActivity extends BaseActivity {
+public class NewGabActivity extends BaseActivity implements NewGabFragment.Callbacks {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -17,5 +20,11 @@ public class NewGabActivity extends BaseActivity {
 		actionBar.setDisplayShowCustomEnabled(true);
 		actionBar.setDisplayShowHomeEnabled(false);
 		      
+	}
+
+	@Override
+	public void onItemSelected(Friend f) {
+		Gab gab = f.createNewGab();
+		gab.startDetailIntent(this);
 	}
 }

@@ -35,7 +35,7 @@ public class MessageBubble {
 		return this.views;
 	}
 	
-	public void fillWithMessage(Message m, boolean isLast, boolean showHeader)
+	public void fillWithMessage(Message m, int fromRes, int toRes, boolean isLast, boolean showHeader)
 	{
 		this.message.setText(m.text);
 		
@@ -45,12 +45,12 @@ public class MessageBubble {
 		if(m.isMine()) 
 		{
 			gravity = Gravity.RIGHT;
-			messageBackground = R.drawable.blue_bubble;
+			messageBackground = fromRes;
 		}
 		else
 		{
 			gravity = Gravity.LEFT;
-			messageBackground = R.drawable.green_bubble;
+			messageBackground = toRes;
 		}
 
 		LayoutParams lp = (LayoutParams) this.message.getLayoutParams();

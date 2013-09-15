@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Gab {
-	public String getTitle() {
-		if(isAnonymous()) {
-			if(this.related_user_name == null || this.related_user_name.isEmpty())
-				return "???";
-		}
-		
-		return this.related_user_name;
-	}
-	
+import android.content.Context;
+import android.content.Intent;
+
+import com.youtell.backdoor.BaseGabDetailActivity;
+import com.youtell.backdoor.GabAnonymousDetailActivity;
+import com.youtell.backdoor.GabDetailActivity;
+import com.youtell.backdoor.GabDetailFragment;
+
+public class Gab {	
 	private String related_user_name;
 	private String related_avatar;
 	private Date updated_at;
@@ -21,6 +20,11 @@ public class Gab {
 	private String id;
 	private List<Message> messages;
 	private boolean sent; //actually whether it is anon or not, e.g. "whether it was sent by us"
+	
+	public Gab()
+	{	
+		this.messages = new ArrayList<Message>();
+	}
 	
 	public Gab(String id, String related_user_name, String text, Date updated_at, boolean sent) {
 		this.related_user_name = related_user_name;
@@ -47,6 +51,10 @@ public class Gab {
 		return !sent;
 	}
 
+	public void setIsAnonymous(boolean anon) {
+		sent = !anon;
+	}
+	
 	public String getRelatedUserName() {
 		return related_user_name;
 	}
@@ -58,4 +66,32 @@ public class Gab {
 	public Date getUpdatedAt() {
 		return updated_at;		
 	}
+
+	public void setID(String newGabID) {
+		id = newGabID;		
+	}
+
+	public void setUpdatedAt(Date date) {
+		updated_at = date;
+	}
+
+	public void startDetailIntent(Context context) {
+		Class<? extends BaseGabDetailActivity> classType;
+		if(isAnonymous())
+			classType = GabAnonymousDetailActivity.class;
+		else
+			classType = GabDetailActivity.class;
+    	Intent detailIntent = new Intent(context, classType);
+    	detailIntent.putExtra(BaseGabDetailActivity.ARG_GAB_ID, getID());
+    	context.startActivity(detailIntent);		
+	}
+
+	public String getTitle() {
+        String title = getRelatedUserName();
+        if(title == null || title.isEmpty())
+        	title = "???";
+        
+        return title;
+	}
+	
 }

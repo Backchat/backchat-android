@@ -19,10 +19,11 @@ public class GabDetailFragment extends ListFragment {
      * The fragment argument representing the item ID that this fragment
      * represents.
      */
-    public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_GAB_ID = "gab_id";
 
-    private Gab gab;
-
+	public static final String FROM_MESSAGE_RES = "FROM_MESSAGE_RES";
+	public static final String TO_MESSAGE_RES = "TO_MESSAGE_RES";
+    
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -34,17 +35,17 @@ public class GabDetailFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-        	// Load the dummy content specified by the fragment
-        	// arguments. In a real-world scenario, use a Loader
-        	// to load content from a content provider.
-        	gab = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-        }
+        // Load the dummy content specified by the fragment
+        // arguments. In a real-world scenario, use a Loader
+        // to load content from a content provider.
+        Gab gab = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_GAB_ID));
+
+        int fromMessageRes = getArguments().getInt(FROM_MESSAGE_RES);
+        int toMessageRes = getArguments().getInt(TO_MESSAGE_RES);
         
         if(gab != null) {
         	setListAdapter(new GabDetailMessageAdapter(getActivity(), 
-        			gab));
-        	getActivity().setTitle(gab.getTitle());
+        			gab, fromMessageRes, toMessageRes));
         }
     }
 

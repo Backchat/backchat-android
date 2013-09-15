@@ -4,9 +4,7 @@ import java.util.List;
 
 import com.youtell.backdoor.Tile;
 import com.youtell.backdoor.models.Friend;
-import com.youtell.backdoor.models.Gab;
 
-import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,7 +15,6 @@ public class FriendListAdapter extends BaseAdapter {
 	private List<Friend> friends;
 	
 	public FriendListAdapter(Context context, List<Friend> f) {
-		// TODO Auto-generated constructor stub
 		this.context = context;
 		this.friends = f;
 	}

@@ -2,6 +2,7 @@ package com.youtell.backdoor;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
+import com.youtell.backdoor.models.Gab;
 
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
@@ -11,17 +12,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
-/**
- * An activity representing a list of Gabs. 
- * 
- * The activity makes heavy use of fragments. The list of items is a
- * {@link GabListFragment} and the item details
- * (if present) is a {@link GabDetailFragment}.
- * <p>
- * This activity also implements the required
- * {@link GabListFragment.Callbacks} interface
- * to listen for item selections.
- */
 public class GabListActivity extends SlidingActivity
         implements GabListFragment.Callbacks {
 
@@ -63,16 +53,9 @@ public class GabListActivity extends SlidingActivity
     	Intent intent = new Intent(this, NewGabActivity.class);
     	startActivity(intent);
     }
-    /**
-     * Callback method from {@link GabListFragment.Callbacks}
-     * indicating that the item with the given ID was selected.
-     */
+    
     @Override
-    public void onItemSelected(String id) {
-    	// In single-pane mode, simply start the detail activity
-    	// for the selected item ID.
-    	Intent detailIntent = new Intent(this, GabDetailActivity.class);
-    	detailIntent.putExtra(GabDetailFragment.ARG_ITEM_ID, id);
-    	startActivity(detailIntent);
+    public void onItemSelected(Gab gab) {
+    	gab.startDetailIntent(this);
     }
 }
