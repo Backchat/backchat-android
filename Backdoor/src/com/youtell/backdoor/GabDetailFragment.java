@@ -43,9 +43,11 @@ public class GabDetailFragment extends ListFragment {
         int fromMessageRes = getArguments().getInt(FROM_MESSAGE_RES);
         int toMessageRes = getArguments().getInt(TO_MESSAGE_RES);
         
-        if(gab != null) {
-        	setListAdapter(new GabDetailMessageAdapter(getActivity(), 
-        			gab, fromMessageRes, toMessageRes));
+        setListAdapter(new GabDetailMessageAdapter(getActivity(), 
+        		gab, fromMessageRes, toMessageRes));
+        
+        if(gab.isEmpty()) {
+        	//TODO make keyboard active
         }
     }
 

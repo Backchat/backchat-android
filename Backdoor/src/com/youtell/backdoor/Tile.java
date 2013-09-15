@@ -41,7 +41,7 @@ public class Tile {
 
 	public void fillWithGab(Gab gab) {
 		this.titleLabel.setText(gab.getTitle());
-		this.subtitleLabel.setText("A subtitle");
+		this.subtitleLabel.setText(gab.getContentSummary());
 		this.timeLabel.setText(Util.humanDateTime(context, gab.getUpdatedAt()));		
 	}
 

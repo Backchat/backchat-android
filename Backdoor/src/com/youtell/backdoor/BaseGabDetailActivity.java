@@ -31,6 +31,7 @@ public class BaseGabDetailActivity extends BaseActivity {
                  gabID);
          arguments.putInt(GabDetailFragment.FROM_MESSAGE_RES, fromRes);
          arguments.putInt(GabDetailFragment.TO_MESSAGE_RES, toRes);
+         
          GabDetailFragment fragment = new GabDetailFragment();
          fragment.setArguments(arguments);
          getFragmentManager().beginTransaction()

@@ -16,6 +16,7 @@ public class Gab {
 	private String related_user_name;
 	private String related_avatar;
 	private Date updated_at;
+	private String content_summary;
 	
 	private String id;
 	private List<Message> messages;
@@ -32,6 +33,7 @@ public class Gab {
 		this.messages = new ArrayList<Message>();
 		this.sent = sent;
 		this.updated_at = updated_at;
+		this.content_summary = text;
 		Date d = new Date();
 		this.messages.add(new Message(text, false, d, true));
 		this.messages.add(new Message("Mine", true, new Date(d.getTime() + 10*1000), true));
@@ -92,6 +94,14 @@ public class Gab {
         	title = "???";
         
         return title;
+	}
+
+	public boolean isEmpty() {
+		return messages.size() == 0;
+	}
+
+	public String getContentSummary() {
+		return content_summary;
 	}
 	
 }
