@@ -36,8 +36,9 @@ public class NewGabDetailActivity extends BaseGabDetailActivity {
 	public void onMessageSend(Message message) {
 		//switch to gab detail view.
     	Intent intent = BaseGabDetailActivity.getDetailIntent(this, gab);
-    	intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
     	intent.putExtra(BaseGabDetailActivity.ARG_KEYBOARD_OPEN, true);
     	startActivity(intent);
+    	overridePendingTransition(0,0);
+    	finish(); //get rid of ourselves.
 	} 
 }

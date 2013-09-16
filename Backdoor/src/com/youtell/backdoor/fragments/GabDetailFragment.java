@@ -31,7 +31,6 @@ public class GabDetailFragment extends ListFragment implements OnClickListener {
 
 	public static final String FROM_MESSAGE_RES = "FROM_MESSAGE_RES";
 	public static final String TO_MESSAGE_RES = "TO_MESSAGE_RES";
-    public static final String ARG_KEYBOARD_OPEN = "ARG_KEYBOARD_OPEN";
     
 	private EditText textInput;
 	private Gab gab;
@@ -91,14 +90,9 @@ public class GabDetailFragment extends ListFragment implements OnClickListener {
 
         int fromMessageRes = getArguments().getInt(FROM_MESSAGE_RES);
         int toMessageRes = getArguments().getInt(TO_MESSAGE_RES);
-        boolean keybardOpen = getArguments().getBoolean(ARG_KEYBOARD_OPEN);
         
         setListAdapter(new GabDetailMessageAdapter(getActivity(), 
-        		gab, fromMessageRes, toMessageRes));
-        
-        if(keybardOpen) {
-        	textInput.requestFocus();
-        }
+        		gab, fromMessageRes, toMessageRes));        
         
     	return view;
     }

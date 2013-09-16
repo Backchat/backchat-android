@@ -31,7 +31,8 @@ public class DummyContent {
         addGab(new Gab(getNewGabID(), "John", "Item 2", new Date("9/12/2013"), true));
         addGab(new Gab(getNewGabID(), null, "Item 3", new Date(), false));
         
-        addFriend(new Friend("1", "John", "Smith"));
+        for(int i=0;i<25;i++) 
+        	addFriend(new Friend(getNewFriendID(), String.format("John-%d", i), "Smith"));
     }
 
     private static void addFriend(Friend f) {
@@ -41,6 +42,10 @@ public class DummyContent {
     
     public static String getNewGabID() {
     	return String.format("%d", ITEMS.size());
+    }
+
+    public static String getNewFriendID() {
+    	return String.format("%d", FRIENDS.size());
     }
     
     public static void addGab(Gab item) {
