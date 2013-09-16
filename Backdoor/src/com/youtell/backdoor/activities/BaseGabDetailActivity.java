@@ -79,6 +79,11 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 		//do nothing.
 	}        
 	
+	public void onDeleteClick(View v) {
+		gab.delete();
+		goUp();
+	}
+	
 	static public Intent getDetailIntent(Context context, Gab gab) {
 		Class<? extends BaseGabDetailActivity> classType;
 		if(gab.isAnonymous())
