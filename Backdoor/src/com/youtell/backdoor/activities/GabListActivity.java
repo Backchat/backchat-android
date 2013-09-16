@@ -61,4 +61,10 @@ public class GabListActivity extends SlidingActivity
     public void onItemSelected(Gab gab) {
     	startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));
     }
+    
+    @Override
+    public void startActivity(Intent intent) {
+    	super.startActivity(intent);
+		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);    
+    }
 }
