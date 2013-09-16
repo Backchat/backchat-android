@@ -30,7 +30,7 @@ public class Friend {
 		g.setRelatedUserName(getFullName());
 		g.setUpdatedAt(new Date());
 		g.setIsAnonymous(false);
-		DummyContent.addItem(g);
+		DummyContent.addGab(g);
 		return g;
 	}
 }

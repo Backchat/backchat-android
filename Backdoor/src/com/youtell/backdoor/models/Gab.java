@@ -99,7 +99,7 @@ public class Gab {
 	}
 
 	public void delete() {
-		DummyContent.deleteItem(this);
+		DummyContent.deleteGab(this);
 	}
 	
 }

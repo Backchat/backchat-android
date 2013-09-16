@@ -27,9 +27,9 @@ public class DummyContent {
     	ITEMS = new ArrayList<Gab>();
     	ITEM_MAP = new HashMap<String, Gab>();
     	
-        addItem(new Gab(getNewGabID(), null, "Item 1", new Date("1/1/2013"), false));
-        addItem(new Gab(getNewGabID(), "John", "Item 2", new Date("9/12/2013"), true));
-        addItem(new Gab(getNewGabID(), null, "Item 3", new Date(), false));
+        addGab(new Gab(getNewGabID(), null, "Item 1", new Date("1/1/2013"), false));
+        addGab(new Gab(getNewGabID(), "John", "Item 2", new Date("9/12/2013"), true));
+        addGab(new Gab(getNewGabID(), null, "Item 3", new Date(), false));
         
         addFriend(new Friend("1", "John", "Smith"));
     }
@@ -43,12 +43,12 @@ public class DummyContent {
     	return String.format("%d", ITEMS.size());
     }
     
-    public static void addItem(Gab item) {
+    public static void addGab(Gab item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.getID(), item);
     }
 
-	public static void deleteItem(Gab gab) {
+	public static void deleteGab(Gab gab) {
 		ITEMS.remove(gab);
 		ITEM_MAP.remove(gab.getID());
 	}    
