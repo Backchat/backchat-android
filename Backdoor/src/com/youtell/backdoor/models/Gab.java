@@ -18,8 +18,9 @@ public class Gab {
 	private String related_avatar;
 	private Date updated_at;
 	private String content_summary;
-	
+	private String remote_id;
 	private String id;
+	
 	private List<Message> messages;
 	private boolean sent; //actually whether it is anon or not, e.g. "whether it was sent by us"
 	
@@ -35,6 +36,7 @@ public class Gab {
 		this.sent = sent;
 		this.updated_at = updated_at;
 		this.content_summary = text;
+		this.remote_id = id;
 		Date d = new Date();
 		this.messages.add(new Message(text, false, d, true));
 		this.messages.add(new Message("Mine", true, new Date(d.getTime() + 10*1000), true));
@@ -100,6 +102,10 @@ public class Gab {
 
 	public void delete() {
 		DummyContent.deleteGab(this);
+	}
+
+	public boolean isNew() {
+		return remote_id == null;
 	}
 	
 }

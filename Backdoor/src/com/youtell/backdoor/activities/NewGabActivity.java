@@ -6,7 +6,6 @@ import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
 
 import android.app.ActionBar;
-import android.content.Intent;
 import android.os.Bundle;
 
 public class NewGabActivity extends BaseActivity implements NewGabFragment.Callbacks {
@@ -28,8 +27,6 @@ public class NewGabActivity extends BaseActivity implements NewGabFragment.Callb
 	@Override
 	public void onItemSelected(Friend f) {
 		Gab gab = f.createNewGab();
-		Intent detailIntent = new Intent(this, NewGabDetailActivity.class);
-    	detailIntent.putExtra(BaseGabDetailActivity.ARG_GAB_ID, gab.getID());
-    	startActivity(detailIntent);
+		startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));
 	}
 }

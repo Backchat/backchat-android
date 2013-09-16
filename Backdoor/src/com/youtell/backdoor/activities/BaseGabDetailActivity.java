@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 
 public class BaseGabDetailActivity extends BaseActivity implements GabDetailFragment.Callbacks {
 	public static final String ARG_GAB_ID = "ARG_GAB_ID";
@@ -46,13 +47,12 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 				gabID);
 		arguments.putInt(GabDetailFragment.FROM_MESSAGE_RES, fromRes);
 		arguments.putInt(GabDetailFragment.TO_MESSAGE_RES, toRes);
-
+		arguments.putBoolean(GabDetailFragment.ARG_SHOW_KEYBOARD, keyboardState);
 		GabDetailFragment fragment = new GabDetailFragment();
 		fragment.setArguments(arguments);
 		getFragmentManager().beginTransaction()
 		.add(R.id.gab_detail_container, fragment)
 		.commit();
-
 	}
 
 	protected void setupActionBar(int flags) {
