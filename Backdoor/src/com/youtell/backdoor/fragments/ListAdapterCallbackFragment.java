@@ -3,7 +3,9 @@ package com.youtell.backdoor.fragments;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
@@ -24,11 +26,16 @@ public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, C
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		this.adapter = createAdapter();
-		setListAdapter(adapter);
 	}
 	
+	@Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+		View view = super.onCreateView(inflater, container, savedInstanceState);
+		this.adapter = createAdapter();
+		setListAdapter(adapter);
+		return view;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

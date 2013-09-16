@@ -13,7 +13,7 @@ public class GabDetailActivity extends BaseGabDetailActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setupActionBar(false);
+        setupActionBar(SHOW_DELETE_BUTTON);
               
         if (savedInstanceState == null) {
         	setupFragment(R.drawable.green_bubble, R.drawable.green_bubble);

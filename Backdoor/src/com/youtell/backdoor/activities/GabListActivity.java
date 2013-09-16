@@ -59,6 +59,6 @@ public class GabListActivity extends SlidingActivity
     
     @Override
     public void onItemSelected(Gab gab) {
-    	gab.startDetailIntent(this);
+    	startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));
     }
 }

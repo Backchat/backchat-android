@@ -25,28 +25,36 @@
         </activity>
         <activity
             android:name="com.youtell.backdoor.activities.GabDetailActivity"
-            android:parentActivityName=".GabListActivity"
+            android:parentActivityName="com.youtell.backdoor.activities.GabListActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GabListActivity" />
+                android:value="com.youtell.backdoor.activities.GabListActivity" />
         </activity>
         <activity
             android:name="com.youtell.backdoor.activities.GabAnonymousDetailActivity"
-            android:parentActivityName=".GabListActivity"
+            android:parentActivityName="com.youtell.backdoor.activities.GabListActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GabListActivity" />
-        </activity>        
+                android:value="com.youtell.backdoor.activities.GabListActivity" />
+        </activity>   
+        <activity
+            android:name="com.youtell.backdoor.activities.NewGabDetailActivity"
+            android:parentActivityName="com.youtell.backdoor.activities.NewGabActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.youtell.backdoor.activities.NewGabActivity" />
+        </activity>                
         <activity
             android:name="com.youtell.backdoor.activities.NewGabActivity"
             android:label="New Message"
-            android:parentActivityName=".GabListActivity"
+            android:parentActivityName="com.youtell.backdoor.activities.GabListActivity"
             android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".GabListActivity" />
+                android:value="com.youtell.backdoor.activities.GabListActivity" />
         </activity>
     </application>
 

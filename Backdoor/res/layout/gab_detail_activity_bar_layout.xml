@@ -31,4 +31,13 @@
         android:gravity="right"
         android:text="D" />
 
+    <Button
+        android:id="@+id/gab_cancel_button"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:onClick="onCancelClick"
+        android:text="@string/cancel_button" />
+
 </LinearLayout>

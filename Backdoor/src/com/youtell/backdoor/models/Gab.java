@@ -10,6 +10,7 @@ import android.content.Intent;
 import com.youtell.backdoor.activities.BaseGabDetailActivity;
 import com.youtell.backdoor.activities.GabAnonymousDetailActivity;
 import com.youtell.backdoor.activities.GabDetailActivity;
+import com.youtell.backdoor.dummy.DummyContent;
 import com.youtell.backdoor.fragments.GabDetailFragment;
 
 public class Gab {	
@@ -77,17 +78,6 @@ public class Gab {
 		updated_at = date;
 	}
 
-	public void startDetailIntent(Context context) {
-		Class<? extends BaseGabDetailActivity> classType;
-		if(isAnonymous())
-			classType = GabAnonymousDetailActivity.class;
-		else
-			classType = GabDetailActivity.class;
-    	Intent detailIntent = new Intent(context, classType);
-    	detailIntent.putExtra(BaseGabDetailActivity.ARG_GAB_ID, getID());
-    	context.startActivity(detailIntent);		
-	}
-
 	public String getTitle() {
         String title = getRelatedUserName();
         if(title == null || title.isEmpty())
@@ -106,6 +96,10 @@ public class Gab {
 
 	public void addMessage(Message m) {
 		messages.add(m);
+	}
+
+	public void delete() {
+		DummyContent.deleteItem(this);
 	}
 	
 }

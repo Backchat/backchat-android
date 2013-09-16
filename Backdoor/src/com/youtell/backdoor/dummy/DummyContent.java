@@ -46,5 +46,10 @@ public class DummyContent {
     public static void addItem(Gab item) {
         ITEMS.add(item);
         ITEM_MAP.put(item.getID(), item);
-    }    
+    }
+
+	public static void deleteItem(Gab gab) {
+		ITEMS.remove(gab);
+		ITEM_MAP.remove(gab.getID());
+	}    
 }

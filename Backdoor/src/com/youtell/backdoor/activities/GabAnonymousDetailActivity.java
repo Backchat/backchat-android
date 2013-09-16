@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.EditText;
 
 public class GabAnonymousDetailActivity extends BaseGabDetailActivity {
-
-
     public void tagGab(View v) {
     	final EditText tagName = new EditText(this);
 
@@ -35,7 +33,7 @@ public class GabAnonymousDetailActivity extends BaseGabDetailActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupActionBar(true);
+        setupActionBar(SHOW_ANON_BUTTONS | SHOW_DELETE_BUTTON);
                 
         if(savedInstanceState == null) {
         	setupFragment(R.drawable.green_bubble, R.drawable.green_bubble);

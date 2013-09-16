@@ -1,10 +1,6 @@
 package com.youtell.backdoor.fragments;
 
 import com.youtell.backdoor.R;
-import com.youtell.backdoor.R.array;
-import com.youtell.backdoor.R.id;
-import com.youtell.backdoor.R.layout;
-import com.youtell.backdoor.R.string;
 
 import android.app.ListFragment;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -25,6 +21,13 @@ public class SettingsMenuFragment extends ListFragment {
     	View view = inflater.inflate(R.layout.fragment_settings_menu, container, false);
     	versionLabel = (TextView) view.findViewById(R.id.settings_menu_version_label);
 		//ListView listView = (ListView) view.findViewById(android.R.id.list);
+
+        Resources res = getResources();
+        String[] settings = res.getStringArray(R.array.settings_menu_values);
+        
+        setListAdapter(new ArrayAdapter<String>(getActivity(),
+        		android.R.layout.simple_list_item_1, settings));
+        
     	String versionName;
     	try {
 			versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
@@ -40,11 +43,5 @@ public class SettingsMenuFragment extends ListFragment {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Resources res = getResources();
-        String[] settings = res.getStringArray(R.array.settings_menu_values);
-        
-        setListAdapter(new ArrayAdapter<String>(getActivity(),
-        		android.R.layout.simple_list_item_1, settings));
     }
 }

@@ -2,6 +2,7 @@ package com.youtell.backdoor.fragments;
 
 import java.util.Date;
 
+import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,9 +31,16 @@ public class GabDetailFragment extends ListFragment implements OnClickListener {
 
 	public static final String FROM_MESSAGE_RES = "FROM_MESSAGE_RES";
 	public static final String TO_MESSAGE_RES = "TO_MESSAGE_RES";
+    public static final String ARG_KEYBOARD_OPEN = "ARG_KEYBOARD_OPEN";
     
 	private EditText textInput;
 	private Gab gab;
+	
+	protected Callbacks mCallbacks = null;
+
+	public interface Callbacks {
+		public void onMessageSend(Message message);
+	}
 	
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -49,18 +57,26 @@ public class GabDetailFragment extends ListFragment implements OnClickListener {
         // arguments. In a real-world scenario, use a Loader
         // to load content from a content provider.
         gab = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_GAB_ID));
-
-        int fromMessageRes = getArguments().getInt(FROM_MESSAGE_RES);
-        int toMessageRes = getArguments().getInt(TO_MESSAGE_RES);
-        
-        setListAdapter(new GabDetailMessageAdapter(getActivity(), 
-        		gab, fromMessageRes, toMessageRes));
-        
-        if(gab.isEmpty()) {
-        	//TODO make keyboard active
-        }
     }
 
+    @Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// Activities containing this fragment must implement its callbacks.
+		if (!(activity instanceof Callbacks)) {
+			throw new IllegalStateException("Activity must implement fragment's callbacks.");
+		}
+
+		mCallbacks = (Callbacks) activity;
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		mCallbacks = null;
+	}
+	
     @Override 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -71,7 +87,19 @@ public class GabDetailFragment extends ListFragment implements OnClickListener {
     	
     	textInput = (EditText) view.findViewById(R.id.gab_input_text);
     	final Button button = (Button) view.findViewById(R.id.gab_send_button);
-    	button.setOnClickListener(this);
+    	button.setOnClickListener(this); 
+
+        int fromMessageRes = getArguments().getInt(FROM_MESSAGE_RES);
+        int toMessageRes = getArguments().getInt(TO_MESSAGE_RES);
+        boolean keybardOpen = getArguments().getBoolean(ARG_KEYBOARD_OPEN);
+        
+        setListAdapter(new GabDetailMessageAdapter(getActivity(), 
+        		gab, fromMessageRes, toMessageRes));
+        
+        if(keybardOpen) {
+        	textInput.requestFocus();
+        }
+        
     	return view;
     }
     
@@ -79,8 +107,13 @@ public class GabDetailFragment extends ListFragment implements OnClickListener {
     	if(v.getId() == R.id.gab_send_button) {
     		Message m = new Message(textInput.getText().toString(), true, new Date(), false);
     		gab.addMessage(m);
+    		
+    		if(mCallbacks != null) {
+    			mCallbacks.onMessageSend(m);
+    		}
     	}
     }
+    
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
