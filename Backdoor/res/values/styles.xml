@@ -5,10 +5,22 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="android:actionBarStyle">@style/ActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+        <item name="android:actionMenuTextColor">@color/action_bar_text_color</item>
     </style>
 
     <style name="ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/action_bar_background_color</item>
+        <item name="android:titleTextStyle">@style/ActionBarTitleText</item>
+    </style>
+
+    <!-- ActionBar title text -->
+    <style name="ActionBarTitleText" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/action_bar_text_color</item>
+    </style>
+
+    <!-- ActionBar tabs text styles -->
+    <style name="ActionBarTabText" parent="@android:style/Widget.Holo.ActionBar.TabText">
         <item name="android:textColor">@color/action_bar_text_color</item>
     </style>
 
