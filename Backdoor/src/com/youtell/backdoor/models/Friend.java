@@ -50,15 +50,26 @@ public class Friend extends DatabaseObject {
 		Gab g = new Gab();
 		g.setRemoteID(DatabaseObject.NEW_OBJECT);
 		g.setRelatedUserName(getFullName());
-		g.setRelatedAvatar(getRelatedAvatar());
+		g.setRelatedAvatar(getAvatar());
 		g.setUpdatedAt(new Date());
 		g.setIsAnonymous(false);
 		g.setRelatedFriend(this);
 		return g;
 	}
 
-	private String getRelatedAvatar() {
-		return ""; //TODO
+	public String getAvatar() {
+		if(getProvider().equals("facebook"))
+			return String.format("https://graph.facebook.com/%s/picture?width=90&height=90", getSocialID());
+		else
+			return String.format("http://profiles.google.com/s2/photos/profile/%s?sz=90", getSocialID());
+	}
+
+	private String getSocialID() {
+		return social_id;
+	}
+
+	private String getProvider() {
+		return provider;
 	}
 
 	public void setFirstName(String string) {
@@ -147,5 +158,10 @@ public class Friend extends DatabaseObject {
 			e.printStackTrace();
 			return null;
 		}		
+	}
+
+	public boolean isFeatured() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

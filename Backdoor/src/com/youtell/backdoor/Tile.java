@@ -1,5 +1,6 @@
 package com.youtell.backdoor;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
 
@@ -48,10 +49,23 @@ public class Tile {
 		else {
 			this.attributeIcon.setVisibility(View.INVISIBLE);
 		}
+		
+		loadAvatar(gab.getRelatedAvatar());
+	}
+	
+	private void loadAvatar(String uri)
+	{
+		ImageLoader.getInstance().displayImage(uri, this.icon);	
 	}
 
 	public void fillWithFriend(Friend friend) {
 		this.titleLabel.setText(friend.getFullName());
 		this.subtitleLabel.setVisibility(View.GONE);
+		loadAvatar(friend.getAvatar());
+		if(friend.isFeatured()) {
+		}
+		else {
+			this.attributeIcon.setVisibility(View.INVISIBLE);
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package com.youtell.backdoor.fragments;
 
 
+import android.R;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import com.youtell.backdoor.observers.ModelObserver;
 
 public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, ModelObserverType extends ModelObserver<?>, 
@@ -58,6 +61,10 @@ extends ListFragment {
 	{
 		View view = super.onCreateView(inflater, container, savedInstanceState);
 		setupAdapter();
+		//TODO use multiple image loaders
+		PauseOnScrollListener scrollPause = new PauseOnScrollListener(ImageLoader.getInstance(), false, true);
+		ListView listView = (ListView)view.findViewById(android.R.id.list);
+		listView.setOnScrollListener(scrollPause);
 		return view;
 	}
 
