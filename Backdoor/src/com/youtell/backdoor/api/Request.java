@@ -1,8 +1,14 @@
 package com.youtell.backdoor.api;
 
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.youtell.backdoor.models.User;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +30,9 @@ public abstract class Request {
 	}
 	
 	abstract protected void inflateArguments(Bundle args);
-	
+	protected abstract List<NameValuePair> getParameters();
+	protected abstract String getPath();
+
 	@SuppressWarnings("unchecked")
 	static public Request inflateRequest(Intent intent) {
 		String className = intent.getStringExtra(CLASS_NAME);
@@ -39,12 +47,10 @@ public abstract class Request {
 			Log.e("REQUEST", "EXCEPTION", e);
 			return null;
 		}
-	}
-
-	abstract public HttpUriRequest getRequestURI();
+	}	
 
 	//TODO error
-	public void handleResult(String result) {
+	protected void handleResult(String result) {
 		try {
 			JSONObject json = new JSONObject(result);
 			String status = json.getString("status");
@@ -62,5 +68,6 @@ public abstract class Request {
 		
 	}
 
+	abstract public void execute(HttpClient client, User user); 
 	abstract protected void handleJSONResponse(JSONObject result) throws JSONException;
 }

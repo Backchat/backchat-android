@@ -7,16 +7,16 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="#F00"
         android:orientation="horizontal"
         android:gravity="left"
         style="?android:attr/buttonBarStyle" >
 
-        <Button
+        <ImageButton
             android:id="@+id/gab_list_settings_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="S" 
+            android:src="@drawable/dot" 
+            android:contentDescription="@string/settings_button_accessible"
             android:onClick="settingsClick"
             style="?android:attr/buttonBarButtonStyle"/>
 

@@ -35,31 +35,33 @@ public class MessageBubble {
 		return this.views;
 	}
 	
-	public void fillWithMessage(Message m, int fromRes, int toRes, boolean isLast, boolean showHeader)
+	public void fillWithMessage(Message m, int fromRes, int toRes, int fromColor, int toColor, boolean isLast, boolean showHeader)
 	{
 		if(m.getKind() == Message.KIND_TEXT)
 			this.message.setText(m.getContent());
 		
 		int gravity;
 		int messageBackground;		
+		int color;
 		
 		if(m.isMine()) 
 		{
 			gravity = Gravity.RIGHT;
 			messageBackground = fromRes;
+			color = fromColor;
 		}
 		else
 		{
 			gravity = Gravity.LEFT;
 			messageBackground = toRes;
+			color = toColor;
 		}
 
 		LayoutParams lp = (LayoutParams) this.message.getLayoutParams();
 		lp.gravity = gravity;
 		this.message.setLayoutParams(lp);
 		this.message.setBackgroundResource(messageBackground);
-
-		//holder.message.setTextColor(R.color.textColor);	
+		this.message.setTextColor(color);
 
 		lp = (LayoutParams) this.statusLabel.getLayoutParams();
 		lp.gravity = gravity;

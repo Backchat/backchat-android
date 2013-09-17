@@ -1,7 +1,9 @@
 package com.youtell.backdoor.api;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,11 +15,6 @@ import android.os.Bundle;
 public class GetGabsRequest extends GetListRequest<Gab> {	
 	public GetGabsRequest() {
 		super(Gab.class);
-	}
-	
-	@Override
-	public HttpUriRequest getRequestURI() {
-		return new HttpGet("/gabs");
 	}
 
 	@Override
@@ -32,6 +29,16 @@ public class GetGabsRequest extends GetListRequest<Gab> {
 	protected JSONArray getJSONItemArray(JSONObject result)
 			throws JSONException {
 		return result.getJSONArray("gabs");
+	}
+
+	@Override
+	protected List<NameValuePair> getParameters() {
+		return new ArrayList<NameValuePair>();
+	}
+
+	@Override
+	protected String getPath() {
+		return "/gabs";
 	}
 
 }

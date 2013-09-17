@@ -29,6 +29,8 @@ implements OnClickListener, MessageObserver.Observer {
 
 	public static final String FROM_MESSAGE_RES = "FROM_MESSAGE_RES";
 	public static final String TO_MESSAGE_RES = "TO_MESSAGE_RES";
+    public static final String FROM_MESSAGE_COLOR_RES = "FROM_MESSAGE_COLOR_RES";
+    public static final String TO_MESSAGE_COLOR_RES = "TO_MESSAGE_COLOR_RES";
     
 	private EditText textInput;
 	private Gab gab;
@@ -42,8 +44,8 @@ implements OnClickListener, MessageObserver.Observer {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);       
         gab = Gab.getByID(getArguments().getInt(ARG_GAB_ID, -1)); //TODO
+        super.onCreate(savedInstanceState);       
     }       
  
     @Override 
@@ -99,8 +101,10 @@ implements OnClickListener, MessageObserver.Observer {
 	protected GabDetailMessageAdapter createAdapter() {
 		int fromMessageRes = getArguments().getInt(FROM_MESSAGE_RES);
         int toMessageRes = getArguments().getInt(TO_MESSAGE_RES);
+        int fromColor = getResources().getColor(getArguments().getInt(FROM_MESSAGE_COLOR_RES));
+        int toColor = getResources().getColor(getArguments().getInt(TO_MESSAGE_COLOR_RES));
         return new GabDetailMessageAdapter(getActivity(), 
-    			gab, fromMessageRes, toMessageRes);
+    			gab, fromMessageRes, toMessageRes, fromColor, toColor);
 	}
 
 	@Override

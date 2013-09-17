@@ -134,4 +134,8 @@ public class Message extends DatabaseObject {
 			e.printStackTrace();
 		}
 	}
+
+	public String getKey() {
+		return key;
+	}
 }

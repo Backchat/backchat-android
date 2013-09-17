@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camera_button_accessible">Camera button</string>
+    <string name="settings_button_accessible">Settings button</string>
+</resources>

@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" >
 
-        <Button
+        <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
@@ -17,7 +17,8 @@
             android:padding="5sp"
             android:paddingLeft="15sp"
             android:paddingRight="15sp"
-            android:text="C" />
+            android:src="@drawable/camera"
+            android:contentDescription="@string/camera_button_accessible" />
 
         <EditText
             android:id="@+id/gab_input_text"

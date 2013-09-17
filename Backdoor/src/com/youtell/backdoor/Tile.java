@@ -42,7 +42,12 @@ public class Tile {
 	public void fillWithGab(Gab gab) {
 		this.titleLabel.setText(gab.getTitle());
 		this.subtitleLabel.setText(gab.getContentSummary());
-		this.timeLabel.setText(Util.humanDateTime(context, gab.getUpdatedAt()));		
+		this.timeLabel.setText(Util.humanDateTime(context, gab.getUpdatedAt()));
+		if(gab.isUnread()) {
+		}
+		else {
+			this.attributeIcon.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	public void fillWithFriend(Friend friend) {

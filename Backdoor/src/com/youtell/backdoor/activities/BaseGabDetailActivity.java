@@ -36,16 +36,18 @@ public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailF
 		setTitle(gab.getTitle());
 	}
 
-	protected void setupFragment(int fromRes, int toRes) {
-		setupFragment(fromRes, toRes, getIntent().getBooleanExtra(BaseGabDetailActivity.ARG_KEYBOARD_OPEN, false));
+	protected void setupFragment(int fromRes, int toRes, int fromTextColor, int toTextColor) {
+		setupFragment(fromRes, toRes, fromTextColor, toTextColor, getIntent().getBooleanExtra(BaseGabDetailActivity.ARG_KEYBOARD_OPEN, false));
 	}
 
-	protected void setupFragment(int fromRes, int toRes, boolean keyboardState)
+	protected void setupFragment(int fromRes, int toRes, int fromTextColorRes, int toTextColorRes, boolean keyboardState)
 	{
 		Bundle arguments = new Bundle();
 		arguments.putInt(GabDetailFragment.ARG_GAB_ID, gabID);
 		arguments.putInt(GabDetailFragment.FROM_MESSAGE_RES, fromRes);
 		arguments.putInt(GabDetailFragment.TO_MESSAGE_RES, toRes);
+		arguments.putInt(GabDetailFragment.FROM_MESSAGE_COLOR_RES, fromTextColorRes);
+		arguments.putInt(GabDetailFragment.TO_MESSAGE_COLOR_RES, toTextColorRes);
 		GabDetailFragment fragment = new GabDetailFragment();
 		fragment.setArguments(arguments);
 		getFragmentManager().beginTransaction()

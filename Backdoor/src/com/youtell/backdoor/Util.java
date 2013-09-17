@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 import org.json.JSONException;
 
@@ -33,13 +34,26 @@ public class Util {
 		}
 	}
 
-	static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 	
-	public static Date parseJSONDate(String string) throws JSONException {		
+	public static Date parseJSONDate(String string) throws JSONException {
+		//TODO perf
+		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.US);
 		try {
-			return formatter.parse(string);
+			return formatter.parse(String.format("%s UTC", string));
 		} catch (ParseException e) {
 			throw new JSONException("bad date");
 		}
+	}
+	
+
+	static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	static Random rnd = new Random();
+
+	public static String generatePseudoRandomString(int len) {
+		StringBuilder sb = new StringBuilder( len );
+		for( int i = 0; i < len; i++ ) 
+			sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+		return sb.toString();
+
 	}
 }

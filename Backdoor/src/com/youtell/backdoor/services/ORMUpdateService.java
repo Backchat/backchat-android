@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.youtell.backdoor.api.PostMessageRequest;
 import com.youtell.backdoor.observers.MessageObserver;
 
 public class ORMUpdateService extends Service {
@@ -17,7 +18,8 @@ public class ORMUpdateService extends Service {
 			@Override
 			public void onChange(String action, int gabID, int messageID) {
 				if(action == MessageObserver.MESSAGE_ADDED) {
-					Log.v("ORMUpdate", "a new message added!");
+					Log.v("ORMUpdate", String.format("a new message added! %d %d", gabID, messageID));
+					APIService.fire(new PostMessageRequest(gabID, messageID));
 				}				
 			}
 		

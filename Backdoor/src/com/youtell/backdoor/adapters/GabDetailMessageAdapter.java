@@ -16,13 +16,18 @@ public class GabDetailMessageAdapter extends ORMListAdapter<Message> {
 	private Gab gab;
 	private int fromMessageRes;
 	private int toMessageRes;
+	private int fromColor;
+	private int toColor;
 	
-	public GabDetailMessageAdapter(Context context, Gab gab, int fromMessageRes, int toMessageRes) 
+	public GabDetailMessageAdapter(Context context, Gab gab, int fromMessageRes, int toMessageRes, int fromColor, int toColor) 
 	{
 		super(context);
 		this.gab = gab;
 		this.fromMessageRes = fromMessageRes;
 		this.toMessageRes = toMessageRes;
+		this.fromColor = fromColor;
+		this.toColor = toColor;
+		
 		updateData();
 	}
 	
@@ -52,7 +57,7 @@ public class GabDetailMessageAdapter extends ORMListAdapter<Message> {
 			long distance = message.getCreatedAt().getTime() - prevMessage.getCreatedAt().getTime();
 			showHeader = distance > 2*60*1000; // 2 minutes
 		}
-		bubble.fillWithMessage(message, fromMessageRes, toMessageRes, position == getCount() - 1, showHeader);
+		bubble.fillWithMessage(message, fromMessageRes, toMessageRes, fromColor, toColor, position == getCount() - 1, showHeader);
 		
 		return convertView;
 	}

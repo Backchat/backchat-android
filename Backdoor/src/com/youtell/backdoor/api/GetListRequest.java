@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import com.youtell.backdoor.models.DatabaseObject;
 
-public abstract class GetListRequest<T extends DatabaseObject> extends Request {
+public abstract class GetListRequest<T extends DatabaseObject> extends GetRequest {
 	private Class<T> clazz;
 	
 	protected GetListRequest(Class<T> clazz)

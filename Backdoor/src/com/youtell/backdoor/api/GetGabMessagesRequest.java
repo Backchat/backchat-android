@@ -1,7 +1,10 @@
 package com.youtell.backdoor.api;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,9 +12,10 @@ import org.json.JSONObject;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
-public class GetGabMessagesRequest extends Request {
+public class GetGabMessagesRequest extends GetRequest {
 
 	private static String ARG_GAB_ID = "ARG_GAB_ID";
 	private Gab gab;
@@ -34,8 +38,16 @@ public class GetGabMessagesRequest extends Request {
 	}
 
 	@Override
-	public HttpUriRequest getRequestURI() {
-		return new HttpGet(String.format("/gabs/%d?extended=true", gab.getRemoteID()));
+	protected List<NameValuePair> getParameters() {
+		List<NameValuePair> p = new ArrayList<NameValuePair>();
+		p.add(new BasicNameValuePair("extended", "true"));
+		return p;
+	}
+
+	@Override
+	@SuppressLint("DefaultLocale")
+	protected String getPath() {
+		return String.format("/gabs/%d", gab.getRemoteID());
 	}
 
 	@Override

@@ -1,12 +1,9 @@
 package com.youtell.backdoor.models;
 
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,7 +54,7 @@ public class Gab extends DatabaseObject {
 	@DatabaseField(index = true)
 	int remote_id;
 		
-	@ForeignCollectionField
+	@ForeignCollectionField(orderColumnName="created_at", orderAscending=true)
 	private ForeignCollection<Message> messages;
 	
 	@DatabaseField
@@ -226,7 +223,7 @@ public class Gab extends DatabaseObject {
 
 	public static List<Gab> all() {
 		try {
-			return getDAO().queryForAll();
+			return getDAO().queryBuilder().orderBy("updated_at", false).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			Log.v("DAO", "list gab", e);
@@ -256,6 +253,19 @@ public class Gab extends DatabaseObject {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public Message getMessageByID(int ID) {
+		try {
+			return getDB().messageDAO.queryForId(ID);
+		}
+		catch(SQLException e) {
+			return null;
+		}
+	}
+
+	public boolean isUnread() {
+		return getUnreadCount() != 0;
 	}
 	
 }

@@ -18,4 +18,8 @@ public class User {
 	public void getFriends() {
 		APIService.fire(new GetFriendsRequest());
 	}
+
+	public String getApiServerHostName() {
+		return "backdoor-stage.herokuapp.com";
+	}
 }

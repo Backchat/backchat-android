@@ -1,7 +1,9 @@
 package com.youtell.backdoor.api;
 
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,13 +28,18 @@ public class GetFriendsRequest extends GetListRequest<Friend> {
 	}
 
 	@Override
-	public HttpUriRequest getRequestURI() {
-		return new HttpGet("/friends");
+	protected JSONArray getJSONItemArray(JSONObject result) throws JSONException {
+		return result.getJSONArray("friends");
 	}
 
 	@Override
-	protected JSONArray getJSONItemArray(JSONObject result) throws JSONException {
-		return result.getJSONArray("friends");
+	protected List<NameValuePair> getParameters() {
+		return new ArrayList<NameValuePair>();
+	}
+
+	@Override
+	protected String getPath() {
+		return "/friends";
 	}
 
 }

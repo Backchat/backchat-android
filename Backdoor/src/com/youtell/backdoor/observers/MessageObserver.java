@@ -47,6 +47,6 @@ public class MessageObserver extends ModelObserver<MessageObserver.Observer> {
 		int thisGabID = intent.getIntExtra(ARG_GAB_ID, -1); //TODO
 		int thisMessageID = intent.getIntExtra(ARG_MESSAGE_ID, -1);
 		if(thisGabID == gabID || gabID == GAB_OBSERVE_ALL)
-			observer.onChange(intent.getAction(), thisMessageID, thisMessageID);
+			observer.onChange(intent.getAction(), thisGabID, thisMessageID);
 	}
 }
