@@ -14,4 +14,6 @@
     <string name="cancel_button">Cancel</string>
 	<string name="login_facebook_button">Sign in with Facebook</string>
 	<string name="login_gpp_button">Sign in with Google+</string>
+	<string name="new_message_title">New Message</string>
+	<string name="invite_contacts_title">Invite contacts</string>
 </resources>

@@ -66,6 +66,11 @@ public class GabListActivity extends SlidingActivity implements GabListFragment.
 		startActivity(intent);
 	}
 
+	public void inviteClick(View v) {
+		Intent intent = new Intent(this, InviteContactsActivity.class);
+		startActivity(intent);
+	}
+	
 	@Override
 	public void onItemSelected(Gab gab) {
 		startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));
