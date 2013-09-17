@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
 
+import com.j256.ormlite.dao.CloseableWrappedIterable;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
@@ -59,6 +61,10 @@ public class Gab extends DatabaseObject {
 	
 	@DatabaseField
 	private boolean sent; //actually whether it is anon or not, e.g. "whether it was sent by us"
+	
+	/* this is cached locally only during new gab */
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "related_friend_id")
+	private Friend relatedFriend;
 	
 	public Gab()
 	{	
@@ -198,14 +204,15 @@ public class Gab extends DatabaseObject {
 		setIsAnonymous(!gab.getBoolean("sent"));
 		setTotalCount(gab.getInt("total_count"));
 		setUnreadCount(gab.getInt("unread_count"));		
-		setUpdatedAt(Util.parseJSONDate(gab.getString("updated_at")));		
+		setUpdatedAt(Util.parseJSONDate(gab.getString("updated_at")));
+		setRelatedFriend(null); //clear the related friend info after inflation.
 	}
 
+	
 	public void save() {
 		try {
 			getDAO().createOrUpdate(this);
-			//TODO
-			GabObserver.broadcastChange();
+			GabObserver.broadcastChange(GabObserver.GAB_UPDATED, this);				
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			Log.v("DAO", "Write gab", e);
@@ -267,5 +274,25 @@ public class Gab extends DatabaseObject {
 	public boolean isUnread() {
 		return getUnreadCount() != 0;
 	}
+
+	public Message getFirstMessage() {
+		try {
+			Message m = null;
+			CloseableWrappedIterable<Message> it = getMessages().getWrappedIterable();		
+			m = it.iterator().next();
+			it.close();
+			return m;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void setRelatedFriend(Friend f) {
+		relatedFriend = f;
+	}
 	
+	public Friend getRelatedFriend() {
+		return relatedFriend;
+	}
 }

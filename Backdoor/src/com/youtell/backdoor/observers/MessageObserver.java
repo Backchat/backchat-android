@@ -24,9 +24,9 @@ public class MessageObserver extends ModelObserver<MessageObserver.Observer> {
 		}
 	}
 	
-	public static final String MESSAGE_UPDATED = "MESSAGE_UPDATED";
-	public static final String MESSAGE_INSERTED = "MESSAGE_INSERTED";
-	public static final String MESSAGE_ADDED = "MESSAGE_ADDED";
+	public static final String MESSAGE_UPDATED = "MESSAGE_UPDATED"; /* updated from server side */
+	public static final String MESSAGE_INSERTED = "MESSAGE_INSERTED"; /* inserted from server side */
+	public static final String MESSAGE_ADDED = "MESSAGE_ADDED"; /* isNew */
 	private static final String[] possibleActions = {MESSAGE_ADDED, MESSAGE_UPDATED, MESSAGE_INSERTED};
 	private static final String ARG_GAB_ID = "ARG_GAB_ID";
 	private static final String ARG_MESSAGE_ID = "ARG_MESSAGE_ID";

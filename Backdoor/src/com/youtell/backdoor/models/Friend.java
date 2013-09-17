@@ -53,6 +53,7 @@ public class Friend extends DatabaseObject {
 		g.setRelatedAvatar(getRelatedAvatar());
 		g.setUpdatedAt(new Date());
 		g.setIsAnonymous(false);
+		g.setRelatedFriend(this);
 		return g;
 	}
 
@@ -136,5 +137,15 @@ public class Friend extends DatabaseObject {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static Friend getByID(int friendID) {
+		try {
+			return getDAO().queryForId(friendID);
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			return null;
+		}		
 	}
 }

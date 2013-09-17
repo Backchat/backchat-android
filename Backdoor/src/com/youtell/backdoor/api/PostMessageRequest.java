@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,8 +15,6 @@ import com.youtell.backdoor.models.Message;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
 
 public class PostMessageRequest extends PostRequest {
 	private Gab gab;
@@ -26,18 +25,20 @@ public class PostMessageRequest extends PostRequest {
 	
 	public PostMessageRequest() 
 	{
-	}
+	}	
 	
-	public PostMessageRequest(Message m, Gab g)
+	public PostMessageRequest(Gab g, int messageID) 
 	{
 		super();
-	}
-	
-	public PostMessageRequest(int gabID, int messageID) 
-	{
-		super();
-		gab = Gab.getByID(gabID);
+		gab = g;
 		message = gab.getMessageByID(messageID);
+	}
+	
+	public PostMessageRequest(Gab g, Message m)
+	{
+		super();
+		gab = g;
+		message = m;
 	}
 	
 	@Override
@@ -59,7 +60,7 @@ public class PostMessageRequest extends PostRequest {
 		gab.save();
 		
 		JSONObject messageData = result.getJSONObject("message");
-		Log.v("POSTMESSAGEREQUEST", messageData.toString(4));
+		
 		message.setRemoteID(messageData.getInt("id"));
 		message.inflate(messageData);
 		message.save();

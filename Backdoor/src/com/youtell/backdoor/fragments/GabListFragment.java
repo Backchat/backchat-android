@@ -25,17 +25,16 @@ implements GabObserver.Observer {
 	protected GabObserver createObserver() {
 		return new GabObserver(this);
 	}
-
-	@Override
-	public void onChange() {
-		if(adapter != null)
-			adapter.notifyDataSetChanged();
-	}
-
+	
 	@Override
 	protected void refreshData() {
 		new User().updateGabs(); //TODO	
 	}
 
+	@Override
+	public void onChange(String action, int gabID) {
+		if(adapter != null)
+			adapter.notifyDataSetChanged();		
+	}
 	
 }

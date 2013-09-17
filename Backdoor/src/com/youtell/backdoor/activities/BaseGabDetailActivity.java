@@ -80,7 +80,7 @@ public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailF
 	public void beforeMessageSend(Message message) {
 		//do nothing.
 	}        
-
+	
 	public void onDeleteClick(View v) {
 		gab.remove();
 		goUp();

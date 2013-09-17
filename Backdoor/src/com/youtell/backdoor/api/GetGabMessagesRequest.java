@@ -52,17 +52,18 @@ public class GetGabMessagesRequest extends GetRequest {
 
 	@Override
 	protected void handleJSONResponse(JSONObject result) throws JSONException {
-		JSONObject gabPart = result.getJSONObject("gab");
-		JSONArray messagePart = gabPart.getJSONArray("messages");
+		JSONObject gabPart = result.getJSONObject("gab");		
 		gab.inflate(gabPart);
 		gab.save();
-		
+
+		JSONArray messagePart = gabPart.getJSONArray("messages");
+			
 		for(int i=0;i<messagePart.length();i++) { 
 			JSONObject msgData = messagePart.getJSONObject(i);
 			int remoteID = msgData.getInt("id");
 			Message m;
 			m = gab.getMessageByRemoteID(remoteID);
-			
+					
 			if(m == null) {
 				m = new Message();
 				m.setRemoteID(remoteID);
@@ -75,5 +76,5 @@ public class GetGabMessagesRequest extends GetRequest {
 			}
 		}
 	}
-
+		
 }
