@@ -36,7 +36,7 @@ public class GabAnonymousDetailActivity extends BaseGabDetailActivity {
         setupActionBar(SHOW_ANON_BUTTONS | SHOW_DELETE_BUTTON);
                 
         if(savedInstanceState == null) {
-        	setupFragment(R.drawable.black_bubble_to, R.drawable.blue_bubble, R.color.black_bubble_from_text_color, R.color.blue_bubble_text_color);
+        	setupFragment(R.drawable.blue_bubble, R.drawable.black_bubble_from, R.color.blue_bubble_text_color, R.color.black_bubble_from_text_color);
         }        
     }
 }

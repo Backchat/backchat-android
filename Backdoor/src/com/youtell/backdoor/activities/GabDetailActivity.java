@@ -21,7 +21,7 @@ public class GabDetailActivity extends BaseGabDetailActivity {
         	setupActionBar(SHOW_DELETE_BUTTON);
               
         if (savedInstanceState == null) {
-        	setupFragment(R.drawable.green_bubble, R.drawable.black_bubble_from, R.color.green_bubble_text_color, R.color.black_bubble_to_text_color);
+        	setupFragment(R.drawable.black_bubble_to, R.drawable.green_bubble, R.color.black_bubble_from_text_color, R.color.green_bubble_text_color);
         }    
     } 
     
