@@ -37,7 +37,8 @@ public class MessageBubble {
 	
 	public void fillWithMessage(Message m, int fromRes, int toRes, boolean isLast, boolean showHeader)
 	{
-		this.message.setText(m.text);
+		if(m.getKind() == Message.KIND_TEXT)
+			this.message.setText(m.getContent());
 		
 		int gravity;
 		int messageBackground;		

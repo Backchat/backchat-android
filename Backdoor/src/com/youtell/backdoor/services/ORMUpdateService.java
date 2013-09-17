@@ -5,19 +5,19 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.youtell.backdoor.observers.MessageListObserver;
+import com.youtell.backdoor.observers.MessageObserver;
 
 public class ORMUpdateService extends Service {
-	MessageListObserver messageObserver;
+	MessageObserver messageObserver;
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.v("ORMUpdate", "started");
-		messageObserver = new MessageListObserver(new MessageListObserver.Observer() {
+		messageObserver = new MessageObserver(new MessageObserver.Observer() {
 			@Override
 			public void onChange(String action, int gabID, int messageID) {
-				if(action == MessageListObserver.MESSAGE_ADDED) {
-					
+				if(action == MessageObserver.MESSAGE_ADDED) {
+					Log.v("ORMUpdate", "a new message added!");
 				}				
 			}
 		

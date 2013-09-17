@@ -9,24 +9,29 @@ import org.json.JSONObject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.youtell.backdoor.Util;
+import com.youtell.backdoor.observers.MessageObserver;
 
 @DatabaseTable(tableName = "messages")
 public class Message extends DatabaseObject {
+	public static final int KIND_TEXT = 0;
+	public static final int KIND_IMAGE = 1;
+	
 	private Dao<Message, Integer> getDAO() {
 		return getDB().messageDAO;
 	}
 	
 	@DatabaseField
-	public String text;
+	private String content;
 	@DatabaseField	
 	private boolean sent; //acutally whether it was sent by us, e.g. isMine.
 	@DatabaseField
 	private Date created_at;	
-	/* really, this is only client side. we set it to false, and when we get
-	 * the ack back, we set it to true.
-	 */
+	
 	@DatabaseField
-	private boolean state; //whether it is delivered or not.
+	private int kind;
+	@DatabaseField
+	private String key;
 	
 	@DatabaseField(generatedId = true)
 	int id;
@@ -46,7 +51,7 @@ public class Message extends DatabaseObject {
 	}
 	
 	public boolean isSent() {
-		return state;
+		return !isNew();
 	}
 
 	public Date getCreatedAt() {
@@ -54,7 +59,8 @@ public class Message extends DatabaseObject {
 	}
 
 	public void setText(String string) {
-		text = string;
+		content = string;
+		kind = KIND_TEXT;
 	}
 
 	public void setMine(boolean b) {
@@ -63,10 +69,6 @@ public class Message extends DatabaseObject {
 
 	public void setCreatedAt(Date date) {
 		created_at = date;		
-	}
-
-	public void setSent(boolean b) {
-		state = b;		
 	}
 
 	@Override
@@ -90,13 +92,43 @@ public class Message extends DatabaseObject {
 
 	@Override
 	public void inflate(JSONObject j) throws JSONException {
-		// TODO Auto-generated method stub		
+		setKey(j.getString("key"));
+		setContent(j.getString("content"));
+		//setGab!! TODO
+		setKind(j.getInt("kind"));
+		setMine(j.getBoolean("sent"));
+		setCreatedAt(Util.parseJSONDate(j.getString("created_at")));
 	}
-
+	
+	public void setKey(String s) {
+		key = s;
+	}
+	
+	public void setContent(String s) {
+		content = s;
+	}
+	
+	public void setKind(int k) {
+		kind = k;
+	}	
+	
+	public int getKind() {
+		return kind;
+	}
+	
+	public String getContent() {
+		return content;
+	}
+	
+	public boolean isNew() {
+		return getRemoteID() == DatabaseObject.NEW_OBJECT;
+	}
+	
 	@Override
 	public void save() {
 		try {
 			getDAO().createOrUpdate(this);
+			MessageObserver.broadcastChange(MessageObserver.MESSAGE_UPDATED, this);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public abstract class Request {
-	private static String CLASS_NAME = "CLASS_NAME";
+	private static final String CLASS_NAME = "CLASS_NAME";
 	
 	protected abstract void addArguments(Bundle b);
 	

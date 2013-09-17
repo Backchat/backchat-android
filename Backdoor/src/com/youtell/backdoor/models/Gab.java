@@ -18,8 +18,11 @@ import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.youtell.backdoor.observers.GabListObserver;
-import com.youtell.backdoor.observers.MessageListObserver;
+import com.youtell.backdoor.Util;
+import com.youtell.backdoor.api.GetGabMessagesRequest;
+import com.youtell.backdoor.observers.GabObserver;
+import com.youtell.backdoor.observers.MessageObserver;
+import com.youtell.backdoor.services.APIService;
 
 @DatabaseTable(tableName = "gabs")
 public class Gab extends DatabaseObject {	
@@ -150,7 +153,7 @@ public class Gab extends DatabaseObject {
 	}
 
 	public boolean isNew() {
-		return remote_id == Database.REMOTE_ID_NULL;
+		return remote_id == DatabaseObject.NEW_OBJECT;
 	}
 
 	public void setRemoteID(int remoteID) {
@@ -159,7 +162,10 @@ public class Gab extends DatabaseObject {
 
 	public void addMessage(Message m) {
 		messages.add(m);
-		MessageListObserver.broadcastChange(MessageListObserver.MESSAGE_ADDED, m);
+		if(m.isNew())		
+			MessageObserver.broadcastChange(MessageObserver.MESSAGE_ADDED, m);
+		else
+			MessageObserver.broadcastChange(MessageObserver.MESSAGE_INSERTED, m);
 	}
 
 	public boolean isNewAndEmpty() {
@@ -194,21 +200,15 @@ public class Gab extends DatabaseObject {
 		setRelatedAvatar(gab.getString("related_avatar"));
 		setIsAnonymous(!gab.getBoolean("sent"));
 		setTotalCount(gab.getInt("total_count"));
-		setUnreadCount(gab.getInt("unread_count"));
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-		try {
-			setUpdatedAt(formatter.parse(gab.getString("updated_at")));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			throw new JSONException("bad date");
-		}
+		setUnreadCount(gab.getInt("unread_count"));		
+		setUpdatedAt(Util.parseJSONDate(gab.getString("updated_at")));		
 	}
 
 	public void save() {
 		try {
 			getDAO().createOrUpdate(this);
 			//TODO
-			GabListObserver.broadcastChange();
+			GabObserver.broadcastChange();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			Log.v("DAO", "Write gab", e);
@@ -237,6 +237,25 @@ public class Gab extends DatabaseObject {
 	@Override
 	public int getRemoteID() {
 		return remote_id;
+	}
+
+	public void updateWithMessages() {
+		if(!isNew())
+			APIService.fire(new GetGabMessagesRequest(this));
+	}
+
+	public Message getMessageByRemoteID(int remoteID) {
+		List<Message> messages;
+		try {
+			messages = getDB().messageDAO.queryBuilder().where().eq("remote_id", remoteID).and().eq("gab_id", getID()).query();
+			if(messages.size() != 1)
+				return null;
+			else
+				return messages.get(0);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

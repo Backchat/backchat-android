@@ -1,14 +1,10 @@
 package com.youtell.backdoor.api;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.youtell.backdoor.models.DatabaseObject;
-import com.youtell.backdoor.models.Gab;
-import com.youtell.backdoor.observers.GabListObserver;
 
 public abstract class GetListRequest<T extends DatabaseObject> extends Request {
 	private Class<T> clazz;

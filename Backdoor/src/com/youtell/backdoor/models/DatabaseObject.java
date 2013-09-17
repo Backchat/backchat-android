@@ -30,6 +30,8 @@ public abstract class DatabaseObject {
 			ModelBus.events.unregister(this);
 		}
 	}
+
+	public static final int NEW_OBJECT = -1;
 	
 	private static DBListener db = new DBListener();
 	

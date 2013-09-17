@@ -30,7 +30,7 @@ public class APIService extends IntentService {
 	public static Context applicationContext = null; //TODO
 	private static String userAgentString;
 	private AndroidHttpClient client;
-	private static String API_SERVER_HOSTNAME = "backdoor-stage.herokuapp.com"; //TODO
+	private static final String API_SERVER_HOSTNAME = "backdoor-stage.herokuapp.com"; //TODO
 	
 	public static void initialize(Context c) {
 		applicationContext = c.getApplicationContext();

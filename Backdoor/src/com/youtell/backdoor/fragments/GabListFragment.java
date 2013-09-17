@@ -5,10 +5,10 @@ import android.os.Bundle;
 import com.youtell.backdoor.adapters.GabListAdapter;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.User;
-import com.youtell.backdoor.observers.GabListObserver;
+import com.youtell.backdoor.observers.GabObserver;
 
-public class GabListFragment extends ListAdapterCallbackFragment<GabListAdapter, GabListObserver, Gab, GabListFragment.Callbacks> 
-implements GabListObserver.Observer {
+public class GabListFragment extends ListAdapterCallbackFragment<GabListAdapter, GabObserver, Gab, GabListFragment.Callbacks> 
+implements GabObserver.Observer {
 	public interface Callbacks extends ListAdapterCallbackFragment.Callbacks<Gab> {}
 	
 	@Override
@@ -22,8 +22,8 @@ implements GabListObserver.Observer {
 	}
 
 	@Override
-	protected GabListObserver createObserver() {
-		return new GabListObserver(this);
+	protected GabObserver createObserver() {
+		return new GabObserver(this);
 	}
 
 	@Override

@@ -21,7 +21,6 @@ public class Database extends OrmLiteSqliteOpenHelper {
 	private static String databaseName = null;
 	// any time you make changes to your database objects, you may have to increase the database version
 	private static final int DATABASE_VERSION = 1;
-	public static final int REMOTE_ID_NULL = -1;
 
 	static {
 		OpenHelperManager.setOpenHelperClass(Database.class);

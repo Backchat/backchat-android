@@ -1,6 +1,11 @@
 package com.youtell.backdoor;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+
+import org.json.JSONException;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -25,6 +30,16 @@ public class Util {
 			return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {
 			return "???";
+		}
+	}
+
+	static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+	
+	public static Date parseJSONDate(String string) throws JSONException {		
+		try {
+			return formatter.parse(string);
+		} catch (ParseException e) {
+			throw new JSONException("bad date");
 		}
 	}
 }

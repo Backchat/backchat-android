@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.youtell.backdoor.observers.FriendListObserver;
+import com.youtell.backdoor.observers.FriendObserver;
 
 @DatabaseTable(tableName = "friends")
 public class Friend extends DatabaseObject {
@@ -48,12 +48,16 @@ public class Friend extends DatabaseObject {
 
 	public Gab createNewGab() {
 		Gab g = new Gab();
-		g.setRemoteID(Database.REMOTE_ID_NULL);
+		g.setRemoteID(DatabaseObject.NEW_OBJECT);
 		g.setRelatedUserName(getFullName());
-		//g.setRelatedAvatar(getRelatedAvatar());//TODO
+		g.setRelatedAvatar(getRelatedAvatar());
 		g.setUpdatedAt(new Date());
 		g.setIsAnonymous(false);
 		return g;
+	}
+
+	private String getRelatedAvatar() {
+		return ""; //TODO
 	}
 
 	public void setFirstName(String string) {
@@ -127,7 +131,7 @@ public class Friend extends DatabaseObject {
 		try {
 			getDAO().createOrUpdate(this);
 			//TODO
-			FriendListObserver.broadcastChange();
+			FriendObserver.broadcastChange();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

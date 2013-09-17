@@ -3,10 +3,10 @@ package com.youtell.backdoor.fragments;
 import com.youtell.backdoor.adapters.FriendListAdapter;
 import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.User;
-import com.youtell.backdoor.observers.FriendListObserver;
+import com.youtell.backdoor.observers.FriendObserver;
 
-public class NewGabFragment extends ListAdapterCallbackFragment<FriendListAdapter, FriendListObserver, Friend, NewGabFragment.Callbacks>
-implements FriendListObserver.Observer {
+public class NewGabFragment extends ListAdapterCallbackFragment<FriendListAdapter, FriendObserver, Friend, NewGabFragment.Callbacks>
+implements FriendObserver.Observer {
 	public interface Callbacks extends ListAdapterCallbackFragment.Callbacks<Friend> {}
 	
 	@Override
@@ -15,8 +15,8 @@ implements FriendListObserver.Observer {
 	}
 
 	@Override
-	protected FriendListObserver createObserver() {
-		return new FriendListObserver(this);
+	protected FriendObserver createObserver() {
+		return new FriendObserver(this);
 	}
 
 	@Override

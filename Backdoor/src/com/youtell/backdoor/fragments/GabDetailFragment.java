@@ -15,15 +15,16 @@ import android.widget.ListView;
 
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.adapters.GabDetailMessageAdapter;
+import com.youtell.backdoor.models.DatabaseObject;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
-import com.youtell.backdoor.observers.MessageListObserver;
+import com.youtell.backdoor.observers.MessageObserver;
 
 /**
  * A fragment representing a single Gab detail screen.
  */
-public class GabDetailFragment extends ListAdapterCallbackFragment<GabDetailMessageAdapter, MessageListObserver, Message, GabDetailFragment.Callbacks> 
-implements OnClickListener, MessageListObserver.Observer {
+public class GabDetailFragment extends ListAdapterCallbackFragment<GabDetailMessageAdapter, MessageObserver, Message, GabDetailFragment.Callbacks> 
+implements OnClickListener, MessageObserver.Observer {
     public static final String ARG_GAB_ID = "gab_id";
 
 	public static final String FROM_MESSAGE_RES = "FROM_MESSAGE_RES";
@@ -68,8 +69,7 @@ implements OnClickListener, MessageListObserver.Observer {
     		m.setText(textInput.getText().toString());
     		m.setMine(true);
     		m.setCreatedAt(new Date());
-    		m.setSent(false);
-
+    		m.setRemoteID(DatabaseObject.NEW_OBJECT);
     		
     		if(mCallbacks != null) {
     			mCallbacks.beforeMessageSend(m);
@@ -104,13 +104,13 @@ implements OnClickListener, MessageListObserver.Observer {
 	}
 
 	@Override
-	protected MessageListObserver createObserver() {
-		return new MessageListObserver(this, gab);
+	protected MessageObserver createObserver() {
+		return new MessageObserver(this, gab);
 	}
 	
 	@Override
 	protected void refreshData() {
-	
+		gab.updateWithMessages();
 	}
 
 }
