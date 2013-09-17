@@ -8,33 +8,13 @@ import com.youtell.backdoor.models.Gab;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
-public class GabListAdapter extends BaseAdapter {
-	private List<Gab> gabs;
-	private Context context;
+public class GabListAdapter extends ORMListAdapter<Gab> {
+	public GabListAdapter(Context context) {
+		super(context);
+		updateData();
+	}
 	
-	public GabListAdapter(Context context, List<Gab> items) {
-		this.gabs = items;
-		this.context = context;
-	}
-
-	@Override
-	public int getCount() {
-		return this.gabs.size();
-	}
-
-	@Override
-	public Object getItem(int position) {
-		return this.gabs.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		//TODO
-		return 0;
-	}
-
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Gab gab = (Gab) this.getItem(position);
@@ -54,5 +34,8 @@ public class GabListAdapter extends BaseAdapter {
 		return convertView;
 	}
 
-	
+	@Override
+	protected List<Gab> getList() {
+		return Gab.all();
+	}
 }

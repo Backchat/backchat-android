@@ -12,5 +12,6 @@
     <string name="tag_dialog_body">Tag this conversation</string>
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
-
+	<string name="login_facebook_button">Sign in with Facebook</string>
+	<string name="login_gpp_button">Sign in with Google+</string>
 </resources>

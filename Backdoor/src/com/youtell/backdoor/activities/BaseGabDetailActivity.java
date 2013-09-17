@@ -1,7 +1,6 @@
 package com.youtell.backdoor.activities;
 
 import com.youtell.backdoor.R;
-import com.youtell.backdoor.dummy.DummyContent;
 import com.youtell.backdoor.fragments.GabDetailFragment;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
@@ -15,7 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
-public class BaseGabDetailActivity extends BaseActivity implements GabDetailFragment.Callbacks {
+public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailFragment.Callbacks {
 	public static final String ARG_GAB_ID = "ARG_GAB_ID";
 	public static final String ARG_KEYBOARD_OPEN = "ARG_KEYBOARD_OPEN";
 
@@ -23,16 +22,17 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 	protected static final int SHOW_ANON_BUTTONS = 0x10;
 	protected static final int SHOW_CANCEL_BUTTON = 0x100;
 
-
 	protected Gab gab;
-	protected String gabID;
+	protected int gabID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gab_detail);
-		gabID = getIntent().getStringExtra(BaseGabDetailActivity.ARG_GAB_ID);
-		gab = DummyContent.ITEM_MAP.get(gabID);
+		
+		//TODO
+		gabID = getIntent().getIntExtra(BaseGabDetailActivity.ARG_GAB_ID, -1);
+		gab = Gab.getByID(gabID);
 		setTitle(gab.getTitle());
 	}
 
@@ -43,16 +43,16 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 	protected void setupFragment(int fromRes, int toRes, boolean keyboardState)
 	{
 		Bundle arguments = new Bundle();
-		arguments.putString(GabDetailFragment.ARG_GAB_ID,
-				gabID);
+		arguments.putInt(GabDetailFragment.ARG_GAB_ID, gabID);
 		arguments.putInt(GabDetailFragment.FROM_MESSAGE_RES, fromRes);
 		arguments.putInt(GabDetailFragment.TO_MESSAGE_RES, toRes);
-		arguments.putBoolean(GabDetailFragment.ARG_SHOW_KEYBOARD, keyboardState);
 		GabDetailFragment fragment = new GabDetailFragment();
 		fragment.setArguments(arguments);
 		getFragmentManager().beginTransaction()
 		.add(R.id.gab_detail_container, fragment)
 		.commit();
+		
+		this.getWindow().setSoftInputMode(keyboardState ? WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE : WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); 
 	}
 
 	protected void setupActionBar(int flags) {
@@ -75,12 +75,12 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 	}
 
 	@Override
-	public void onMessageSend(Message message) {
+	public void beforeMessageSend(Message message) {
 		//do nothing.
 	}        
 
 	public void onDeleteClick(View v) {
-		gab.delete();
+		gab.remove();
 		goUp();
 	}
 
@@ -93,5 +93,10 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 		Intent detailIntent = new Intent(context, classType);
 		detailIntent.putExtra(BaseGabDetailActivity.ARG_GAB_ID, gab.getID());
 		return detailIntent;
+	}
+
+	@Override
+	public void onItemSelected(Message item) {
+		//never will be called.
 	}
 }

@@ -1,16 +1,41 @@
 package com.youtell.backdoor.fragments;
 
-import com.youtell.backdoor.adapters.GabListAdapter;
-import com.youtell.backdoor.dummy.DummyContent;
-import com.youtell.backdoor.models.Gab;
+import android.os.Bundle;
 
-public class GabListFragment extends ListAdapterCallbackFragment<GabListAdapter, Gab> {
+import com.youtell.backdoor.adapters.GabListAdapter;
+import com.youtell.backdoor.models.Gab;
+import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.observers.GabListObserver;
+
+public class GabListFragment extends ListAdapterCallbackFragment<GabListAdapter, GabListObserver, Gab, GabListFragment.Callbacks> 
+implements GabListObserver.Observer {
 	public interface Callbacks extends ListAdapterCallbackFragment.Callbacks<Gab> {}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}	
+	
 	@Override
 	protected GabListAdapter createAdapter() {
-		// TODO Auto-generated method stub
-		return new GabListAdapter(getActivity(), DummyContent.ITEMS);
+		return new GabListAdapter(getActivity());
 	}
-  
 
+	@Override
+	protected GabListObserver createObserver() {
+		return new GabListObserver(this);
+	}
+
+	@Override
+	public void onChange() {
+		if(adapter != null)
+			adapter.notifyDataSetChanged();
+	}
+
+	@Override
+	protected void refreshData() {
+		new User().updateGabs(); //TODO	
+	}
+
+	
 }

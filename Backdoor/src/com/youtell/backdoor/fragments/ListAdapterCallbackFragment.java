@@ -1,5 +1,6 @@
 package com.youtell.backdoor.fragments;
 
+
 import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
@@ -9,8 +10,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
-public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, CallbackType> extends ListFragment {
-	protected Callbacks<CallbackType> mCallbacks = null;
+import com.youtell.backdoor.observers.ModelObserver;
+
+public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, ModelObserverType extends ModelObserver<?>, 
+CallbackType, CallbackT extends ListAdapterCallbackFragment.Callbacks<CallbackType>> 
+extends ListFragment {
+	protected CallbackT mCallbacks = null;
 
 	protected interface Callbacks<CallbackType> {
 		/**
@@ -18,36 +23,60 @@ public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, C
 		 */
 		public void onItemSelected(CallbackType item);
 	}
-	
-	private Adapter adapter;
+
+	protected Adapter adapter;
 
 	protected abstract Adapter createAdapter();
+	protected abstract ModelObserverType createObserver();
+	protected abstract void refreshData();
 	
+	protected ModelObserverType observer;
+	
+	@Override
+	public void onResume()
+	{		
+		super.onResume();
+		observer.startListening();
+		refreshData();
+	}
+	
+	@Override
+	public void onStop()
+	{
+		observer.stopListening();
+		super.onStop();
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		observer = createObserver();		
 	}
-	
+
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View view = super.onCreateView(inflater, container, savedInstanceState);
-		this.adapter = createAdapter();
-		setListAdapter(adapter);
+		setupAdapter();
 		return view;
 	}
 
+	protected void setupAdapter()
+	{
+		this.adapter = createAdapter();
+		setListAdapter(this.adapter);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		// Activities containing this fragment must implement its callbacks.
 		if (!(activity instanceof Callbacks<?>)) {
 			throw new IllegalStateException("Activity must implement fragment's callbacks.");
 		}
 
-		mCallbacks = (Callbacks<CallbackType>) activity;
+		mCallbacks = (CallbackT) activity;
 	}
 
 	@Override
@@ -62,5 +91,5 @@ public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, C
 		super.onListItemClick(listView, view, position, id);
 		if(mCallbacks != null)
 			mCallbacks.onItemSelected((CallbackType)adapter.getItem(position));
-	}
+	}		
 }

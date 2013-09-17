@@ -1,6 +1,7 @@
 package com.youtell.backdoor.activities;
 
 import com.youtell.backdoor.R;
+import com.youtell.backdoor.models.Message;
 
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +15,7 @@ public class GabDetailActivity extends BaseGabDetailActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(gab.isNew())
+        if(gab.isNewAndEmpty())
         	setupActionBar(SHOW_CANCEL_BUTTON);
         else
         	setupActionBar(SHOW_DELETE_BUTTON);
@@ -25,7 +26,21 @@ public class GabDetailActivity extends BaseGabDetailActivity {
     } 
     
     public void onCancelClick(View v) {
-    	gab.delete();
     	goUp();
+    }
+    
+	@Override
+	public void beforeMessageSend(Message message) {
+		super.beforeMessageSend(message);
+		if(gab.isNewAndEmpty()) {
+			setupActionBar(SHOW_DELETE_BUTTON);
+		}
+	}   
+	
+    @Override
+    protected void goUp() {
+    	if(gab.isNewAndEmpty())
+    		gab.remove();
+    	super.goUp();
     }
 }

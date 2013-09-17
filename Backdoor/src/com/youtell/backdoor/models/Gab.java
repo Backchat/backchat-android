@@ -1,54 +1,75 @@
 package com.youtell.backdoor.models;
 
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-import android.content.Context;
-import android.content.Intent;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import com.youtell.backdoor.activities.BaseGabDetailActivity;
-import com.youtell.backdoor.activities.GabAnonymousDetailActivity;
-import com.youtell.backdoor.activities.GabDetailActivity;
-import com.youtell.backdoor.dummy.DummyContent;
-import com.youtell.backdoor.fragments.GabDetailFragment;
+import android.util.Log;
 
-public class Gab {	
-	private String related_user_name;
-	private String related_avatar;
-	private Date updated_at;
-	private String content_summary;
-	private String remote_id;
-	private String id;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.ForeignCollection;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
+import com.j256.ormlite.table.DatabaseTable;
+import com.youtell.backdoor.observers.GabListObserver;
+import com.youtell.backdoor.observers.MessageListObserver;
+
+@DatabaseTable(tableName = "gabs")
+public class Gab extends DatabaseObject {	
+	private static Dao<Gab, Integer> getDAO() {
+		return getDB().gabDAO;
+	}
 	
-	private List<Message> messages;
+	@DatabaseField
+	private String related_user_name;
+	
+	@DatabaseField	
+	private String related_avatar;
+	
+	@DatabaseField	
+	private Date updated_at;
+	
+	@DatabaseField	
+	private String content_summary;
+
+	@DatabaseField
+	private int clue_count;
+	
+	@DatabaseField
+	private int unread_count;
+	
+	@DatabaseField
+	private int total_count;
+	
+	@DatabaseField(generatedId = true)
+	int id;
+	
+	@DatabaseField(index = true)
+	int remote_id;
+		
+	@ForeignCollectionField
+	private ForeignCollection<Message> messages;
+	
+	@DatabaseField
 	private boolean sent; //actually whether it is anon or not, e.g. "whether it was sent by us"
 	
 	public Gab()
 	{	
-		this.messages = new ArrayList<Message>();
 	}
 	
-	public Gab(String id, String related_user_name, String text, Date updated_at, boolean sent) {
-		this.related_user_name = related_user_name;
-		this.id = id;
-		this.messages = new ArrayList<Message>();
-		this.sent = sent;
-		this.updated_at = updated_at;
-		this.content_summary = text;
-		this.remote_id = id;
-		Date d = new Date();
-		this.messages.add(new Message(text, false, d, true));
-		this.messages.add(new Message("Mine", true, new Date(d.getTime() + 10*1000), true));
-		this.messages.add(new Message("A longer message that is long", false, new Date(d.getTime() + 60*10*1000), true));
-		this.messages.add(new Message("A shorter message that is delivered", true, new Date(d.getTime() + 60*10*1000+1), true));		
-	}
-	
-	public String getID() {
+	@Override
+	public int getID() {
 		return id;
 	}
 	
-	public List<Message> getMessages() {
+	public ForeignCollection<Message> getMessages() {
 		return messages;
 	}
 
@@ -68,18 +89,54 @@ public class Gab {
 		related_user_name = relatedUserName;
 	}
 
+	public String getContentSummary() {
+		return content_summary;
+	}
+	
+	public void setContentSummary(String s) {
+		content_summary = s;
+	}
+	
+	public String getRelatedAvatar() {
+		return related_avatar;
+	}
+	
+	public void setRelatedAvatar(String s) {
+		related_avatar = s;
+	}
+	
 	public Date getUpdatedAt() {
 		return updated_at;		
-	}
-
-	public void setID(String newGabID) {
-		id = newGabID;		
 	}
 
 	public void setUpdatedAt(Date date) {
 		updated_at = date;
 	}
 
+	public int getClueCount() {
+		return clue_count;
+	}
+	
+	public void setClueCount(int i) {
+		clue_count = i;
+	}
+	
+	public int getTotalCount() {
+		return total_count;
+	}
+	
+	public void setTotalCount(int i) {
+		total_count = i;
+	}
+	
+	public int getUnreadCount() {
+		return unread_count;
+	}
+	
+	public void setUnreadCount(int i) {
+		unread_count = i;
+	}
+				
 	public String getTitle() {
         String title = getRelatedUserName();
         if(title == null || title.isEmpty())
@@ -92,20 +149,94 @@ public class Gab {
 		return messages.size() == 0;
 	}
 
-	public String getContentSummary() {
-		return content_summary;
+	public boolean isNew() {
+		return remote_id == Database.REMOTE_ID_NULL;
+	}
+
+	public void setRemoteID(int remoteID) {
+		remote_id = remoteID;
 	}
 
 	public void addMessage(Message m) {
 		messages.add(m);
+		MessageListObserver.broadcastChange(MessageListObserver.MESSAGE_ADDED, m);
 	}
 
-	public void delete() {
-		DummyContent.deleteGab(this);
+	public boolean isNewAndEmpty() {
+		return isNew() && getMessages().size() == 0;
 	}
 
-	public boolean isNew() {
-		return remote_id == null;
+	public static Gab getByID(int gabID) {
+		try {
+			return getDAO().queryForId(gabID);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static Gab getByRemoteID(int remoteGabID) {
+		try {
+			List<Gab> results = getDAO().queryBuilder().where().eq("remote_id", remoteGabID).query();
+			if(results.size() == 1) 
+				return results.get(0);
+			else
+				return null;
+		} catch(SQLException e) {
+			return null;
+		}
+	}
+
+	public void inflate(JSONObject gab) throws JSONException {
+		setRelatedUserName(gab.getString("related_user_name"));
+		setClueCount(gab.getInt("clue_count"));
+		setContentSummary(gab.getString("content_summary"));
+		setRelatedAvatar(gab.getString("related_avatar"));
+		setIsAnonymous(!gab.getBoolean("sent"));
+		setTotalCount(gab.getInt("total_count"));
+		setUnreadCount(gab.getInt("unread_count"));
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+		try {
+			setUpdatedAt(formatter.parse(gab.getString("updated_at")));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			throw new JSONException("bad date");
+		}
+	}
+
+	public void save() {
+		try {
+			getDAO().createOrUpdate(this);
+			//TODO
+			GabListObserver.broadcastChange();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			Log.v("DAO", "Write gab", e);
+		}
+	}
+
+	public void remove() {
+		try {
+			getDAO().delete(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			Log.v("DAO", "remove gab", e);
+		}
+	}
+
+	public static List<Gab> all() {
+		try {
+			return getDAO().queryForAll();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			Log.v("DAO", "list gab", e);
+			return new ArrayList<Gab>();
+		}
+	}
+
+	@Override
+	public int getRemoteID() {
+		return remote_id;
 	}
 	
 }

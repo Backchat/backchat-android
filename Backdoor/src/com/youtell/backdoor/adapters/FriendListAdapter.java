@@ -7,33 +7,13 @@ import com.youtell.backdoor.models.Friend;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.content.Context;
 
-public class FriendListAdapter extends BaseAdapter {
-	private Context context;
-	private List<Friend> friends;
-	
-	public FriendListAdapter(Context context, List<Friend> f) {
-		this.context = context;
-		this.friends = f;
-	}
-
-	@Override
-	public int getCount() {
-		return friends.size();
-	}
-
-	@Override
-	public Object getItem(int position) {
-		return friends.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+public class FriendListAdapter extends ORMListAdapter<Friend> {
+	public FriendListAdapter(Context context) {
+		super(context);
+		updateData();
+	}	
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -52,6 +32,11 @@ public class FriendListAdapter extends BaseAdapter {
 		tile.fillWithFriend(friend);
 		
 		return convertView;
+	}
+
+	@Override
+	protected List<Friend> getList() {
+		return Friend.all();
 	}
 
 }

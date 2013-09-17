@@ -1,5 +1,6 @@
 package com.youtell.backdoor.adapters;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.youtell.backdoor.MessageBubble;
@@ -9,39 +10,20 @@ import com.youtell.backdoor.models.Message;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
-public class GabDetailMessageAdapter extends BaseAdapter {
+public class GabDetailMessageAdapter extends ORMListAdapter<Message> {
 
-	private Context context;
-	private List<Message> messages;
-	private Gab item;
+	private Gab gab;
 	private int fromMessageRes;
 	private int toMessageRes;
 	
-	public GabDetailMessageAdapter(Context context, Gab item, int fromMessageRes, int toMessageRes) 
+	public GabDetailMessageAdapter(Context context, Gab gab, int fromMessageRes, int toMessageRes) 
 	{
-		this.context = context;
-		this.messages = item.getMessages();
-		this.item = item;
+		super(context);
+		this.gab = gab;
 		this.fromMessageRes = fromMessageRes;
-		this.toMessageRes = toMessageRes;		
-	}
-	
-	@Override
-	public int getCount() {
-		return this.messages.size();
-	}
-
-	@Override
-	public Object getItem(int position) {
-		return this.messages.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		//TODO
-		return 0;
+		this.toMessageRes = toMessageRes;
+		updateData();
 	}
 	
 	@Override
@@ -73,5 +55,10 @@ public class GabDetailMessageAdapter extends BaseAdapter {
 		bubble.fillWithMessage(message, fromMessageRes, toMessageRes, position == getCount() - 1, showHeader);
 		
 		return convertView;
+	}
+
+	@Override
+	protected List<Message> getList() {
+		return new ArrayList<Message>(gab.getMessages());
 	}
 }
