@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.adapters.GabDetailMessageAdapter;
@@ -52,19 +51,21 @@ implements OnClickListener, MessageObserver.Observer {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
     	View view = inflater.inflate(R.layout.fragment_gab_detail, container, false);
-    	ListView listView = (ListView) view.findViewById(android.R.id.list);
-    	listView.setDivider(null);
-    	listView.setDividerHeight(0);
     	
     	textInput = (EditText) view.findViewById(R.id.gab_input_text);
     	final Button button = (Button) view.findViewById(R.id.gab_send_button);
     	button.setOnClickListener(this); 
-       
-        setupAdapter();
-        
+               
     	return view;
     }
         
+    @Override
+    public void onActivityCreated(Bundle savedBundleState) {
+    	super.onActivityCreated(savedBundleState);
+    	getListView().setDivider(null);
+    	getListView().setDividerHeight(0);
+
+    }
     public void onClick(View v) {
     	if(v.getId() == R.id.gab_send_button) {
     		Message m = new Message();

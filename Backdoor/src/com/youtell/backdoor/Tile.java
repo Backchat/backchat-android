@@ -5,6 +5,7 @@ import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,17 +28,28 @@ public class Tile {
 		this.parentGroup = parent;
 	}
 
+	public Tile(Context context, View existing) 
+	{
+		this.context = context;
+		this.views = existing;
+		findViews();
+	}
+	
 	public View getViews()
 	{
 		 this.views = LayoutInflater.from(context).inflate(R.layout.tile_row_layout, parentGroup, false);
+		 findViews();
+		 return views;
+	}
+	
+	private void findViews()
+	{
 		 this.titleLabel = (TextView) this.views.findViewById(R.id.tile_title);
 		 this.subtitleLabel = (TextView) this.views.findViewById(R.id.tile_subtitle);
 		 this.icon = (ImageView) this.views.findViewById(R.id.tile_icon);
 		 this.attributeIcon = (ImageView) this.views.findViewById(R.id.tile_attribute_icon);
 		 this.timeLabel = (TextView) this.views.findViewById(R.id.tile_time);		
 		 this.views.setTag(this);
-
-		 return views;
 	}
 
 	public void fillWithGab(Gab gab) {
@@ -67,5 +79,12 @@ public class Tile {
 		else {
 			this.attributeIcon.setVisibility(View.INVISIBLE);
 		}
+	}
+
+	public void fillWithContact(String name, String number, String photoURI, boolean selected) {
+		this.titleLabel.setText(name);
+		this.subtitleLabel.setText(number);
+		this.attributeIcon.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
+		loadAvatar(photoURI);
 	}
 }

@@ -3,8 +3,6 @@ package com.youtell.backdoor.fragments;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.Util;
 
-import android.app.Activity;
-import android.app.ListFragment;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,15 +12,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class SettingsMenuFragment extends ListFragment {
+public class SettingsMenuFragment extends CallbackListFragment<SettingsMenuFragment.Callbacks> {
 	private TextView versionLabel;
 	private String[] settings;
 
 	public interface Callbacks {
 		public void onLogout();
 	}
-
-	Callbacks mCallbacks;
 
 	@Override 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -52,27 +48,5 @@ public class SettingsMenuFragment extends ListFragment {
 			mCallbacks.onLogout();
 		default:
 		}
-	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
-
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof Callbacks)) {
-			throw new IllegalStateException("Activity must implement fragment's callbacks.");
-		}
-
-		mCallbacks = (Callbacks) activity;
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		mCallbacks = null;
 	}
 }

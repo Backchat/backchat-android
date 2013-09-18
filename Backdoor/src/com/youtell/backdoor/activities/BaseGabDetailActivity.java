@@ -29,6 +29,7 @@ public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailF
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gab_detail);
+		setupTitleActionBar();
 		
 		//TODO
 		gabID = getIntent().getIntExtra(BaseGabDetailActivity.ARG_GAB_ID, -1);
@@ -58,17 +59,10 @@ public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailF
 	}
 
 	protected void setupActionBar(int flags) {
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayShowTitleEnabled(true);
-		actionBar.setDisplayUseLogoEnabled(false);
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowHomeEnabled(false);
-
 		//we have to custom layout the params because the custom view can't affect the parent in XML
 		View cView = getLayoutInflater().inflate(R.layout.gab_detail_activity_bar_layout, null);
 		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-		actionBar.setCustomView(cView, lp);
+		getActionBar().setCustomView(cView, lp);
 
 		cView.findViewById(R.id.gab_clue_button).setVisibility((flags & SHOW_ANON_BUTTONS) == SHOW_ANON_BUTTONS ? View.VISIBLE : View.GONE);
 		cView.findViewById(R.id.gab_tag_button).setVisibility((flags & SHOW_ANON_BUTTONS) == SHOW_ANON_BUTTONS ? View.VISIBLE : View.GONE);	

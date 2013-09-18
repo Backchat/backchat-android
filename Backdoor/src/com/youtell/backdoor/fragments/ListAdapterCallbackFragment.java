@@ -56,16 +56,15 @@ extends ListFragment {
 		observer = createObserver();		
 	}
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	@Override 
+	public void onActivityCreated(Bundle savedInstanceState)
 	{
-		View view = super.onCreateView(inflater, container, savedInstanceState);
+		super.onActivityCreated(savedInstanceState);
+		
 		setupAdapter();
 		//TODO use multiple image loaders
 		PauseOnScrollListener scrollPause = new PauseOnScrollListener(ImageLoader.getInstance(), false, true);
-		ListView listView = (ListView)view.findViewById(android.R.id.list);
-		listView.setOnScrollListener(scrollPause);
-		return view;
+		getListView().setOnScrollListener(scrollPause);
 	}
 
 	protected void setupAdapter()

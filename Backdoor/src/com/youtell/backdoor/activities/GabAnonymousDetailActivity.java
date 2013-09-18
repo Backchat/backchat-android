@@ -14,7 +14,7 @@ public class GabAnonymousDetailActivity extends BaseGabDetailActivity {
 
     	tagName.setText(gab.getRelatedUserName());
 
-    	new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_DARK)
+    	new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
     	  .setTitle(R.string.tag_dialog_title)
     	  .setMessage(R.string.tag_dialog_body)
     	  .setView(tagName)

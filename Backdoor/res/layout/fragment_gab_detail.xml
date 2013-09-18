@@ -43,7 +43,7 @@
             android:paddingLeft="15sp"
             android:paddingRight="15sp"
             android:paddingTop="5sp"
-            android:text="@string/gab_detail_send"
+            android:text="@string/send_button_text"
             android:textColor="#FFF" />
     </LinearLayout>
 

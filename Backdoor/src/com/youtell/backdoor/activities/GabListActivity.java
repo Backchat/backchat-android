@@ -95,5 +95,5 @@ public class GabListActivity extends SlidingActivity implements GabListFragment.
 	{
 		super.onDestroy();
 		OpenHelperManager.releaseHelper();
-	}
+	}	
 }

@@ -20,6 +20,7 @@ public class LoginActivity extends BaseActivity {
 		Database.setDatabaseForUser(0);
 		intent = new Intent(this, GabListActivity.class);
 		startActivity(intent);
+		finish();
 	}
 	
 	public void gppButtonClick(View v)
@@ -28,5 +29,6 @@ public class LoginActivity extends BaseActivity {
 		Database.setDatabaseForUser(1);
 		intent = new Intent(this, GabListActivity.class);
 		startActivity(intent);
+		finish();
 	}
 }

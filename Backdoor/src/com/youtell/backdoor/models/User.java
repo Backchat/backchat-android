@@ -22,4 +22,8 @@ public class User {
 	public String getApiServerHostName() {
 		return "backdoor-stage.herokuapp.com";
 	}
+
+	public String getFullName() {
+		return "Lin";
+	}
 }

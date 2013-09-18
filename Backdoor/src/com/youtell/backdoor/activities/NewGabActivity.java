@@ -14,13 +14,7 @@ public class NewGabActivity extends ORMBaseActivity implements NewGabFragment.Ca
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_gab);
-
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayShowTitleEnabled(true);
-		actionBar.setDisplayUseLogoEnabled(false);
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setDisplayShowCustomEnabled(true);
-		actionBar.setDisplayShowHomeEnabled(false);		     
+		setupTitleActionBar();	     
 	}
 
 	@Override

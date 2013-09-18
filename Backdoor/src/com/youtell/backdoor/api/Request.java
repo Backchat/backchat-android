@@ -1,10 +1,16 @@
 package com.youtell.backdoor.api;
 
+import java.net.URI;
 import java.util.List;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,14 +66,37 @@ public abstract class Request {
 			}
 			else 
 			{
+				handleServerFailure();
 				Log.e("REQUEST", String.format("FAILED %s", status));
 			}
 		} catch (JSONException e) {
+			handleParsingFailure();
 			Log.e("REQUEST", "EXCEPTION", e);
 		}
 		
 	}
 
-	abstract public void execute(HttpClient client, User user); 
+	abstract protected HttpUriRequest getRequest(User user) throws Exception;
+	
+	abstract protected void handleServerFailure();
+	abstract protected void handleParsingFailure();	
+	abstract protected void handleInternetFailure();
+	
+	public void execute(HttpClient client, User user) {
+		String result;
+
+		BasicResponseHandler handler = new BasicResponseHandler();
+
+		try {
+			result = client.execute(getRequest(user), handler);
+		} catch (Exception e) {
+			handleInternetFailure();
+			Log.e("APISERVER", "ERROR", e);
+			return;
+		}
+
+		handleResult(result);
+	}
+	
 	abstract protected void handleJSONResponse(JSONObject result) throws JSONException;
 }

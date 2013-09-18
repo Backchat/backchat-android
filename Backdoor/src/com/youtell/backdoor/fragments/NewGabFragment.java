@@ -27,6 +27,6 @@ implements FriendObserver.Observer {
 
 	@Override
 	protected void refreshData() {
-		new User().getFriends();
+		new User().getFriends(); //TODO
 	}
 }

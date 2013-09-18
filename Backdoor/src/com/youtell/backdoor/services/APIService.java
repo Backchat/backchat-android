@@ -81,7 +81,6 @@ public class APIService extends IntentService {
 		Request r = Request.inflateRequest(intent);
 		Log.v("APIService", String.format("intent %s", r.getClass().getName()));
 		User user = new User();//TODO
-		r.execute(client, user);
-		
+		r.execute(client, user);		
 	}
 }
