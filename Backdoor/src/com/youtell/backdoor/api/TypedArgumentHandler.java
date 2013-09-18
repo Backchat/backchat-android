@@ -4,6 +4,7 @@ import com.youtell.backdoor.models.DatabaseObject;
 import com.youtell.backdoor.models.Gab;
 
 import android.os.Bundle;
+import android.util.Log;
 
 public class TypedArgumentHandler<T extends DatabaseObject> extends ArgumentHandler { 
 	public T object;
@@ -33,7 +34,7 @@ public class TypedArgumentHandler<T extends DatabaseObject> extends ArgumentHand
 			object = (T) clazz.getMethod("getByID", int.class).invoke(null, id);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(this.getClass().getName(), "getObject failed", e);
 			object = null;
 		}
 	}

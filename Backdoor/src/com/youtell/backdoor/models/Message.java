@@ -17,7 +17,7 @@ public class Message extends DatabaseObject {
 	public static final int KIND_TEXT = 0;
 	public static final int KIND_IMAGE = 1;
 	
-	private Dao<Message, Integer> getDAO() {
+	private static Dao<Message, Integer> getDAO() {
 		return getDB().messageDAO;
 	}
 	
@@ -124,6 +124,15 @@ public class Message extends DatabaseObject {
 		return getRemoteID() == DatabaseObject.NEW_OBJECT;
 	}
 	
+	static public Message getByID(int id) {
+		try {
+			return getDAO().queryForId(id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
 	@Override
 	public void save() {
 		try {

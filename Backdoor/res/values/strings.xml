@@ -29,4 +29,6 @@
     <string name="invite_failure_dialog_retry_body">Sorry, something went wrong. Retry?</string>
     <string name="yes_button">Yes</string>
     <string name="no_button">No</string>
+    <string name="gab_clues_get_more">Get clues</string>
+    <string name="gab_clue_status_text">You have %d remaining clues</string>
 </resources>

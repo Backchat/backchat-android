@@ -28,7 +28,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 
 //TODO button enable disable text empty also send should fail unless loader done
-public class InviteComposeFragment extends Fragment 
+public class InviteComposeFragment extends CallbackFragment<InviteComposeFragment.Callbacks> 
 implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
 	public interface Callbacks {
 		public void afterSend();
@@ -36,24 +36,11 @@ implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbac
 
 	public static final String ARG_CONTACT_IDS = "ARG_CONTACT_IDS";
 
-	Callbacks mCallbacks;
 	private EditText textInput;
 	private Switch anonSwitch;
 	private ArrayList<Integer> contactIDs;
 	private Button sendButton;
 	private ArrayList<String> numbers;
-
-	@Override	
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		mCallbacks = (Callbacks) activity;
-	}
-
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		mCallbacks = null;
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

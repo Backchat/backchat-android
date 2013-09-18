@@ -1,6 +1,8 @@
 package com.youtell.backdoor.activities;
 
 import com.youtell.backdoor.R;
+import com.youtell.backdoor.fragments.GabCluesFragment;
+import com.youtell.backdoor.fragments.GabDetailFragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,7 +10,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class GabAnonymousDetailActivity extends BaseGabDetailActivity {
+public class GabAnonymousDetailActivity extends BaseGabDetailActivity implements GabCluesFragment.Callbacks {
+	private GabCluesFragment cluesFragment;
+	private View cluesView;
+	
     public void tagGab(View v) {
     	final EditText tagName = new EditText(this);
 
@@ -40,5 +45,32 @@ public class GabAnonymousDetailActivity extends BaseGabDetailActivity {
         if(savedInstanceState == null) {
         	setupFragment(R.drawable.blue_bubble, R.drawable.black_bubble_from, R.color.blue_bubble_text_color, R.color.black_bubble_from_text_color);
         }        
+        
+		Bundle arguments = new Bundle();
+		arguments.putInt(GabCluesFragment.ARG_GAB_ID, gabID);
+		cluesFragment = new GabCluesFragment();
+		cluesFragment.setArguments(arguments);
+		getFragmentManager().beginTransaction()
+		.add(R.id.gab_clues_container, cluesFragment)
+		.commit();
+		
+		cluesView = findViewById(R.id.gab_clues_container);
     }
+    
+    public void onCluesClick(View v) {
+    	cluesView.setVisibility(View.VISIBLE);
+    }
+    
+    @Override
+    public void onResume()
+    {
+    	super.onResume();
+    	cluesView.setVisibility(View.GONE);
+    }
+
+	@Override
+	public void onCancel() {
+		cluesView.setVisibility(View.GONE);
+	}
+    
 }

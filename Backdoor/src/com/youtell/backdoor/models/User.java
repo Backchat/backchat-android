@@ -26,4 +26,8 @@ public class User {
 	public String getFullName() {
 		return "Lin";
 	}
+
+	public int getTotalClueCount() {
+		return 10; 
+	}
 }

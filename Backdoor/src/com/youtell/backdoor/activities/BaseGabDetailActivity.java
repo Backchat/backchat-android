@@ -6,7 +6,6 @@ import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
 import com.youtell.backdoor.observers.GabObserver;
 
-import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.content.Intent;
