@@ -13,6 +13,15 @@ public class GabObserver extends ModelObserver<GabObserver.Observer> {
 	
 	public GabObserver(Observer observer) {
 		super(observer);
+		gabID = GAB_OBSERVE_ALL;
+	}
+
+	private int gabID;
+	private static final int GAB_OBSERVE_ALL = -2;
+
+	public GabObserver(Observer observer, Gab gab) {
+		super(observer);
+		this.gabID = gab.getID();
 	}
 
 	public static final String GAB_UPDATED = "GAB_UPDATED"; /* updated from server side */
@@ -35,8 +44,9 @@ public class GabObserver extends ModelObserver<GabObserver.Observer> {
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		int gabID = intent.getIntExtra(ARG_GAB_ID, -1); //TODO
-		observer.onChange(intent.getAction(), gabID);
+		int theGabID = intent.getIntExtra(ARG_GAB_ID, -1); //TODO
+		if(theGabID == this.gabID || this.gabID == GAB_OBSERVE_ALL)
+			observer.onChange(intent.getAction(), theGabID);
 	}
 
 }

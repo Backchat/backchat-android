@@ -21,6 +21,8 @@ public class GabAnonymousDetailActivity extends BaseGabDetailActivity {
     	  .setPositiveButton(R.string.save_button, new DialogInterface.OnClickListener() {
     	    public void onClick(DialogInterface dialog, int whichButton) {
     	      gab.setRelatedUserName(tagName.getText().toString());
+    	      gab.save();
+    	      gab.updateTag(); //TODO?
     	    }
     	  })
     	  .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {

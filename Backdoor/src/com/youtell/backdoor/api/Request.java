@@ -1,16 +1,14 @@
 package com.youtell.backdoor.api;
 
+import java.lang.ref.WeakReference;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,8 +20,23 @@ import android.util.Log;
 
 public abstract class Request {
 	private static final String CLASS_NAME = "CLASS_NAME";
+	private ArrayList<WeakReference<ArgumentHandler>> handlers = new ArrayList<WeakReference<ArgumentHandler>>();
+		
+	protected void addArguments(Bundle b) {
+		for(WeakReference<ArgumentHandler> handler : handlers) {
+			handler.get().addArguments(b);
+		}
+	}
+
+	protected void inflateArguments(Bundle args) {
+		for(WeakReference<ArgumentHandler> handler : handlers) {
+			handler.get().inflateArguments(args);
+		}
+	}
 	
-	protected abstract void addArguments(Bundle b);
+	public void addArgumentHandler(ArgumentHandler h) {
+		handlers.add(new WeakReference<ArgumentHandler>(h));
+	}
 	
 	protected Request() {		
 	}
@@ -35,7 +48,6 @@ public abstract class Request {
 		return bundle;
 	}
 	
-	abstract protected void inflateArguments(Bundle args);
 	protected abstract List<NameValuePair> getParameters();
 	protected abstract String getPath();
 

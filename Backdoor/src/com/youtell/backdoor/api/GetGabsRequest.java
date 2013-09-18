@@ -18,14 +18,6 @@ public class GetGabsRequest extends GetListRequest<Gab> {
 	}
 
 	@Override
-	protected void addArguments(Bundle b) {
-	}
-
-	@Override
-	protected void inflateArguments(Bundle args) {		
-	}
-
-	@Override
 	protected JSONArray getJSONItemArray(JSONObject result)
 			throws JSONException {
 		return result.getJSONArray("gabs");

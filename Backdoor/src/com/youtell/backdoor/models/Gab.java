@@ -20,10 +20,12 @@ import com.j256.ormlite.table.DatabaseTable;
 import com.youtell.backdoor.Util;
 import com.youtell.backdoor.api.DeleteGabRequest;
 import com.youtell.backdoor.api.GetGabMessagesRequest;
+import com.youtell.backdoor.api.PostTagGabRequest;
 import com.youtell.backdoor.observers.GabObserver;
 import com.youtell.backdoor.observers.MessageObserver;
 import com.youtell.backdoor.services.APIService;
 
+//TODO dirty handling
 @DatabaseTable(tableName = "gabs")
 public class Gab extends DatabaseObject {	
 	private static Dao<Gab, Integer> getDAO() {
@@ -298,5 +300,10 @@ public class Gab extends DatabaseObject {
 	
 	public Friend getRelatedFriend() {
 		return relatedFriend;
+	}
+
+	public void updateTag() {
+		if(!isNew())		
+			APIService.fire(new PostTagGabRequest(this));
 	}
 }

@@ -4,6 +4,7 @@ import com.youtell.backdoor.R;
 import com.youtell.backdoor.fragments.GabDetailFragment;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
+import com.youtell.backdoor.observers.GabObserver;
 
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
@@ -14,7 +15,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
-public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailFragment.Callbacks {
+public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailFragment.Callbacks, GabObserver.Observer {
 	public static final String ARG_GAB_ID = "ARG_GAB_ID";
 	public static final String ARG_KEYBOARD_OPEN = "ARG_KEYBOARD_OPEN";
 
@@ -24,6 +25,8 @@ public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailF
 
 	protected Gab gab;
 	protected int gabID;
+	
+	private GabObserver observer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,8 @@ public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailF
 		gabID = getIntent().getIntExtra(BaseGabDetailActivity.ARG_GAB_ID, -1);
 		gab = Gab.getByID(gabID);
 		setTitle(gab.getTitle());
+		
+		observer = new GabObserver(this, gab);	
 	}
 
 	protected void setupFragment(int fromRes, int toRes, int fromTextColor, int toTextColor) {
@@ -94,5 +99,24 @@ public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailF
 	@Override
 	public void onItemSelected(Message item) {
 		//never will be called.
+	}
+	
+	@Override
+	public void onResume()
+	{		
+		super.onResume();
+		observer.startListening();
+	}
+	
+	@Override
+	public void onStop()
+	{
+		observer.stopListening();
+		super.onStop();
+	}
+
+	@Override
+	public void onChange(String action, int gabID) {
+		setTitle(gab.getTitle());
 	}
 }
