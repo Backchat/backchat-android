@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.observers.APIRequestObserver;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -75,6 +76,8 @@ public abstract class Request {
 			if(status.equals("ok")) {
 				JSONObject resultJSON = json.getJSONObject("response");
 				handleJSONResponse(resultJSON);
+				//success!
+				APIRequestObserver.broadcastSuccess(this);
 			}
 			else 
 			{
@@ -90,9 +93,17 @@ public abstract class Request {
 
 	abstract protected HttpUriRequest getRequest(User user) throws Exception;
 	
-	abstract protected void handleServerFailure();
-	abstract protected void handleParsingFailure();	
-	abstract protected void handleInternetFailure();
+	protected void handleServerFailure() {
+		APIRequestObserver.broadcastFailure(this);
+	}
+	
+	protected void handleParsingFailure() {
+		APIRequestObserver.broadcastFailure(this);
+	}
+	
+	protected void handleInternetFailure() {
+		APIRequestObserver.broadcastFailure(this);
+	}
 	
 	public void execute(HttpClient client, User user) {
 		String result;

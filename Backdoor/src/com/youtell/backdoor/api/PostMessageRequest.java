@@ -66,23 +66,5 @@ public class PostMessageRequest extends PostRequest {
 		return String.format("/gabs/%d/messages", gab.object.getRemoteID());
 	}
 
-	@Override
-	protected void handleServerFailure() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void handleParsingFailure() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void handleInternetFailure() {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 }

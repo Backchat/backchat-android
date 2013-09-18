@@ -12,11 +12,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.youtell.backdoor.R;
+import com.youtell.backdoor.api.PostInviteRequest;
 import com.youtell.backdoor.fragments.InviteComposeFragment;
-import com.youtell.backdoor.observers.InviteObserver;
+import com.youtell.backdoor.observers.APIRequestObserver;
 
 public class InviteComposeActivity extends ORMBaseActivity implements InviteComposeFragment.Callbacks,
-InviteObserver.Observer {
+APIRequestObserver.Observer<PostInviteRequest> {
 
 	public static final String ARG_CONTACT_IDS = "ARG_CONTACT_IDS";
 
@@ -36,11 +37,11 @@ InviteObserver.Observer {
 		.add(R.id.invite_compose_container, inviteFragment)
 		.commit();
 
-		observer = new InviteObserver(this);
+		observer = new APIRequestObserver<PostInviteRequest>(this, PostInviteRequest.class);
 	}
 
 	private ProgressDialog dialog;
-	private InviteObserver observer;
+	private APIRequestObserver<PostInviteRequest> observer;
 	private InviteComposeFragment inviteFragment;
 
 	@Override
@@ -69,47 +70,51 @@ InviteObserver.Observer {
 	}
 
 	@Override
-	public void onInviteFinished(boolean succeeded) {
+	public void onSuccess() {
+		closeProgressDialog();
+		
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast toast = Toast.makeText(getApplicationContext(), 
+								getResources().getText(R.string.invite_success_body), Toast.LENGTH_SHORT);
+
+						toast.show();							
+					}
+				});
+			}
+		}, getResources().getInteger(android.R.integer.config_longAnimTime));
+		goBackToGabList();
+	}
+	
+	@Override
+	public void onFailure() {
+		closeProgressDialog();
+		//ask to retry
+		new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
+		.setTitle(R.string.invite_failure_dialog_retry_title)
+		.setMessage(R.string.invite_failure_dialog_retry_body)
+		.setPositiveButton(R.string.yes_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				inviteFragment.sendInvite();
+			}
+		})
+		.setNegativeButton(R.string.no_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				goBackToGabList();
+			}	    	    
+		})
+		.show();
+	}
+	
+	private void closeProgressDialog() {
 		if(dialog != null) {
 			dialog.dismiss();			
 		}
 
 		observer.stopListening();
-
-		if(succeeded) {
-			new Handler().postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					runOnUiThread(new Runnable() {
-						@Override
-						public void run() {
-							Toast toast = Toast.makeText(getApplicationContext(), 
-									getResources().getText(R.string.invite_success_body), Toast.LENGTH_SHORT);
-
-							toast.show();							
-						}
-					});
-				}
-			}, getResources().getInteger(android.R.integer.config_longAnimTime));
-			goBackToGabList();
-		}		
-		else {
-			//ask to retry
-			new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
-			.setTitle(R.string.invite_failure_dialog_retry_title)
-			.setMessage(R.string.invite_failure_dialog_retry_body)
-			.setPositiveButton(R.string.yes_button, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					inviteFragment.sendInvite();
-				}
-			})
-			.setNegativeButton(R.string.no_button, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton) {
-					goBackToGabList();
-				}	    	    
-			})
-			.show();
-		}
-
 	}
 }

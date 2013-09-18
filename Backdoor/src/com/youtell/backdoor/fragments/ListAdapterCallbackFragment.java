@@ -13,9 +13,9 @@ import android.widget.ListView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
-import com.youtell.backdoor.observers.ModelObserver;
+import com.youtell.backdoor.observers.LocalObserver;
 
-public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, ModelObserverType extends ModelObserver<?>, 
+public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, ModelObserverType extends LocalObserver<?>, 
 CallbackType, CallbackT extends ListAdapterCallbackFragment.Callbacks<CallbackType>> 
 extends ListFragment {
 	protected CallbackT mCallbacks = null;

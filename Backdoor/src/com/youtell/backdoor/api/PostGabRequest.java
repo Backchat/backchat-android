@@ -69,22 +69,4 @@ public class PostGabRequest extends PostRequest {
 		
 		GabObserver.broadcastChange(GabObserver.GAB_INSERTED, gab.object);
 	}
-
-	@Override
-	protected void handleServerFailure() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void handleParsingFailure() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void handleInternetFailure() {
-		// TODO Auto-generated method stub
-		
-	}
 }

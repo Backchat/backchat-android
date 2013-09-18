@@ -1,5 +1,7 @@
 package com.youtell.backdoor.activities;
 
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
+
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 public class GabListActivity extends SlidingActivity implements GabListFragment.Callbacks, SettingsMenuFragment.Callbacks {
+    private PullToRefreshAttacher mPullToRefreshAttacher;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,8 +58,14 @@ public class GabListActivity extends SlidingActivity implements GabListFragment.
 		sm.setBehindOffsetRes(R.dimen.sliding_menu_offset);
 		sm.setShadowWidthRes(R.dimen.sliding_menu_shadow_width);
 		sm.setShadowDrawable(R.drawable.sliding_menu_shadow);
+		
+        mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
 	}
 
+    public PullToRefreshAttacher getPullToRefreshAttacher() {
+        return mPullToRefreshAttacher;
+    }
+    
 	public void settingsClick(View v) {
 		getSlidingMenu().toggle();
 	}

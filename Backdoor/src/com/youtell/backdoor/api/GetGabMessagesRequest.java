@@ -63,23 +63,5 @@ public class GetGabMessagesRequest extends GetRequest {
 			}
 		}
 	}
-
-	@Override
-	protected void handleServerFailure() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void handleParsingFailure() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void handleInternetFailure() {
-		// TODO Auto-generated method stub
-		
-	}
 		
 }

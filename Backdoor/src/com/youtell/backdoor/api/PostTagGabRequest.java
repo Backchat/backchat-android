@@ -36,24 +36,6 @@ public class PostTagGabRequest extends PostRequest {
 	}
 
 	@Override
-	protected void handleServerFailure() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void handleParsingFailure() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void handleInternetFailure() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	protected void handleJSONResponse(JSONObject result) throws JSONException {
 		JSONObject gabData = result.getJSONObject("gab");
 		gab.object.inflate(gabData);

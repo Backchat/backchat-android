@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class GabObserver extends ModelObserver<GabObserver.Observer> {
+public class GabObserver extends LocalObserver<GabObserver.Observer> {
 	public interface Observer {
 		public void onChange(String action, int gabID);
 	}

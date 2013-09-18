@@ -40,27 +40,8 @@ public class DeleteGabRequest extends DeleteRequest {
 	}
 
 	@Override
-	protected void handleServerFailure() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void handleParsingFailure() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void handleInternetFailure() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	protected void handleJSONResponse(JSONObject result) throws JSONException {
-		// TODO Auto-generated method stub
-		
+		//???
 	}
 
 

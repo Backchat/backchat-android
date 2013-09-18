@@ -8,7 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.youtell.backdoor.observers.InviteObserver;
+import com.youtell.backdoor.observers.APIRequestObserver;
 
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -59,22 +59,7 @@ public class PostInviteRequest extends PostRequest {
 	@Override
 	protected void handleJSONResponse(JSONObject result) throws JSONException {
 		// succeeded, empty data just "ok" status
-		InviteObserver.broadcastChange(InviteObserver.INVITE_SUCCEEDED);
 	}
 
-	@Override
-	protected void handleServerFailure() {
-		InviteObserver.broadcastChange(InviteObserver.INVITE_FAILED);		
-	}
-
-	@Override
-	protected void handleParsingFailure() {
-		InviteObserver.broadcastChange(InviteObserver.INVITE_FAILED);				
-	}
-
-	@Override
-	protected void handleInternetFailure() {
-		InviteObserver.broadcastChange(InviteObserver.INVITE_FAILED);
-	}
 
 }

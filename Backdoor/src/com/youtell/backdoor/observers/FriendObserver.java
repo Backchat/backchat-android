@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class FriendObserver extends ModelObserver<FriendObserver.Observer> {
+public class FriendObserver extends LocalObserver<FriendObserver.Observer> {
 	public interface Observer {
 		public void onChange();
 	}
@@ -21,7 +21,7 @@ public class FriendObserver extends ModelObserver<FriendObserver.Observer> {
 	}
 	
 	public static void broadcastChange() {
-		ModelObserver.broadcastChange(FRIENDS_LIST_CHANGED, new Bundle());
+		LocalObserver.broadcastChange(FRIENDS_LIST_CHANGED, new Bundle());
 	}
 
 	@Override

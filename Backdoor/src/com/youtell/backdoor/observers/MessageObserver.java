@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class MessageObserver extends ModelObserver<MessageObserver.Observer> {
+public class MessageObserver extends LocalObserver<MessageObserver.Observer> {
 	public interface Observer {
 		public void onChange(String action, int gabID, int messageID);
 	}
@@ -39,7 +39,7 @@ public class MessageObserver extends ModelObserver<MessageObserver.Observer> {
 		Bundle args = new Bundle();
 		args.putInt(ARG_GAB_ID, m.getGab().getID());
 		args.putInt(ARG_MESSAGE_ID, m.getID());
-		ModelObserver.broadcastChange(action, args);
+		LocalObserver.broadcastChange(action, args);
 	}
 
 	@Override

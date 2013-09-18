@@ -8,14 +8,14 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
-abstract public class ModelObserver<Observer> extends BroadcastReceiver {
+abstract public class LocalObserver<Observer> extends BroadcastReceiver {
 	protected static LocalBroadcastManager broadcastManager;
 		
     abstract public void onReceive(Context context, Intent intent);
 	
 	protected Observer observer;
 	
-	public ModelObserver(Observer observer)
+	public LocalObserver(Observer observer)
 	{
 		this.observer = observer;		
 	}
