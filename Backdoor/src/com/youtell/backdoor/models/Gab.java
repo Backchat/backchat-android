@@ -18,6 +18,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.youtell.backdoor.Util;
+import com.youtell.backdoor.api.DeleteGabRequest;
 import com.youtell.backdoor.api.GetGabMessagesRequest;
 import com.youtell.backdoor.observers.GabObserver;
 import com.youtell.backdoor.observers.MessageObserver;
@@ -222,6 +223,9 @@ public class Gab extends DatabaseObject {
 	public void remove() {
 		try {
 			getDAO().delete(this);
+			if(!isNew()) {
+				APIService.fire(new DeleteGabRequest(getRemoteID()));
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			Log.v("DAO", "remove gab", e);
