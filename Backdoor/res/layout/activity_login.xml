@@ -33,7 +33,7 @@
             android:background="#000000"
             android:textColor="#FFFFFF"
             android:text="@string/login_gpp_button"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:id="@+id/login_gpp_button"
             android:onClick="gppButtonClick"
             />

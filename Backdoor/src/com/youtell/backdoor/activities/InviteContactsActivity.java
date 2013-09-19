@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.fragments.InviteContactsFragment;
 
-public class InviteContactsActivity extends ORMBaseActivity implements InviteContactsFragment.Callbacks {
+public class InviteContactsActivity extends BaseActivity implements InviteContactsFragment.Callbacks {
 	private InviteContactsFragment inviteContacts;
 	
 	public void onCreate(Bundle savedInstanceState) {

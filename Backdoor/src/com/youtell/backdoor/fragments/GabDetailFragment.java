@@ -17,6 +17,7 @@ import com.youtell.backdoor.adapters.GabDetailMessageAdapter;
 import com.youtell.backdoor.models.DatabaseObject;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
+import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.MessageObserver;
 
 /**
@@ -64,8 +65,14 @@ implements OnClickListener, MessageObserver.Observer {
     	super.onActivityCreated(savedBundleState);
     	getListView().setDivider(null);
     	getListView().setDividerHeight(0);
-
+    	updateData();
     }
+    
+    private void updateData()
+    {
+    	gab.updateWithMessages();
+    }
+    
     public void onClick(View v) {
     	if(v.getId() == R.id.gab_send_button) {
     		Message m = new Message();
@@ -114,8 +121,7 @@ implements OnClickListener, MessageObserver.Observer {
 	}
 	
 	@Override
-	protected void refreshData() {
-		gab.updateWithMessages();
+	protected void updateData(User user) {
 	}
-
+	
 }

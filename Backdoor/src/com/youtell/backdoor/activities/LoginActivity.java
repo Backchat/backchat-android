@@ -6,6 +6,8 @@ import android.view.View;
 
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.models.Database;
+import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.observers.UserObserver;
 
 public class LoginActivity extends BaseActivity {
 	
@@ -16,8 +18,15 @@ public class LoginActivity extends BaseActivity {
 	
 	public void fbButtonClick(View v)
 	{
+		User u = new User();
+		u.setApiToken("CAAG82yXJNQgBAPmhHZALWVxHVKti5rtGHEcR7U9nMxZCUibyZCQyJYlSytMnmlyCdKZBOhZAsPAdIVG1dmJMcZADmZCuOdF2XncZBCBjTQVfA1ZB0Kw5R0elFMNgmfyeRuz1VVhTvPCzSdZCSsgmOITuWcyZAFxFRG4amd1ZBi3pihM7VAZDZD");
+		u.setApiServerHostName("backdoor-stage.herokuapp.com");
+		u.setGCMKey("412155847073");
+		UserObserver.broadcastUserSwapped(u);
+		u.setFullName("Lin Xu");
+		u.setTotalClueCount(10);
+
 		Intent intent = null;	
-		Database.setDatabaseForUser(0);
 		intent = new Intent(this, GabListActivity.class);
 		startActivity(intent);
 		finish();
@@ -25,10 +34,11 @@ public class LoginActivity extends BaseActivity {
 	
 	public void gppButtonClick(View v)
 	{
+		return;
+		/*
 		Intent intent = null;
-		Database.setDatabaseForUser(1);
 		intent = new Intent(this, GabListActivity.class);
 		startActivity(intent);
-		finish();
+		finish();*/
 	}
 }

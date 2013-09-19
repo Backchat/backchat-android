@@ -13,11 +13,13 @@ import android.widget.ListView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
+import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.LocalObserver;
+import com.youtell.backdoor.observers.UserObserver;
 
 public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, ModelObserverType extends LocalObserver<?>, 
 CallbackType, CallbackT extends ListAdapterCallbackFragment.Callbacks<CallbackType>> 
-extends ListFragment {
+extends ListFragment implements UserObserver.Observer {
 	protected CallbackT mCallbacks = null;
 
 	protected interface Callbacks<CallbackType> {
@@ -31,21 +33,23 @@ extends ListFragment {
 
 	protected abstract Adapter createAdapter();
 	protected abstract ModelObserverType createObserver();
-	protected abstract void refreshData();
 	
 	protected ModelObserverType observer;
+	
+	private Object userObserver;
 	
 	@Override
 	public void onResume()
 	{		
 		super.onResume();
 		observer.startListening();
-		refreshData();
+		userObserver = UserObserver.registerObserver(this);
 	}
 	
 	@Override
 	public void onStop()
 	{
+		UserObserver.unregisterObserver(userObserver);
 		observer.stopListening();
 		super.onStop();
 	}
@@ -98,4 +102,15 @@ extends ListFragment {
 		if(mCallbacks != null)
 			mCallbacks.onItemSelected((CallbackType)adapter.getItem(position));
 	}		
+	
+	protected abstract void updateData(User user);
+	
+	@Override
+	public void onUserChanged() {		
+	}
+
+	@Override
+	public void onUserSwapped(User old, User newUser) {
+		updateData(newUser);
+	}
 }

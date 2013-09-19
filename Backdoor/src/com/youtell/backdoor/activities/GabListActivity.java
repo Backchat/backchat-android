@@ -1,40 +1,50 @@
 package com.youtell.backdoor.activities;
 
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
-
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
-import com.youtell.backdoor.R;
-import com.youtell.backdoor.fragments.GabListFragment;
-import com.youtell.backdoor.fragments.SettingsMenuFragment;
-import com.youtell.backdoor.models.Database;
-import com.youtell.backdoor.models.Gab;
-
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
-public class GabListActivity extends SlidingActivity implements GabListFragment.Callbacks, SettingsMenuFragment.Callbacks {
-    private PullToRefreshAttacher mPullToRefreshAttacher;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
+import com.squareup.otto.Subscribe;
+import com.youtell.backdoor.R;
+import com.youtell.backdoor.fragments.GabListFragment;
+import com.youtell.backdoor.fragments.SettingsMenuFragment;
+import com.youtell.backdoor.gcm.GCM;
+import com.youtell.backdoor.models.DBClosedEvent;
+import com.youtell.backdoor.models.Database;
+import com.youtell.backdoor.models.Gab;
+import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.observers.UserObserver;
+import com.youtell.backdoor.observers.UserObserver.Observer;
+import com.youtell.backdoor.services.ORMUpdateService;
+
+public class GabListActivity extends SlidingActivity implements GabListFragment.Callbacks, SettingsMenuFragment.Callbacks, GCM.Callbacks, Observer {
+	private PullToRefreshAttacher mPullToRefreshAttacher;
+	private Object userObserver;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//refcount++
-		OpenHelperManager.getHelper(this, Database.class);
+		userObserver = UserObserver.registerObserver(this);
 
 		setContentView(R.layout.activity_gab_list);
-		
+
 		GabListFragment fragment = new GabListFragment();
 		getFragmentManager().beginTransaction()
 		.add(R.id.gab_list, fragment)
 		.commit();
-		
+
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayUseLogoEnabled(false);
@@ -58,14 +68,14 @@ public class GabListActivity extends SlidingActivity implements GabListFragment.
 		sm.setBehindOffsetRes(R.dimen.sliding_menu_offset);
 		sm.setShadowWidthRes(R.dimen.sliding_menu_shadow_width);
 		sm.setShadowDrawable(R.drawable.sliding_menu_shadow);
-		
-        mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
+
+		mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
 	}
 
-    public PullToRefreshAttacher getPullToRefreshAttacher() {
-        return mPullToRefreshAttacher;
-    }
-    
+	public PullToRefreshAttacher getPullToRefreshAttacher() {
+		return mPullToRefreshAttacher;
+	}
+
 	public void settingsClick(View v) {
 		getSlidingMenu().toggle();
 	}
@@ -79,10 +89,15 @@ public class GabListActivity extends SlidingActivity implements GabListFragment.
 		Intent intent = new Intent(this, InviteContactsActivity.class);
 		startActivity(intent);
 	}
-	
+
 	@Override
 	public void onItemSelected(Gab gab) {
 		startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
 	}
 
 	@Override
@@ -93,16 +108,70 @@ public class GabListActivity extends SlidingActivity implements GabListFragment.
 
 	@Override
 	public void onLogout() {
-		Intent intent = new Intent(this, LoginActivity.class);
-		startActivity(intent);
-		overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);    
-		finish();
+		UserObserver.broadcastUserSwapped(null);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
 	}
 	
 	@Override
 	protected void onDestroy() 
 	{
+		UserObserver.unregisterObserver(userObserver);
 		super.onDestroy();
-		OpenHelperManager.releaseHelper();
-	}	
+	}
+
+	@Override
+	public void onNoPlayDialog(Dialog dialog) {
+		dialog.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				onLogout();		
+			}});
+		dialog.show();
+	}
+
+	@Override
+	public void onNoPlay() {
+		new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
+		.setTitle(R.string.no_google_play_title)
+		.setMessage(R.string.no_google_play_text)
+		.setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				onLogout();
+			}
+		})
+		.show(); 	
+	}
+
+	@Override
+	public void onUserChanged() {
+		//don't care.
+	}
+
+	@Override
+	public void onUserSwapped(User old, User newUser) {
+		if(old != null) {
+			final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class); 
+			getApplicationContext().stopService(ormUpdateIntent);
+			OpenHelperManager.releaseHelper();
+		}
+		
+		if(newUser != null) {			
+			Database.setDatabaseForUser(newUser.getID());
+			OpenHelperManager.getHelper(this, Database.class);
+			final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class);
+			getApplicationContext().startService(ormUpdateIntent);
+			
+			GCM.getRegistrationID(newUser, this);
+		}
+		else {
+			Intent intent = new Intent(this, LoginActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);    
+			finish();
+		}
+	}
 }

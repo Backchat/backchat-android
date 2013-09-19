@@ -11,9 +11,11 @@ import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.APIRequestObserver;
 import com.youtell.backdoor.observers.GabObserver;
+import com.youtell.backdoor.observers.UserObserver;
+import com.youtell.backdoor.observers.UserObserver.Observer;
 
 public class GabListFragment extends ListAdapterCallbackFragment<GabListAdapter, GabObserver, Gab, GabListFragment.Callbacks> 
-implements GabObserver.Observer, OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
+implements GabObserver.Observer, OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, Observer {
 	private APIRequestObserver<GetGabsRequest> gabsRequestObserver;
 	
 	public interface Callbacks extends ListAdapterCallbackFragment.Callbacks<Gab> {
@@ -56,29 +58,36 @@ implements GabObserver.Observer, OnRefreshListener, APIRequestObserver.Observer<
 	}
 	
 	@Override
-	protected void refreshData() {
-		new User().updateGabs(); //TODO	
-	}
-
-	@Override
 	public void onChange(String action, int gabID) {
 		if(adapter != null)
 			adapter.notifyDataSetChanged();		
 	}
-
+	
 	@Override
 	public void onRefreshStarted(View view) {
-		refreshData();
+		updateData(user);
 	}
 
 	@Override
 	public void onSuccess() {
-		mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
+		if(mCallbacks != null)		
+			mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
 	}
 
 	@Override
 	public void onFailure() {
-		mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
+		if(mCallbacks != null)
+			mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
+	}
+
+	private User user;
+	
+	@Override
+	protected void updateData(User user) {
+		this.user = user;
+		if(this.user != null) {
+			user.updateGabs();
+		}
 	}
 	
 }

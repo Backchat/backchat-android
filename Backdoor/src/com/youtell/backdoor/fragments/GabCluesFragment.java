@@ -3,6 +3,7 @@ package com.youtell.backdoor.fragments;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.observers.UserObserver;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -15,7 +16,8 @@ import android.widget.GridLayout;
 import android.widget.GridLayout.LayoutParams;
 import android.widget.TextView;
 
-public class GabCluesFragment extends CallbackFragment<GabCluesFragment.Callbacks> {
+public class GabCluesFragment extends CallbackFragment<GabCluesFragment.Callbacks> 
+implements UserObserver.Observer {
 	public interface Callbacks {
 		public void onCancel();
 	}
@@ -85,25 +87,40 @@ public class GabCluesFragment extends CallbackFragment<GabCluesFragment.Callback
 			}
 
 		});
-		updateClueCount();
 
 		return view;
 	}
 
+	private Object userObserver;
+	
 	@Override
 	public void onResume() {
 		super.onResume();
+		userObserver = UserObserver.registerObserver(this);
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
+		UserObserver.unregisterObserver(userObserver);
 	}
 
+	private User user;
+	
 	private void updateClueCount()
 	{
-		//TODO
 		clueLabel.setText(String.format(getActivity().getResources().getString(R.string.gab_clue_status_text), 
-				new User().getTotalClueCount()));
+				user.getTotalClueCount()));
+	}
+
+	@Override
+	public void onUserChanged() {
+		updateClueCount();		
+	}
+
+	@Override
+	public void onUserSwapped(User old, User newUser) {
+		user = newUser;
+		updateClueCount();
 	}
 }

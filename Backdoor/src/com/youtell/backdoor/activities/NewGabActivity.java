@@ -8,7 +8,7 @@ import com.youtell.backdoor.models.Gab;
 import android.app.ActionBar;
 import android.os.Bundle;
 
-public class NewGabActivity extends ORMBaseActivity implements NewGabFragment.Callbacks {
+public class NewGabActivity extends BaseActivity implements NewGabFragment.Callbacks {
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

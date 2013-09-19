@@ -306,4 +306,13 @@ public class Gab extends DatabaseObject {
 		if(!isNew())		
 			APIService.fire(new PostTagGabRequest(this));
 	}
+
+	public void refresh() {
+		try {
+			getDAO().refresh(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

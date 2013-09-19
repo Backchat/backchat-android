@@ -57,6 +57,7 @@ public class Tile {
 		this.subtitleLabel.setText(gab.getContentSummary());
 		this.timeLabel.setText(Util.humanDateTime(context, gab.getUpdatedAt()));
 		if(gab.isUnread()) {
+			this.attributeIcon.setVisibility(View.VISIBLE);
 		}
 		else {
 			this.attributeIcon.setVisibility(View.INVISIBLE);
@@ -82,7 +83,7 @@ public class Tile {
 	}
 
 	public void fillWithContact(String name, String number, String photoURI, boolean selected) {
-		this.titleLabel.setText(name);
+		this.titleLabel.setText(name);		
 		this.subtitleLabel.setText(number);
 		this.attributeIcon.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
 		loadAvatar(photoURI);

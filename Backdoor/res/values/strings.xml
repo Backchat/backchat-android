@@ -31,4 +31,7 @@
     <string name="no_button">No</string>
     <string name="gab_clues_get_more">Get clues</string>
     <string name="gab_clue_status_text">You have %d remaining clues</string>
+    <string name="no_google_play_title">Google Play is not available</string>
+    <string name="no_google_play_text">Backdoor requires Google Play. Please install.</string>
+    <string name="ok_button">OK</string>
 </resources>

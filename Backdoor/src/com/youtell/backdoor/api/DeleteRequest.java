@@ -4,11 +4,12 @@ import java.net.URI;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-
+import org.json.JSONException;
 import com.youtell.backdoor.models.User;
 
 abstract public class DeleteRequest extends Request {

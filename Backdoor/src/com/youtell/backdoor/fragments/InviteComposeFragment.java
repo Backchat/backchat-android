@@ -6,6 +6,7 @@ import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostInviteRequest;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.services.APIService;
+import com.youtell.backdoor.observers.UserObserver;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -29,7 +30,8 @@ import android.widget.Switch;
 
 //TODO button enable disable text empty also send should fail unless loader done
 public class InviteComposeFragment extends CallbackFragment<InviteComposeFragment.Callbacks> 
-implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
+implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
+UserObserver.Observer {
 	public interface Callbacks {
 		public void afterSend();
 	}
@@ -41,6 +43,8 @@ implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbac
 	private ArrayList<Integer> contactIDs;
 	private Button sendButton;
 	private ArrayList<String> numbers;
+
+	private User user;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,8 +64,6 @@ implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbac
 		anonSwitch = (Switch)view.findViewById(R.id.invite_compose_anonymous_switch);
 		anonSwitch.setOnCheckedChangeListener(this);
 
-		setInviteText();
-
 		getLoaderManager().initLoader(0, null, this);
 
 		sendButton.setEnabled(false);
@@ -69,10 +71,23 @@ implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbac
 		return view;
 	}
 
+	Object userObserver;
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		userObserver = UserObserver.registerObserver(this);
+	}
+
+	@Override 
+	public void onStop() {
+		super.onStop();
+		UserObserver.unregisterObserver(userObserver);
+	}
 	private void setInviteText()
 	{
 		String personalizedURL = "http://bkdr.me";
-		String username = new User().getFullName(); //TODO
+		String username = user.getFullName();
 		int stringID;
 
 		if(anonSwitch.isChecked()) 
@@ -80,11 +95,12 @@ implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbac
 		else
 			stringID = R.string.invite_compose_nonanon_text;
 
-		String fullInviteString = String.format("%s %s", 
+		final String fullInviteString = String.format("%s %s", 
 				String.format(getActivity().getResources().getString(stringID), username),
 				personalizedURL);
 
 		textInput.setText(fullInviteString);
+
 	}
 
 	@Override
@@ -140,5 +156,17 @@ implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbac
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		sendButton.setEnabled(false);
+	}
+
+	@Override
+	public void onUserChanged() {
+		setInviteText();
+	}
+
+	@Override
+	public void onUserSwapped(User old, User newUser) {
+		user = newUser;
+		if(user != null)
+			setInviteText();
 	}
 }

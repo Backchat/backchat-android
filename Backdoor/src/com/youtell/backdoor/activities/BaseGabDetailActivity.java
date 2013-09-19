@@ -14,7 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
-public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailFragment.Callbacks, GabObserver.Observer {
+public class BaseGabDetailActivity extends BaseActivity implements GabDetailFragment.Callbacks, GabObserver.Observer {
 	public static final String ARG_GAB_ID = "ARG_GAB_ID";
 	public static final String ARG_KEYBOARD_OPEN = "ARG_KEYBOARD_OPEN";
 
@@ -116,6 +116,7 @@ public class BaseGabDetailActivity extends ORMBaseActivity implements GabDetailF
 
 	@Override
 	public void onChange(String action, int gabID) {
+		gab.refresh();
 		setTitle(gab.getTitle());
 	}
 }

@@ -16,7 +16,7 @@ import com.youtell.backdoor.api.PostInviteRequest;
 import com.youtell.backdoor.fragments.InviteComposeFragment;
 import com.youtell.backdoor.observers.APIRequestObserver;
 
-public class InviteComposeActivity extends ORMBaseActivity implements InviteComposeFragment.Callbacks,
+public class InviteComposeActivity extends BaseActivity implements InviteComposeFragment.Callbacks,
 APIRequestObserver.Observer<PostInviteRequest> {
 
 	public static final String ARG_CONTACT_IDS = "ARG_CONTACT_IDS";

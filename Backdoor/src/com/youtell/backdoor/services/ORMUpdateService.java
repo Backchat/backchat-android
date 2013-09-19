@@ -1,16 +1,13 @@
 package com.youtell.backdoor.services;
 
 import java.sql.SQLException;
-import java.util.Iterator;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
 import com.j256.ormlite.dao.CloseableWrappedIterable;
-import com.j256.ormlite.dao.ForeignCollection;
 import com.youtell.backdoor.api.PostGabRequest;
 import com.youtell.backdoor.api.PostMessageRequest;
 import com.youtell.backdoor.models.Gab;
