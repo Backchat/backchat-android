@@ -2,6 +2,8 @@ package com.youtell.backdoor.observers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -89,6 +91,10 @@ public class UserObserver {
 			staticObserver.user.serialize(bundle);
 			Intent intent = new Intent(PrivateUserObserver.USER_SWAPPED);
 			intent.putExtras(bundle);
+			ob.onReceive(null, intent);
+		}
+		else {
+			Intent intent = new Intent(PrivateUserObserver.USER_REMOVED);
 			ob.onReceive(null, intent);
 		}
 		ob.startListening();

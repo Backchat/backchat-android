@@ -76,6 +76,7 @@ public class User {
 		setApiToken(b.getString("apiToken"));
 		setFullName(b.getString("fullName"));
 		setID(b.getInt("id"));
+		setSocialProvider(b.getString("socialProvider"));
 	}
 	
 	public void serialize(Bundle b) {
@@ -85,6 +86,7 @@ public class User {
 		b.putString("apiToken", getApiToken());
 		b.putString("fullName", getFullName());
 		b.putInt("id", id);
+		b.putString("socialProvider", getSocialProvider());
 	}
 	
 	public User clone() {
@@ -95,6 +97,7 @@ public class User {
 		u.hostName = hostName;
 		u.id = id;
 		u.totalClueCount = totalClueCount;
+		u.socialProvider = socialProvider;
 		return u;
 	}
 
@@ -106,5 +109,14 @@ public class User {
 	
 	public void setID(int id) {
 		this.id = id;
+	}
+
+	private String socialProvider;
+	
+	public void setSocialProvider(String s) {
+		socialProvider = s;
+	}
+	public String getSocialProvider() {
+		return this.socialProvider;
 	}
 }

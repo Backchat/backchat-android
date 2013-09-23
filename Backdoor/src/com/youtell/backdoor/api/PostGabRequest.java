@@ -5,68 +5,42 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
-import com.youtell.backdoor.models.Message;
-import com.youtell.backdoor.observers.GabObserver;
+
+import android.os.Bundle;
 
 public class PostGabRequest extends PostRequest {
 	private TypedArgumentHandler<Gab> gab = new TypedArgumentHandler<Gab>(Gab.class, this);
-		
-	public PostGabRequest() 
-	{		
+
+	public PostGabRequest()
+	{
 	}
-	
 	
 	public PostGabRequest(Gab g) {
 		gab.setObject(g);
-	}
-	
-	public PostGabRequest(int gabID) {
-		gab.setObjectByID(gabID);
-	}
-	
+	}	
 
 	@Override
 	protected List<NameValuePair> getParameters() {
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		Message m = gab.object.getFirstMessage();
-		
-		params.add(new BasicNameValuePair("message[content]", m.getContent()));
-		params.add(new BasicNameValuePair("message[kind]", Integer.toString(m.getKind())));
-		params.add(new BasicNameValuePair("message[key]", m.getKey()));
-		
-		Friend f = gab.object.getRelatedFriend();
-		params.add(new BasicNameValuePair("friendship[id]", Integer.toString(f.getRemoteID())));
-		
-		return params;
+		List<NameValuePair> args = new ArrayList<NameValuePair>();
+		args.add(new BasicNameValuePair("related_user_name", gab.object.getRelatedUserName()));
+		args.add(new BasicNameValuePair("unread_count", Integer.valueOf(gab.object.getUnreadCount()).toString()));
+		return args;
 	}
 
 	@Override
 	protected String getPath() {
-		return "/gabs";
+		return String.format("/gabs/%d", gab.object.getRemoteID());
 	}
 
 	@Override
 	protected void handleJSONResponse(JSONObject result) throws JSONException {
-		JSONObject gabPart = result.getJSONObject("gab");
-		gab.object.setRemoteID(gabPart.getInt("id"));
-		gab.object.inflate(gabPart);
+		JSONObject gabData = result.getJSONObject("gab");
+		gab.object.inflate(gabData);
 		gab.object.save();
-
-		JSONArray messagePart = gabPart.getJSONArray("messages");
-		JSONObject msgData = messagePart.getJSONObject(0);
-		int remoteID = msgData.getInt("id");
-		Message m;
-		m = gab.object.getFirstMessage();
-		m.setRemoteID(remoteID);
-		m.inflate(msgData);
-		m.save();
-		
-		GabObserver.broadcastChange(GabObserver.GAB_INSERTED, gab.object);
 	}
+
 }

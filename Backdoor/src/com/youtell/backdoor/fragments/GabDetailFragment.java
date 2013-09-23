@@ -65,12 +65,6 @@ implements OnClickListener, MessageObserver.Observer {
     	super.onActivityCreated(savedBundleState);
     	getListView().setDivider(null);
     	getListView().setDividerHeight(0);
-    	updateData();
-    }
-    
-    private void updateData()
-    {
-    	gab.updateWithMessages();
     }
     
     public void onClick(View v) {
@@ -122,6 +116,7 @@ implements OnClickListener, MessageObserver.Observer {
 	
 	@Override
 	protected void updateData(User user) {
+		//TODO
 	}
 	
 }

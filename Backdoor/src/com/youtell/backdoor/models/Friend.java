@@ -164,4 +164,13 @@ public class Friend extends DatabaseObject {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public void refresh() {
+		try {
+			getDAO().refresh(this);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

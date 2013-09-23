@@ -2,4 +2,5 @@
 <resources>
     <string name="camera_button_accessible">Camera button</string>
     <string name="settings_button_accessible">Settings button</string>
+    <string name="gab_clue_button_accessible">A clue for this conversation</string>
 </resources>

@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:onClick="onCluesClick"
-        android:text="@string/gab_detail_clue" />
+        android:text="@string/gab_detail_clue"
+        android:background="@drawable/green_bubble" />
 
     <Button
         android:id="@+id/gab_delete_button"

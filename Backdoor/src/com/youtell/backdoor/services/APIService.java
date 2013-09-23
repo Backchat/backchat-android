@@ -3,6 +3,7 @@ package com.youtell.backdoor.services;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.youtell.backdoor.Util;
+import com.youtell.backdoor.api.PostLoginRequest;
 import com.youtell.backdoor.api.Request;
 import com.youtell.backdoor.models.Database;
 import com.youtell.backdoor.models.User;
@@ -59,7 +60,10 @@ public class APIService extends IntentService implements UserObserver.Observer {
 	protected void onHandleIntent(Intent intent) {		
 		Request r = Request.inflateRequest(intent);
 		Log.v("APIService", String.format("intent %s", r.getClass().getName()));
-		if(user != null) {
+		if(r instanceof PostLoginRequest) {//URGH TODO
+			r.execute(client, null);
+		}
+		else if(user != null) { 
 			r.execute(client, user.clone());
 		}
 		else {

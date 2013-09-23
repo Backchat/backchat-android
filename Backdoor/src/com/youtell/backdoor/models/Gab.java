@@ -19,8 +19,10 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.youtell.backdoor.Util;
 import com.youtell.backdoor.api.DeleteGabRequest;
+import com.youtell.backdoor.api.GetGabCluesRequest;
 import com.youtell.backdoor.api.GetGabMessagesRequest;
-import com.youtell.backdoor.api.PostTagGabRequest;
+import com.youtell.backdoor.api.PostGabRequest;
+import com.youtell.backdoor.observers.ClueObserver;
 import com.youtell.backdoor.observers.GabObserver;
 import com.youtell.backdoor.observers.MessageObserver;
 import com.youtell.backdoor.services.APIService;
@@ -62,6 +64,9 @@ public class Gab extends DatabaseObject {
 	@ForeignCollectionField(orderColumnName="created_at", orderAscending=true)
 	private ForeignCollection<Message> messages;
 	
+	@ForeignCollectionField
+	private ForeignCollection<Clue> clues;
+	
 	@DatabaseField
 	private boolean sent; //actually whether it is anon or not, e.g. "whether it was sent by us"
 	
@@ -82,6 +87,10 @@ public class Gab extends DatabaseObject {
 		return messages;
 	}
 
+	public ForeignCollection<Clue> getClues() {
+		return clues;		
+	}
+	
 	public boolean isAnonymous() {
 		return !sent;
 	}
@@ -173,6 +182,14 @@ public class Gab extends DatabaseObject {
 		else
 			MessageObserver.broadcastChange(MessageObserver.MESSAGE_INSERTED, m);
 	}
+	
+	public void addClue(Clue c) {
+		clues.add(c);
+		if(c.isNew())
+			ClueObserver.broadcastChange(ClueObserver.CLUE_INSERTED, c);
+		else
+			ClueObserver.broadcastChange(ClueObserver.CLUE_UPDATED, c);
+	}
 
 	public boolean isNewAndEmpty() {
 		return isNew() && getMessages().size() == 0;
@@ -254,6 +271,11 @@ public class Gab extends DatabaseObject {
 			APIService.fire(new GetGabMessagesRequest(this));
 	}
 
+	public void updateClues() {
+		if(!isNew())
+			APIService.fire(new GetGabCluesRequest(this));
+	}
+	
 	public Message getMessageByRemoteID(int remoteID) {
 		List<Message> messages;
 		try {
@@ -302,9 +324,16 @@ public class Gab extends DatabaseObject {
 		return relatedFriend;
 	}
 
+	
+	//TODO change to observer & dirty
 	public void updateTag() {
 		if(!isNew())		
-			APIService.fire(new PostTagGabRequest(this));
+			APIService.fire(new PostGabRequest(this));
+	}
+	
+	public void updateUnread() {
+		if(!isNew())
+			GabObserver.broadcastChange(GabObserver.GAB_UNREAD_COUNT_CHANGED, this);
 	}
 
 	public void refresh() {
@@ -313,6 +342,29 @@ public class Gab extends DatabaseObject {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	public Clue getClueByRemoteID(int remoteID) {
+		List<Clue> clues;
+		try {
+			clues = getDB().clueDao.queryBuilder().where().eq("remote_id", remoteID).and().eq("gab_id", getID()).query();
+			if(clues.size() != 1)
+				return null;
+			else
+				return clues.get(0);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public Clue getClueByID(int objectID) {
+		try {
+			return getDB().clueDao.queryForId(objectID);
+		}
+		catch(SQLException e) {
+			return null;
 		}
 	}
 }

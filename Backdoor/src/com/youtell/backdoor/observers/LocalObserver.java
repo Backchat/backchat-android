@@ -22,17 +22,22 @@ abstract public class LocalObserver<Observer> extends BroadcastReceiver {
 
 	protected abstract String[] getPossibleActions();
 	
-	private IntentFilter createIntentFilter() {
+	private IntentFilter createIntentFilter(int priority) {
         IntentFilter filter = new IntentFilter();
         for(String action : getPossibleActions())
         	filter.addAction(action);
         
+        filter.setPriority(priority);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         return filter;
 	}
 	
 	public void startListening() {
-		broadcastManager.registerReceiver(this, createIntentFilter());		
+		broadcastManager.registerReceiver(this, createIntentFilter(0));		
+	}
+	
+	public void startListening(int priority) {
+		broadcastManager.registerReceiver(this, createIntentFilter(priority));		
 	}
 	
 	public void stopListening() {

@@ -15,6 +15,7 @@ import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostInviteRequest;
 import com.youtell.backdoor.fragments.InviteComposeFragment;
 import com.youtell.backdoor.observers.APIRequestObserver;
+import com.youtell.backdoor.observers.GCMToastNotificationObserver;
 
 public class InviteComposeActivity extends BaseActivity implements InviteComposeFragment.Callbacks,
 APIRequestObserver.Observer<PostInviteRequest> {
@@ -44,6 +45,11 @@ APIRequestObserver.Observer<PostInviteRequest> {
 	private APIRequestObserver<PostInviteRequest> observer;
 	private InviteComposeFragment inviteFragment;
 
+	@Override 
+	public void onResume() {
+		super.onResume();
+	}
+	
 	@Override
 	public void afterSend() {
 		dialog = ProgressDialog.show(this, 
@@ -63,6 +69,7 @@ APIRequestObserver.Observer<PostInviteRequest> {
 	public void onStop()
 	{
 		observer.stopListening();
+		
 		if(dialog != null) 
 			dialog.dismiss();
 
@@ -73,20 +80,18 @@ APIRequestObserver.Observer<PostInviteRequest> {
 	public void onSuccess() {
 		closeProgressDialog();
 		
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast toast = Toast.makeText(getApplicationContext(), 
-								getResources().getText(R.string.invite_success_body), Toast.LENGTH_SHORT);
+		runOnNextScreen(
+			new Runnable() {
+				@Override
+				public void run() {
+					Toast toast = Toast.makeText(getApplicationContext(), 
+							getResources().getText(R.string.invite_success_body), Toast.LENGTH_SHORT);
 
-						toast.show();							
-					}
-				});
+					toast.show();							
+				}
 			}
-		}, getResources().getInteger(android.R.integer.config_longAnimTime));
+		);
+		
 		goBackToGabList();
 	}
 	

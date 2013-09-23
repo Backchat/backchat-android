@@ -23,7 +23,8 @@ public class GCM {
 	
 	private static final String DEVICE_REGISTRATION_ID_PROP = "DEVICE_REGISTRATION_ID";
 	private static final String VERSION_INT_PROP = "VERSION_INT_PROP";
-	private static final String PREFS_GCM_SETTINGS = "PREFS_GCM_SETTINGS";		
+	private static final String PREFS_GCM_SETTINGS = "PREFS_GCM_SETTINGS";
+	public static final String GCM_KEY = "412155847073"; //TODO dynamic		
 
 	public static void getRegistrationID(final User user, final Activity activity) {
 		Thread t = new Thread(new Runnable() {

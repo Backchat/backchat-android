@@ -45,4 +45,5 @@ public abstract class DatabaseObject {
 	
 	public abstract void inflate(JSONObject j) throws JSONException;
 	public abstract void save();
+	public abstract void refresh();
 }

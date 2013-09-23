@@ -100,29 +100,34 @@ public class Database extends OrmLiteSqliteOpenHelper {
 	public Dao<Gab, Integer> gabDAO;
 	public Dao<Message, Integer> messageDAO;
 	public Dao<Friend, Integer> friendDAO;
+	public Dao<Clue, Integer> clueDao; 
 	
 	private void createDAOs() throws SQLException {
 		gabDAO = getDao(Gab.class);
 		messageDAO = getDao(Message.class);
 		friendDAO = getDao(Friend.class);
+		clueDao = getDao(Clue.class);
 	}
 	
 	private void closeDAOs() {
 		gabDAO = null;
 		messageDAO = null;
 		friendDAO = null;
+		clueDao = null;
 	}
 	
 	private void createTables(ConnectionSource connectionSource) throws SQLException {
 		TableUtils.createTable(connectionSource, Gab.class);
 		TableUtils.createTable(connectionSource, Message.class);
-		TableUtils.createTable(connectionSource, Friend.class);		
+		TableUtils.createTable(connectionSource, Friend.class);
+		TableUtils.createTable(connectionSource, Clue.class);		
 	}
 
 	private void dropTables(ConnectionSource connection) throws SQLException {
 		TableUtils.dropTable(connection, Gab.class, true);
 		TableUtils.dropTable(connection, Message.class, true);
 		TableUtils.dropTable(connection, Friend.class, true);	
+		TableUtils.dropTable(connection, Clue.class, true);		
 	}
 
 }

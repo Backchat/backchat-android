@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -25,14 +26,17 @@ import com.youtell.backdoor.models.DBClosedEvent;
 import com.youtell.backdoor.models.Database;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.observers.GCMNotificationObserver;
 import com.youtell.backdoor.observers.UserObserver;
 import com.youtell.backdoor.observers.UserObserver.Observer;
 import com.youtell.backdoor.services.ORMUpdateService;
 
-public class GabListActivity extends SlidingActivity implements GabListFragment.Callbacks, SettingsMenuFragment.Callbacks, GCM.Callbacks, Observer {
+public class GabListActivity extends SlidingActivity implements GabListFragment.Callbacks, SettingsMenuFragment.Callbacks, GCM.Callbacks, Observer, 
+GCMNotificationObserver.Observer {
 	private PullToRefreshAttacher mPullToRefreshAttacher;
 	private Object userObserver;
-
+	private GCMNotificationObserver gcmNotifications;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,6 +74,8 @@ public class GabListActivity extends SlidingActivity implements GabListFragment.
 		sm.setShadowDrawable(R.drawable.sliding_menu_shadow);
 
 		mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
+		
+		gcmNotifications = new GCMNotificationObserver(this, null);
 	}
 
 	public PullToRefreshAttacher getPullToRefreshAttacher() {
@@ -98,6 +104,7 @@ public class GabListActivity extends SlidingActivity implements GabListFragment.
 	@Override
 	public void onResume() {
 		super.onResume();
+		gcmNotifications.startListening(1);
 	}
 
 	@Override
@@ -114,6 +121,7 @@ public class GabListActivity extends SlidingActivity implements GabListFragment.
 	@Override
 	protected void onStop() {
 		super.onStop();
+		gcmNotifications.stopListening();
 	}
 	
 	@Override
@@ -173,5 +181,10 @@ public class GabListActivity extends SlidingActivity implements GabListFragment.
 			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);    
 			finish();
 		}
+	}
+
+	@Override
+	public void onNotification(String message, int gab_id) {
+		//override and do nothing.
 	}
 }

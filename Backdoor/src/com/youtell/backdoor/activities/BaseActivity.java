@@ -1,15 +1,27 @@
 package com.youtell.backdoor.activities;
 
 import com.youtell.backdoor.R;
+import com.youtell.backdoor.observers.GCMToastNotificationObserver;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Toast;
 
 public abstract class BaseActivity extends Activity {
+	protected GCMToastNotificationObserver toastObserver;
+	
+	public BaseActivity() {
+		super();
+		toastObserver = new GCMToastNotificationObserver(this);
+	
+	}
 	@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -45,4 +57,30 @@ public abstract class BaseActivity extends Activity {
 	public void onBackPressed() { //make back up for us.
 		goUp();
 	}
+	
+	protected void runOnNextScreen(final Runnable runnable) {
+		new Handler().postDelayed(
+				new Runnable() {
+					@Override
+					public void run() {
+						runOnUiThread(runnable);
+					}
+				},
+				getResources().getInteger(android.R.integer.config_longAnimTime)
+				);		
+	}
+	
+	@Override
+	public void onResume() 
+	{
+		super.onResume();
+		toastObserver.startListening();
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		toastObserver.stopListening();
+	}
+	
 }

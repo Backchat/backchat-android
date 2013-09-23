@@ -4,15 +4,19 @@ import com.youtell.backdoor.R;
 import com.youtell.backdoor.fragments.GabDetailFragment;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
+import com.youtell.backdoor.observers.GCMNotificationObserver;
+import com.youtell.backdoor.observers.GCMToastNotificationObserver;
 import com.youtell.backdoor.observers.GabObserver;
 
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 public class BaseGabDetailActivity extends BaseActivity implements GabDetailFragment.Callbacks, GabObserver.Observer {
 	public static final String ARG_GAB_ID = "ARG_GAB_ID";
@@ -38,7 +42,8 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 		gab = Gab.getByID(gabID);
 		setTitle(gab.getTitle());
 		
-		observer = new GabObserver(this, gab);	
+		observer = new GabObserver(this, gab);
+		toastObserver.setWatchingGab(gab);
 	}
 
 	protected void setupFragment(int fromRes, int toRes, int fromTextColor, int toTextColor) {
@@ -105,6 +110,7 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 	{		
 		super.onResume();
 		observer.startListening();
+		gab.updateWithMessages();
 	}
 	
 	@Override
@@ -116,6 +122,12 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 
 	@Override
 	public void onChange(String action, int gabID) {
+		if(gab.getUnreadCount() != 0) {
+			gab.setUnreadCount(0);
+			gab.save();
+			gab.updateUnread();
+		}
+		
 		gab.refresh();
 		setTitle(gab.getTitle());
 	}

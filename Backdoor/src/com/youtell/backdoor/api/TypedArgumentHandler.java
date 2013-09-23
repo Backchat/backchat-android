@@ -43,6 +43,7 @@ public class TypedArgumentHandler<T extends DatabaseObject> extends ArgumentHand
 	public void inflateArguments(Bundle args) {
 		int id = args.getInt(this.clazz.getName());
 		getObject(id);
+		object.refresh();
 	}
 
 }

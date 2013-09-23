@@ -13,7 +13,7 @@ import com.youtell.backdoor.Util;
 import com.youtell.backdoor.observers.MessageObserver;
 
 @DatabaseTable(tableName = "messages")
-public class Message extends DatabaseObject {
+public class Message extends DatabaseGabObject {
 	public static final int KIND_TEXT = 0;
 	public static final int KIND_IMAGE = 1;
 	
@@ -39,8 +39,6 @@ public class Message extends DatabaseObject {
 	@DatabaseField(index = true)
 	int remote_id;
 	
-	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "gab_id")
-	private Gab gab;
 		
 	public Message()
 	{
@@ -74,10 +72,6 @@ public class Message extends DatabaseObject {
 	@Override
 	public int getID() {
 		return id;
-	}
-
-	public Gab getGab() {
-		return gab;
 	}
 
 	@Override
@@ -146,5 +140,14 @@ public class Message extends DatabaseObject {
 
 	public String getKey() {
 		return key;
+	}
+	
+	public void refresh() {
+			try {
+				getDAO().refresh(this);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 }

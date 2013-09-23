@@ -4,10 +4,12 @@ import com.youtell.backdoor.R;
 import com.youtell.backdoor.fragments.GabCluesFragment;
 import com.youtell.backdoor.fragments.GabDetailFragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 public class GabAnonymousDetailActivity extends BaseGabDetailActivity implements GabCluesFragment.Callbacks {
@@ -58,6 +60,10 @@ public class GabAnonymousDetailActivity extends BaseGabDetailActivity implements
     }
     
     public void onCluesClick(View v) {
+    	//hide the keyboard first..
+	    InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
+	    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+		
     	cluesView.setVisibility(View.VISIBLE);
     }
     

@@ -2,6 +2,7 @@ package com.youtell.backdoor.observers;
 
 import com.youtell.backdoor.models.Gab;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,10 +28,11 @@ public class GabObserver extends LocalObserver<GabObserver.Observer> {
 	public static final String GAB_UPDATED = "GAB_UPDATED"; /* updated from server side */
 	public static final String GAB_DELETED = "GAB_DELETED"; /* deleted from client side */
 	public static final String GAB_INSERTED = "GAB_INSERTED"; /* gab went from isNew() -> inserted from server side */
+	public static final String GAB_UNREAD_COUNT_CHANGED = "GAB_UNREAD_COUNT_CHANGED"; //TODO we need to make this better
 
 	private static final String ARG_GAB_ID = "ARG_GAB_ID";
 	
-	private static final String[] possibleActions = {GAB_UPDATED, GAB_DELETED, GAB_INSERTED};
+	private static final String[] possibleActions = {GAB_UPDATED, GAB_DELETED, GAB_INSERTED, GAB_UNREAD_COUNT_CHANGED};
 	
 	protected String[] getPossibleActions() {
 		return possibleActions;
