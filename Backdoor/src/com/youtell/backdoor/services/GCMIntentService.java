@@ -25,6 +25,7 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 	private static int GCM_KIND_FRIEND = 1;
 	private GCMNotificationObserver observer;
 	private Object userObserver;
+	private User currentUser;
 
 	public GCMIntentService() {
 		super("GCMIntentService");
@@ -34,6 +35,9 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		if(currentUser == null)
+			return;
+		
 		Bundle extras = intent.getExtras();
 		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
 
@@ -100,7 +104,6 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 		PendingIntent pendingIntent =
 		        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_UPDATE_CURRENT);
 		
-		// TODO Auto-generated method stub
 		Notification note = new NotificationCompat.Builder(this)
 		.setContentTitle("Backdoor") //TODO stringify
 		.setSmallIcon(R.drawable.ic_launcher)
@@ -125,12 +128,15 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 
 	@Override
 	public void onUserSwapped(User old, User newUser) {
-		if(newUser == null) {
+		if(old != null) {
 			observer.stopListening();
 		}
-		else {
+		
+		if(newUser != null )
+		{
 			observer.startListening(0);
 		}
 		
+		currentUser = newUser;
 	}
 }

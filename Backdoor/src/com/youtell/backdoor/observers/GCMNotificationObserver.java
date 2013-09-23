@@ -14,12 +14,15 @@ public class GCMNotificationObserver extends BroadcastReceiver {
 	protected static final int ALL_GABS = -1;
 	protected Observer observer;
 	protected Context context;
+	private boolean registered;
 	
 	protected GCMNotificationObserver(Gab g) {	
 		gab_id = ALL_GABS;
 		if(g != null) {
 			gab_id = g.getID();
 		}
+		
+		registered = false;
 	}
 
 	public <T extends Context & Observer> GCMNotificationObserver(T observer, Gab g) {
@@ -62,10 +65,14 @@ public class GCMNotificationObserver extends BroadcastReceiver {
         filter.addAction(GCM_NOTIFICATION);
         
 		context.registerReceiver(this, filter);
+		registered = true;
 	}
 
 	public void stopListening() {
-		context.unregisterReceiver(this);
+		if(registered) {
+			context.unregisterReceiver(this);
+			registered = false;
+		}
 	}
 	
 	static public void broadcastNotification(Context context, String message, Gab g) {

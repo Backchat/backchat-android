@@ -41,7 +41,7 @@ public class LoginActivity extends BaseActivity implements Observer, UserObserve
 		
 		setContentView(R.layout.activity_login);
 		setButtonVisibility(View.GONE);
-
+		
 		observer.startListening();
 		userObserver = UserObserver.registerObserver(this);
 		Log.e("login", "login");
@@ -67,8 +67,7 @@ public class LoginActivity extends BaseActivity implements Observer, UserObserve
 		}
 		else {
 			/* nothing cached */
-			setButtonVisibility(View.VISIBLE);
-
+			setButtonVisibility(View.VISIBLE);	
 		}
 	}
 
@@ -84,8 +83,8 @@ public class LoginActivity extends BaseActivity implements Observer, UserObserve
 		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
 
 		lp.copyFrom(progressDialog.getWindow().getAttributes());
-		lp.width = 200;
-		lp.height = 500;
+		lp.width = 300;
+		lp.height = 300;
 		progressDialog.getWindow().setAttributes(lp);
 		APIService.fire(new PostLoginRequest(token, provider, "backdoor-stage.herokuapp.com"));
 	}
