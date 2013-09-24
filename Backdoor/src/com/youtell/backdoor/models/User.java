@@ -2,6 +2,7 @@ package com.youtell.backdoor.models;
 
 import android.os.Bundle;
 
+import com.youtell.backdoor.api.GetFeaturedRequest;
 import com.youtell.backdoor.api.GetFriendsRequest;
 import com.youtell.backdoor.api.GetGabsRequest;
 import com.youtell.backdoor.api.PostDeviceRequest;
@@ -26,6 +27,7 @@ public class User implements InflatableObject {
 
 	public void getFriends() {
 		APIService.fire(new GetFriendsRequest());
+		APIService.fire(new GetFeaturedRequest());
 	}
 
 	private String hostName;

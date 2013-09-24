@@ -34,7 +34,7 @@ public class Database extends OrmLiteSqliteOpenHelper {
 
 	public Database(Context context) {
 		super(context, databaseName, null, DATABASE_VERSION);
-		Log.v("ORM", String.format("ORM DB Constructed with trace"));
+		Log.v("ORM", String.format("ORM DB Constructed with %s", databaseName));
 		try {
 			createDAOs();
 			ModelBus.events.register(this);
@@ -51,6 +51,7 @@ public class Database extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void close()
 	{
+		Log.v("ORM", "close");
 		super.close();
 		ModelBus.events.post(new DBClosedEvent());
 		ModelBus.events.unregister(this);

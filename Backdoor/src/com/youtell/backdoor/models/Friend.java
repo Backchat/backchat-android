@@ -27,13 +27,15 @@ public class Friend extends DatabaseObject {
 	@DatabaseField
 	private String last_name;
 	@DatabaseField
-	private int friendship_id;
+	private int featured_user_id;
 	@DatabaseField
 	private int user_id;
 	@DatabaseField
 	private String provider;
 	@DatabaseField
 	private String social_id;
+	@DatabaseField
+	private boolean isFeatured;
 	
 	public Friend() {}
 
@@ -104,10 +106,25 @@ public class Friend extends DatabaseObject {
 	public void inflate(JSONObject j) throws JSONException {
 		setFirstName(j.getString("first_name"));
 		setLastName(j.getString("last_name"));
-		setFriendshipID(j.getInt("friend_id"));
-		setUserID(j.getInt("user_id"));
+		if(j.has("friend_id")) {
+			setFeatured(false);
+		}
+		else {
+			setFeatured(true);
+			setFeaturedUserID(j.getInt("featured_id"));
+		}
+		
+		//TODO unused setUserID(j.getInt("user_id"));
 		setProvider(j.getString("provider"));
 		setSocialID(j.getString("social_id"));
+	}
+
+	private void setFeatured(boolean b) {
+		isFeatured = b;
+	}
+	
+	public boolean getFeatured() {
+		return isFeatured;
 	}
 
 	public void setProvider(String s) {
@@ -118,8 +135,12 @@ public class Friend extends DatabaseObject {
 		social_id = s;
 	}
 	
-	public void setFriendshipID(int i) {
-		friendship_id = i;
+	public void setFeaturedUserID(int i) {
+		featured_user_id = i;
+	}
+	
+	public int getFeaturedUserID() {
+		return featured_user_id;
 	}
 	
 	public void setUserID(int i) {
@@ -161,8 +182,7 @@ public class Friend extends DatabaseObject {
 	}
 
 	public boolean isFeatured() {
-		// TODO Auto-generated method stub
-		return false;
+		return isFeatured;
 	}
 	
 	public void refresh() {

@@ -2,10 +2,10 @@
 <resources>
 
     <string-array name="settings_menu_values">
-        <item>Get Free Clues</item>
+        <!--  <item>Get Free Clues</item>
         <item>Notification Settings</item>        
         <item>Report Abuse</item>
-        <item>About us</item>
+        <item>About us</item> -->
         <item>Logout</item>
     </string-array>
 

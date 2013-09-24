@@ -42,7 +42,10 @@ public class PostNewGabRequest extends PostRequest {
 		params.add(new BasicNameValuePair("message[key]", m.getKey()));
 		
 		Friend f = gab.object.getRelatedFriend();
-		params.add(new BasicNameValuePair("friendship[id]", Integer.toString(f.getRemoteID())));
+		if(f.isFeatured())
+			params.add(new BasicNameValuePair("featured[id]", Integer.toString(f.getFeaturedUserID())));
+		else
+			params.add(new BasicNameValuePair("friendship[id]", Integer.toString(f.getRemoteID())));
 		
 		return params;
 	}

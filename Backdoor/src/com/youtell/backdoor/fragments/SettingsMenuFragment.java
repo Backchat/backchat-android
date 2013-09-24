@@ -44,7 +44,7 @@ public class SettingsMenuFragment extends CallbackListFragment<SettingsMenuFragm
 			return;
 
 		switch(position) {
-		case 4:
+		case 0:
 			mCallbacks.onLogout();
 		default:
 		}

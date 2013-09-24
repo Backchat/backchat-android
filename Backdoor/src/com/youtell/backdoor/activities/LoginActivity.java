@@ -1,10 +1,13 @@
 package com.youtell.backdoor.activities;
 
+import java.io.IOException;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -16,6 +19,13 @@ import android.widget.Toast;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.plus.PlusClient;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostLoginRequest;
 import com.youtell.backdoor.models.User;
@@ -24,7 +34,8 @@ import com.youtell.backdoor.observers.APIRequestObserver.Observer;
 import com.youtell.backdoor.observers.UserObserver;
 import com.youtell.backdoor.services.APIService;
 
-public class LoginActivity extends BaseActivity implements Observer, UserObserver.Observer {
+public class LoginActivity extends BaseActivity implements Observer, UserObserver.Observer,
+GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
 	private static final String PREFS_LOGIN = "PREFS_LOGIN";
 	private static final String FB_PROVIDER = "facebook";
 	private static final String GPP_PROVIDER = "gpp";
@@ -32,24 +43,29 @@ public class LoginActivity extends BaseActivity implements Observer, UserObserve
 	private APIRequestObserver<PostLoginRequest> observer = new APIRequestObserver<PostLoginRequest>(this, PostLoginRequest.class);
 	private Object userObserver;
 	private ProgressDialog progressDialog;
+	private PlusClient gppClient;
+	private ConnectionResult gppConnectionResult;
+	private boolean gppLogin;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		toastObserver.disable();
-		
+
 		setContentView(R.layout.activity_login);
 		setButtonVisibility(View.GONE);
-		
+
 		observer.startListening();
 		userObserver = UserObserver.registerObserver(this);
 		Log.e("login", "login");
+
 		//if we got here, that means we don't have a cached BD login.
 		//check to see if we have stored in shared prefs the social provider we last used.
 		SharedPreferences prefs = getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
 		String cachedProvider = prefs.getString(CACHED_SOCIAL, "");
-
+		Log.e("login", cachedProvider);
+		
 		if(cachedProvider.equals(FB_PROVIDER)) {
 			/* try no UI fb cached auth */
 			Session fbSession = Session.openActiveSessionFromCache(this);
@@ -63,12 +79,20 @@ public class LoginActivity extends BaseActivity implements Observer, UserObserve
 			}
 		}
 		else if(cachedProvider.equals(GPP_PROVIDER)) {
-
+			gppLogin = true;
+			connectGPPClient();
 		}
 		else {
 			/* nothing cached */
 			setButtonVisibility(View.VISIBLE);	
 		}
+	}
+
+	private void connectGPPClient()
+	{
+		gppClient = new PlusClient.Builder(this, this, this).setScopes("https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile")
+				.build();
+		gppClient.connect();
 	}
 
 	private void loginUser(String token, String provider) {
@@ -112,14 +136,18 @@ public class LoginActivity extends BaseActivity implements Observer, UserObserve
 
 	public void gppButtonClick(View v)
 	{
-		return;
-
+		gppLogin = true;
+		connectGPPClient();
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+		if(Session.getActiveSession() != null)
+			Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+		if (requestCode == REQUEST_CODE_RESOLVE_ERR && resultCode == RESULT_OK) {
+			gppClient.connect();
+		}
 	}
 
 	@Override
@@ -127,6 +155,8 @@ public class LoginActivity extends BaseActivity implements Observer, UserObserve
 		super.onDestroy();
 		UserObserver.unregisterObserver(userObserver);
 		observer.stopListening();
+		if(gppClient != null)
+			gppClient.disconnect();
 	}
 
 	@Override
@@ -189,14 +219,89 @@ public class LoginActivity extends BaseActivity implements Observer, UserObserve
 
 		else {
 			//we are logging outut, yo! note that this is called before we try to log in in onCreate
-			if(Session.getActiveSession() != null) {
-				Session.getActiveSession().closeAndClearTokenInformation();
-				//remove the shared prefs
-				SharedPreferences prefs = getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
-				Editor edit = prefs.edit();
-				edit.putString(CACHED_SOCIAL, "");
-				edit.commit();
+			SharedPreferences prefs = getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
+			String provider = prefs.getString(CACHED_SOCIAL, "");
+
+			if(provider == FB_PROVIDER) {
+				if(Session.getActiveSession() != null) {
+					Session.getActiveSession().closeAndClearTokenInformation();
+				}
+			}
+			else if(provider == GPP_PROVIDER) {
+				gppLogin = false;
+				connectGPPClient(); /* we are logged in so silent auth will succeed */
+			}
+
+			//remove the shared prefs
+			Editor edit = prefs.edit();
+			edit.putString(CACHED_SOCIAL, "");
+			edit.commit();
+		}
+	}
+
+	//TODO
+	static int REQUEST_CODE_RESOLVE_ERR = 1;
+
+	@Override
+	public void onConnectionFailed(ConnectionResult result) {
+		//if (mConnectionProgressDialog.isShowing()) {
+		// The user clicked the sign-in button already. Start to resolve
+		// connection errors. Wait until onConnected() to dismiss the
+		// connection dialog.
+		if (result.hasResolution()) {
+			try {
+				result.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
+			} catch (SendIntentException e) {
+				gppClient.connect();
 			}
 		}
+		// Save the result and resolve the connection failure upon a user click.
+		gppConnectionResult = result;		
+	}
+
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		if(gppLogin) {
+			Thread t = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						// TODO Auto-generated method stub
+						final String token = GoogleAuthUtil.getToken(LoginActivity.this, gppClient.getAccountName(), 
+								"oauth2: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile");
+						//connected to GPP!
+						Log.e("GPP", token);
+						runOnUiThread(new Runnable() {
+
+							@Override
+							public void run() {
+								loginUser(token, GPP_PROVIDER);							
+							}
+
+						});
+
+					} catch (UserRecoverableAuthException e) {
+						// TODO Auto-generated catch block
+						Log.e("GPP", "exception", e);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						Log.e("GPP", "exception", e);
+					} catch (GoogleAuthException e) {
+						// TODO Auto-generated catch block
+						Log.e("GPP", "exception", e);
+					}			
+				}
+			});
+			t.start();
+		}
+		else {
+			gppClient.clearDefaultAccount();
+			gppClient.disconnect();
+		}
+	}
+
+	@Override
+	public void onDisconnected() {
+		// don't care
 	}
 }

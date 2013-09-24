@@ -80,6 +80,8 @@ public class Tile {
 		this.subtitleLabel.setVisibility(View.GONE);
 		loadAvatar(friend.getAvatar());
 		if(friend.isFeatured()) {
+			this.attributeIcon.setVisibility(View.VISIBLE);
+			this.attributeIcon.setBackgroundResource(R.drawable.featured_accessory);
 		}
 		else {
 			this.attributeIcon.setVisibility(View.INVISIBLE);

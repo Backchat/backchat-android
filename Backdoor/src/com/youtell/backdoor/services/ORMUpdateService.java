@@ -27,7 +27,7 @@ public class ORMUpdateService extends Service {
 	ClueObserver clueObserver;
 	
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
+	public void onCreate() {
 		Log.v("ORMUpdate", "started");
 		messageObserver = new MessageObserver(new MessageObserver.Observer() {
 			@Override
@@ -103,7 +103,11 @@ public class ORMUpdateService extends Service {
 		gabObserver.startListening();
 		messageObserver.startListening();
 		clueObserver.startListening();
-		
+	}
+	
+	@Override
+	public int onStartCommand (Intent intent, int flags, int startId)
+	{
 		return Service.START_STICKY;	
 	}
 	

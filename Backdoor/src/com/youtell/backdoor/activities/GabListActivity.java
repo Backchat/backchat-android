@@ -160,14 +160,16 @@ GCMNotificationObserver.Observer {
 	}
 
 	@Override
+	//TODO fix bug with onUserSwapped when old is not alwasy set
 	public void onUserSwapped(User old, User newUser) {
 		if(old != null) {
 			final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class); 
 			getApplicationContext().stopService(ormUpdateIntent);
-			OpenHelperManager.releaseHelper();
 		}
 		
 		if(newUser != null) {			
+			Log.e("DB", String.format("%d", newUser.getID()));
+			OpenHelperManager.releaseHelper();
 			Database.setDatabaseForUser(newUser.getID());
 			OpenHelperManager.getHelper(this, Database.class);
 			final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class);
@@ -176,6 +178,7 @@ GCMNotificationObserver.Observer {
 			GCM.getRegistrationID(newUser, this);
 		}
 		else {
+			OpenHelperManager.releaseHelper();			
 			Intent intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
 			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);    
