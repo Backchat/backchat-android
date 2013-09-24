@@ -128,8 +128,8 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	}
 
 	@Override
-	public void onStop() {
-		super.onStop();
+	public void onPause() {
+		super.onPause();
 		clueObserver.stopListening();
 		UserObserver.unregisterObserver(userObserver);
 	}

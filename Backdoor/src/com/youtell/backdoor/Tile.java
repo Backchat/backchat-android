@@ -89,7 +89,12 @@ public class Tile {
 	public void fillWithContact(String name, String number, String photoURI, boolean selected) {
 		this.titleLabel.setText(name);		
 		this.subtitleLabel.setText(number);
-		this.attributeIcon.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
+		this.attributeIcon.setVisibility(View.VISIBLE);
+		if(selected)
+			this.attributeIcon.setBackgroundResource(R.drawable.select);
+		else
+			this.attributeIcon.setBackgroundResource(R.drawable.unselect);
+		
 		loadAvatar(photoURI);
 	}
 }

@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import com.youtell.backdoor.Util;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
+import com.youtell.backdoor.models.User;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ public class PostMessageRequest extends PostRequest {
 	}
 	
 	@Override
-	protected void handleJSONResponse(JSONObject result) throws JSONException {
+	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		JSONObject gabData = result.getJSONObject("gab");
 		gab.object.inflate(gabData);
 		gab.object.save();

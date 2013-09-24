@@ -8,8 +8,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.youtell.backdoor.models.User;
+
 import android.os.Bundle;
 
+//TODO merge string,int to simplehandler
 public class PostDeviceRequest extends PostRequest {
 	private String deviceToken;
 	private final static String DEVICE_TOKEN_ARG = "DEVICE_TOKEN_ARG";
@@ -44,7 +47,7 @@ public class PostDeviceRequest extends PostRequest {
 	}
 
 	@Override
-	protected void handleJSONResponse(JSONObject result) throws JSONException {
+	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		//nothing.
 	}
 

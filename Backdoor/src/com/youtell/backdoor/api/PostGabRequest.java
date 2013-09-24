@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.youtell.backdoor.models.Gab;
+import com.youtell.backdoor.models.User;
 
 import android.os.Bundle;
 
@@ -37,7 +38,7 @@ public class PostGabRequest extends PostRequest {
 	}
 
 	@Override
-	protected void handleJSONResponse(JSONObject result) throws JSONException {
+	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		JSONObject gabData = result.getJSONObject("gab");
 		gab.object.inflate(gabData);
 		gab.object.save();

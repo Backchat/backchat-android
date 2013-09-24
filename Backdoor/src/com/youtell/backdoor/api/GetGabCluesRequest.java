@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import com.youtell.backdoor.models.Clue;
 import com.youtell.backdoor.models.Gab;
+import com.youtell.backdoor.models.User;
 
 public class GetGabCluesRequest extends GetRequest {
 	private TypedArgumentHandler<Gab> gab = new TypedArgumentHandler<Gab>(Gab.class, this);
@@ -34,8 +35,10 @@ public class GetGabCluesRequest extends GetRequest {
 	}
 
 	@Override
-	protected void handleJSONResponse(JSONObject result) throws JSONException {
+	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		JSONArray clues = result.getJSONArray("clues");
+		user.updateTotalClues(result.getInt("available_clues")); 
+		
 		for(int i=0;i<clues.length();i++) {
 			JSONObject clue = clues.getJSONObject(i);
 			int remoteID = clue.getInt("id");

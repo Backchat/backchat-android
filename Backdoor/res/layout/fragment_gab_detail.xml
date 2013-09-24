@@ -18,6 +18,7 @@
             android:paddingLeft="15sp"
             android:paddingRight="15sp"
             android:src="@drawable/camera"
+            android:background="#FFFFFF"
             android:contentDescription="@string/camera_button_accessible" />
 
         <EditText

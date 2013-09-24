@@ -113,5 +113,4 @@ public class UserObserver {
 	static public void broadcastUserChange(User newUser) {
 		PrivateUserObserver.broadcastUserChange(newUser);
 	}
-
 }

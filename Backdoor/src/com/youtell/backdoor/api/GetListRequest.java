@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.youtell.backdoor.models.DatabaseObject;
+import com.youtell.backdoor.models.User;
 
 public abstract class GetListRequest<T extends DatabaseObject> extends GetRequest {
 	private Class<T> clazz;
@@ -16,7 +17,7 @@ public abstract class GetListRequest<T extends DatabaseObject> extends GetReques
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void handleJSONResponse(JSONObject result) throws JSONException {
+	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		JSONArray items = getJSONItemArray(result);
 		for(int i=0;i<items.length();i++) {
 			JSONObject data = items.getJSONObject(i);

@@ -3,11 +3,15 @@ package com.youtell.backdoor.activities;
 import java.util.List;
 
 import com.youtell.backdoor.R;
+import com.youtell.backdoor.api.PostPurchasedClueRequest;
 import com.youtell.backdoor.fragments.GabCluesFragment;
 import com.youtell.backdoor.fragments.GabDetailFragment;
 import com.youtell.backdoor.iap.IAP;
 import com.youtell.backdoor.iap.Item;
 import com.youtell.backdoor.iap.PurchasedItem;
+import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.observers.UserObserver;
+import com.youtell.backdoor.services.APIService;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,11 +24,15 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-public class GabAnonymousDetailActivity extends BaseGabDetailActivity implements GabCluesFragment.Callbacks, IAP.Observer {
+//TODO refactor all these userObservers
+public class GabAnonymousDetailActivity extends BaseGabDetailActivity 
+implements GabCluesFragment.Callbacks, IAP.Observer, UserObserver.Observer {
 	private GabCluesFragment cluesFragment;
 	private View cluesView;
 	private IAP iap;
-	
+	private User user;
+	private Object userObserver;
+
 	public void tagGab(View v) {
     	final EditText tagName = new EditText(this);
 
@@ -86,6 +94,7 @@ public class GabAnonymousDetailActivity extends BaseGabDetailActivity implements
     public void onResume()
     {
     	super.onResume();
+		userObserver = UserObserver.registerObserver(this);
     }
 
 	@Override
@@ -107,7 +116,7 @@ public class GabAnonymousDetailActivity extends BaseGabDetailActivity implements
 		.setItems(itemsAsStringArray, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				Item obj = items.get(which);
-				iap.buy(obj);
+				iap.buy(obj, user);
 			}
 		})
 		.setNegativeButton(R.string.cancel_button, new OnClickListener() {
@@ -148,8 +157,23 @@ public class GabAnonymousDetailActivity extends BaseGabDetailActivity implements
 
 	@Override
 	public void onConsumeSuccess(PurchasedItem item) {
-		// TODO Auto-generated method stub
-		Log.e("IAP", "Should get some " + item.getSKU());		
+		Log.e("IAP", "Should get some " + item.getSKU()); //TODO..change?
+		//TODO better system here
+		APIService.fire(new PostPurchasedClueRequest(item));
 	}
     
+	@Override
+	public void onStop() {
+		super.onStop();
+		UserObserver.unregisterObserver(userObserver);
+	}
+
+	@Override
+	public void onUserChanged() {	
+	}
+
+	@Override
+	public void onUserSwapped(User old, User newUser) {
+		user = newUser;
+	}
 }

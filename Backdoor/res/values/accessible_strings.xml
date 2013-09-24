@@ -3,4 +3,6 @@
     <string name="camera_button_accessible">Camera button</string>
     <string name="settings_button_accessible">Settings button</string>
     <string name="gab_clue_button_accessible">A clue for this conversation</string>
+    <string name="new_gab_button_accessible">Start a new conversation</string>
+    <string name="trash_button_accessible">Delete this conversation</string>
 </resources>

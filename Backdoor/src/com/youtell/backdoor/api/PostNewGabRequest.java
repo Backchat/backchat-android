@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
+import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.GabObserver;
 
 public class PostNewGabRequest extends PostRequest {
@@ -52,7 +53,7 @@ public class PostNewGabRequest extends PostRequest {
 	}
 
 	@Override
-	protected void handleJSONResponse(JSONObject result) throws JSONException {
+	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		JSONObject gabPart = result.getJSONObject("gab");
 		gab.object.setRemoteID(gabPart.getInt("id"));
 		gab.object.inflate(gabPart);

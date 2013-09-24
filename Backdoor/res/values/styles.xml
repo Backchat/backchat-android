@@ -7,7 +7,7 @@
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
         <item name="android:actionMenuTextColor">@color/action_bar_text_color</item>
-        <item name="android:actionModeCloseButtonStyle">@style/NoCABCloseButton</item>
+        <item name="android:actionModeCloseDrawable">@drawable/close</item>
     </style>
 
     <style name="ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
@@ -23,11 +23,6 @@
     <!-- ActionBar tabs text styles -->
     <style name="ActionBarTabText" parent="@android:style/Widget.Holo.ActionBar.TabText">
         <item name="android:textColor">@color/action_bar_text_color</item>
-    </style>
-
-    <style name="NoCABCloseButton" parent="@android:style/Widget.ActionButton.CloseMode">
-        <item name="android:text">X</item>
-        <item name="android:background">@color/action_bar_text_color</item>
     </style>
 
 </resources>

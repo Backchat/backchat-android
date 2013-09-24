@@ -8,6 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.APIRequestObserver;
 
 import android.os.Bundle;
@@ -57,7 +58,7 @@ public class PostInviteRequest extends PostRequest {
 	}
 
 	@Override
-	protected void handleJSONResponse(JSONObject result) throws JSONException {
+	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		// succeeded, empty data just "ok" status
 	}
 

@@ -72,7 +72,8 @@ public class PostLoginRequest extends Request {
 	}
 	
 	@Override
-	protected void handleJSONResponse(JSONObject result) throws JSONException {
+	protected void handleJSONResponse(JSONObject result, User unused) throws JSONException {
+		/* user is null! */
 		/* parse out the stuff into a user */
 		User user = new User();
 		user.setApiServerHostName(hostName);
@@ -82,7 +83,6 @@ public class PostLoginRequest extends Request {
 		user.setTotalClueCount(userData.getInt("available_clues"));
 		user.setFullName(userData.getString("full_name"));
 		user.setGCMKey(GCM.GCM_KEY); //TODO dynamic
-		//TODO get settings and psersist thru object
 		
 		UserObserver.broadcastUserSwapped(user);
 	}

@@ -5,9 +5,10 @@ import android.os.Bundle;
 import com.youtell.backdoor.api.GetFriendsRequest;
 import com.youtell.backdoor.api.GetGabsRequest;
 import com.youtell.backdoor.api.PostDeviceRequest;
+import com.youtell.backdoor.observers.UserObserver;
 import com.youtell.backdoor.services.APIService;
 
-public class User {
+public class User implements InflatableObject {
 
 	public void updateGabs() {
 		APIService.fire(new GetGabsRequest());
@@ -118,5 +119,11 @@ public class User {
 	}
 	public String getSocialProvider() {
 		return this.socialProvider;
+	}
+
+	//TODO better dirty
+	public void updateTotalClues(int newValue) {
+		totalClueCount = newValue;
+		UserObserver.broadcastUserChange(this);	
 	}
 }

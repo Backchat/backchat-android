@@ -9,7 +9,7 @@
         android:id="@+id/gab_clues_clue_icon_button"
         android:layout_width="65dp"
         android:layout_height="65dp"
-        android:background="#00FF00"
+        android:src="@drawable/clue_question_mark"
         android:contentDescription="@string/gab_clue_button_accessible"/>
     
     <TextView

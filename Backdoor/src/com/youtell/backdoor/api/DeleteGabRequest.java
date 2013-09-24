@@ -7,6 +7,8 @@ import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.youtell.backdoor.models.User;
+
 import android.os.Bundle;
 
 public class DeleteGabRequest extends DeleteRequest {
@@ -40,7 +42,7 @@ public class DeleteGabRequest extends DeleteRequest {
 	}
 
 	@Override
-	protected void handleJSONResponse(JSONObject result) throws JSONException {
+	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		//???
 	}
 

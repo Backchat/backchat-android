@@ -22,6 +22,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.android.vending.billing.IInAppBillingService;
+import com.youtell.backdoor.models.User;
 
 public class IAP {
 	public interface Observer {
@@ -117,13 +118,13 @@ public class IAP {
 
 	private static final int BUY_REQUEST_CODE = 1001;
 	
-	public void buy(Item obj) {
+	public void buy(Item obj, User user) {
 		try {
 			String sku = obj.getSKU();
 			sku = "android.test.purchased";
 			Bundle buyIntentBundle = billingService.getBuyIntent(3, activity.getPackageName(),
 					sku, "inapp", 
-					null /*dev payload*/);
+					String.format("%d", user.getID()) /*dev payload*/);
 
 			PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");
 
@@ -135,7 +136,7 @@ public class IAP {
 				
 				if(purchaseData == null) {
 					String token = "inapp:"+activity.getPackageName()+":android.test.purchased";
-					purchased = new PurchasedItem(sku, token);
+					purchased = new PurchasedItem(sku, token); //TODO this won't work...
 				}
 				else {
 					purchased = new PurchasedItem(purchaseData);

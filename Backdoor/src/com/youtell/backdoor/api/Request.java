@@ -69,13 +69,13 @@ public abstract class Request {
 	}	
 
 	//TODO error
-	protected void handleResult(String result) {
+	protected void handleResult(String result, User user) {
 		try {
 			JSONObject json = new JSONObject(result);
 			String status = json.getString("status");
 			if(status.equals("ok")) {
 				JSONObject resultJSON = json.getJSONObject("response");
-				handleJSONResponse(resultJSON);
+				handleJSONResponse(resultJSON, user);
 				//success!
 				APIRequestObserver.broadcastSuccess(this);
 			}
@@ -118,8 +118,8 @@ public abstract class Request {
 			return;
 		}
 
-		handleResult(result);
+		handleResult(result, user);
 	}
 	
-	abstract protected void handleJSONResponse(JSONObject result) throws JSONException;
+	abstract protected void handleJSONResponse(JSONObject result, User user) throws JSONException;
 }

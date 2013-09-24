@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.youtell.backdoor.models.Clue;
+import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.ClueObserver;
 
 public class PostGabClueRequest extends PostRequest {
@@ -32,9 +33,10 @@ public class PostGabClueRequest extends PostRequest {
 	}
 
 	@Override
-	protected void handleJSONResponse(JSONObject result) throws JSONException {
+	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		Log.e("postgabclues", result.toString());
-		//int availableClues = result.getInt("available_clues");
+		int availableClues = result.getInt("available_clues"); 
+		user.updateTotalClues(availableClues);
 		JSONObject clueData = result.getJSONObject("clue");
 		int remoteID = clueData.getInt("id");
 		clue.object.setRemoteID(remoteID);
