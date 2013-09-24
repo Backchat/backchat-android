@@ -1,12 +1,18 @@
 package com.youtell.backdoor.fragments;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
 
 import com.android.vending.billing.IInAppBillingService;
 import com.j256.ormlite.dao.CloseableWrappedIterable;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.youtell.backdoor.ClueTile;
 import com.youtell.backdoor.R;
+import com.youtell.backdoor.iap.IAP;
+import com.youtell.backdoor.iap.IAP.Observer;
+import com.youtell.backdoor.iap.Item;
 import com.youtell.backdoor.models.Clue;
 import com.youtell.backdoor.models.DatabaseObject;
 import com.youtell.backdoor.models.Gab;
@@ -16,8 +22,13 @@ import com.youtell.backdoor.observers.ClueObserver;
 import com.youtell.backdoor.observers.UserObserver;
 import com.youtell.backdoor.services.APIService;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +47,7 @@ public class GabCluesFragment extends CallbackFragment<GabCluesFragment.Callback
 implements UserObserver.Observer, ClueObserver.Observer {
 	public interface Callbacks {
 		public void onCancel();
+		public void onBuy();
 	}
 
 	public static final String ARG_GAB_ID = "ARG_GAB_ID";
@@ -43,28 +55,12 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	private GridLayout clueGrid;
 	private TextView clueLabel;
 	private ClueObserver clueObserver;
-	private IInAppBillingService billingService;
-	private ServiceConnection billingConnection;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		gab = Gab.getByID(getArguments().getInt(ARG_GAB_ID, -1)); //TODO
 		super.onCreate(savedInstanceState);
 		clueObserver = new ClueObserver(this, gab);
-		
-
-		billingConnection = new ServiceConnection() {
-		   @Override
-		   public void onServiceDisconnected(ComponentName name) {
-billingService = null;
-		   }
-
-		   @Override
-		   public void onServiceConnected(ComponentName name, 
-		      IBinder service) {
-			   billingService = IInAppBillingService.Stub.asInterface(service);
-		   }
-		};
 	}       
 
 	@Override 
@@ -103,7 +99,8 @@ billingService = null;
 		moreButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//TODO IAP
+				if(mCallbacks != null)
+					mCallbacks.onBuy();
 			}
 
 		});
@@ -153,7 +150,8 @@ billingService = null;
 	@Override
 	public void onUserSwapped(User old, User newUser) {
 		user = newUser;
-		updateClueCount();
+		if(user != null)
+			updateClueCount();
 	}
 
 	@Override
@@ -171,5 +169,4 @@ billingService = null;
 		}
 
 	}
-
 }

@@ -63,7 +63,7 @@ public abstract class Request {
 			r.inflateArguments(intent.getExtras());
 			return r;
 		} catch (Exception e) {
-			Log.e("REQUEST", "EXCEPTION", e);
+			Log.e("REQUEST", String.format("EXCEPTION %s %s", className, intent.getExtras().toString()), e);
 			return null;
 		}
 	}	

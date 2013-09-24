@@ -83,8 +83,8 @@ public class LoginActivity extends BaseActivity implements Observer, UserObserve
 		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
 
 		lp.copyFrom(progressDialog.getWindow().getAttributes());
-		lp.width = 300;
-		lp.height = 300;
+		lp.width = 675;
+		lp.height = 500;
 		progressDialog.getWindow().setAttributes(lp);
 		APIService.fire(new PostLoginRequest(token, provider, "backdoor-stage.herokuapp.com"));
 	}

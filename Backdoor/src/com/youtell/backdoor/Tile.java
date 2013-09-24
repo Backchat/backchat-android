@@ -1,5 +1,6 @@
 package com.youtell.backdoor;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
@@ -58,6 +59,7 @@ public class Tile {
 		this.timeLabel.setText(Util.humanDateTime(context, gab.getUpdatedAt()));
 		if(gab.isUnread()) {
 			this.attributeIcon.setVisibility(View.VISIBLE);
+			this.attributeIcon.setBackgroundResource(R.drawable.read_accessory);
 		}
 		else {
 			this.attributeIcon.setVisibility(View.INVISIBLE);
@@ -68,7 +70,9 @@ public class Tile {
 	
 	private void loadAvatar(String uri)
 	{
-		ImageLoader.getInstance().displayImage(uri, this.icon);	
+		DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).build();
+		
+		ImageLoader.getInstance().displayImage(uri, this.icon, options);	
 	}
 
 	public void fillWithFriend(Friend friend) {
