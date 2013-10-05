@@ -75,6 +75,8 @@ implements LoaderManager.LoaderCallbacks<Cursor>, InviteCursorAdapter.SelectionP
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		adapter.swapCursor(data);
 
+		selectAll();
+		
 		if (isResumed()) {
 			setListShown(true);
 		} else {
@@ -122,6 +124,7 @@ implements LoaderManager.LoaderCallbacks<Cursor>, InviteCursorAdapter.SelectionP
 				mode.setTitle(String.format("%d selected", selectedIndices.size()));
 				boolean showSelectAll = selectedIndices.size() != adapter.getCount();
 				menu.findItem(R.id.invite_contacts_contextual_select_all).setVisible(showSelectAll);
+				
 				return true;
 			}
 
