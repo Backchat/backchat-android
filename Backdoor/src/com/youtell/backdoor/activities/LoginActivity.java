@@ -95,7 +95,7 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		gppClient.connect();
 	}
 
-	private void loginUser(String token, String provider) {
+	private void loginUser(String token, String provider) {		
 		/* save the provider preference */
 		SharedPreferences prefs = getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
 		Editor edit = prefs.edit();
@@ -283,6 +283,9 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 					} catch (UserRecoverableAuthException e) {
 						// TODO Auto-generated catch block
 						Log.e("GPP", "exception", e);
+		                Intent recover = e.getIntent();
+		                startActivityForResult(recover, REQUEST_CODE_RESOLVE_ERR);
+
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						Log.e("GPP", "exception", e);
