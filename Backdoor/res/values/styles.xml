@@ -8,6 +8,7 @@
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
         <item name="android:actionMenuTextColor">@color/action_bar_text_color</item>
         <item name="android:actionModeCloseDrawable">@drawable/close</item>
+        <item name="android:actionModeBackground">@color/green_background_color</item>
     </style>
 
     <style name="ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">

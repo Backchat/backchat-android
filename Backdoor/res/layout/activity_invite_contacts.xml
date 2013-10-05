@@ -3,6 +3,6 @@
     android:id="@+id/invite_contacts_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_blue_background"
     tools:context=".InviteContactsActivity"
     tools:ignore="MergeRootFrame" />
-

@@ -2,39 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" 
     android:baselineAligned="false"
-    android:paddingLeft="4dp">
+    android:orientation="horizontal"
+    android:paddingLeft="4dp" >
+
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:gravity="left"
-        style="?android:attr/buttonBarStyle" >
+        android:orientation="horizontal" >
 
         <ImageButton
             android:id="@+id/gab_list_settings_button"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:minWidth="24dp"
-            android:paddingRight="18dp"
-            android:paddingLeft="6dp"
-            android:layout_weight="2"            
-            android:src="@drawable/dot" 
+            android:layout_weight="2"
             android:contentDescription="@string/settings_button_accessible"
+            android:minWidth="24dp"
             android:onClick="settingsClick"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:paddingLeft="6dp"
+            android:paddingRight="18dp"
+            android:src="@drawable/dot" />
 
         <ImageButton
             android:id="@+id/gab_list_invite_friends_button"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/header_invite_friends"
             android:gravity="center"
             android:onClick="inviteClick"
-            android:paddingRight="4dp"
             android:paddingLeft="4dp"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:paddingRight="4dp"
+            android:src="@drawable/header_invite_friends" />
     </LinearLayout>
 
     <LinearLayout
@@ -46,9 +47,10 @@
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center" 
-            android:src="@drawable/center_icon"/>
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:src="@drawable/center_icon" />
     </LinearLayout>
 
     <LinearLayout
@@ -60,14 +62,15 @@
 
         <ImageButton
             android:id="@+id/gab_list_new_gab_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:onClick="newGabClick"
-            android:gravity="center"
-            android:src="@drawable/new_gab"
             style="?android:attr/buttonBarButtonStyle"
-            android:contentDescription="@string/new_gab_button_accessible"/>
-
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/new_gab_button_accessible"
+            android:gravity="center"
+            android:onClick="newGabClick"
+            android:scaleType="fitCenter"
+            android:src="@drawable/new_gab" />
     </LinearLayout>
-    
+
 </LinearLayout>
