@@ -2,8 +2,9 @@ package com.youtell.backdoor.adapters;
 
 import java.util.List;
 
-import com.youtell.backdoor.Tile;
 import com.youtell.backdoor.models.Friend;
+import com.youtell.backdoor.tiles.FriendTile;
+import com.youtell.backdoor.tiles.Tile;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,14 +29,14 @@ public class FriendListAdapter extends ORMListAdapter<Friend> {
 		Tile tile; 
 		if(convertView == null)
 		{
-			tile = new Tile(context, parent);
+			tile = new FriendTile(context, parent);
 			convertView = tile.getViews();
 			convertView.setTag(tile);
 		}
 		else
 			tile = (Tile) convertView.getTag();
 	 		
-		tile.fillWithFriend(friend);
+		tile.fill(friend);
 		
 		return convertView;
 	}

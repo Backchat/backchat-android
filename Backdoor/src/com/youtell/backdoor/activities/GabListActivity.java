@@ -22,6 +22,7 @@ import com.youtell.backdoor.R;
 import com.youtell.backdoor.fragments.GabListFragment;
 import com.youtell.backdoor.fragments.SettingsMenuFragment;
 import com.youtell.backdoor.gcm.GCM;
+import com.youtell.backdoor.iap.BuyClueIAP;
 import com.youtell.backdoor.models.DBClosedEvent;
 import com.youtell.backdoor.models.Database;
 import com.youtell.backdoor.models.Friend;
@@ -37,6 +38,9 @@ GCMNotificationObserver.Observer {
 	private PullToRefreshAttacher mPullToRefreshAttacher;
 	private Object userObserver;
 	private GCMNotificationObserver gcmNotifications;
+	private BuyClueIAP buyClue = new BuyClueIAP(this);
+
+	private User user;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -123,6 +127,7 @@ GCMNotificationObserver.Observer {
 	@Override
 	protected void onDestroy() 
 	{
+		buyClue.disconnect();		
 		UserObserver.unregisterObserver(userObserver);
 		super.onDestroy();
 	}
@@ -156,11 +161,12 @@ GCMNotificationObserver.Observer {
 	}
 
 	@Override
-	//TODO fix bug with onUserSwapped when old is not alwasy set
 	public void onUserSwapped(User old, User newUser) {
+		buyClue.disconnect();
+		
 		if(old != null) {
 			final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class); 
-			getApplicationContext().stopService(ormUpdateIntent);
+			getApplicationContext().stopService(ormUpdateIntent);				
 		}
 		
 		if(newUser != null) {			
@@ -180,6 +186,8 @@ GCMNotificationObserver.Observer {
 			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);    
 			finish();
 		}
+		
+		user = newUser;
 	}
 
 	@Override
@@ -198,5 +206,10 @@ GCMNotificationObserver.Observer {
 		Gab gab = f.createNewGab();
 		gab.save();
 		startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));	
+	}
+	
+	@Override
+	public void onBuyClue() {
+		buyClue.present(user);
 	}
 }

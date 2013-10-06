@@ -2,8 +2,9 @@ package com.youtell.backdoor.adapters;
 
 import java.util.List;
 
-import com.youtell.backdoor.Tile;
 import com.youtell.backdoor.models.Gab;
+import com.youtell.backdoor.tiles.GabTile;
+import com.youtell.backdoor.tiles.Tile;
 
 import android.content.Context;
 import android.view.View;
@@ -22,14 +23,14 @@ public class GabListAdapter extends ORMListAdapter<Gab> {
 		Tile tile; 
 		if(convertView == null)
 		{
-			tile = new Tile(context, parent);
+			tile = new GabTile(context, parent);
 			convertView = tile.getViews();
 			convertView.setTag(tile);
 		}
 		else
 			tile = (Tile) convertView.getTag();
 	 		
-		tile.fillWithGab(gab);
+		tile.fill(gab);
 		
 		return convertView;
 	}

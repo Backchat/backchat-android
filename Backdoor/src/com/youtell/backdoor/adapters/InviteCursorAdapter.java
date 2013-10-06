@@ -1,6 +1,8 @@
 package com.youtell.backdoor.adapters;
 
-import com.youtell.backdoor.Tile;
+import com.youtell.backdoor.models.Contact;
+import com.youtell.backdoor.tiles.ContactTile;
+import com.youtell.backdoor.tiles.Tile;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -25,24 +27,26 @@ public class InviteCursorAdapter extends CursorAdapter {
 	
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
-		Tile tile = new Tile(context, view);
+		Tile tile = new ContactTile(context, view);
 		
 		//TODO too tightly bound to cursor..?
 		int indexName = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 		int indexNumber = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 		int indexID = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone._ID);
 		int indexPhoto = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI);
-		String name = cursor.getString(indexName);
-		String number = cursor.getString(indexNumber);
-		int id = cursor.getInt(indexID);
-		String photoURI = cursor.getString(indexPhoto);
-
-		tile.fillWithContact(name, number, photoURI, selectionProvider.isSelected(id));
+		
+		Contact c = new Contact();
+		c.name = cursor.getString(indexName);
+		c.number = cursor.getString(indexNumber);
+		c.photoURI = cursor.getString(indexPhoto);
+		c.isSelected = selectionProvider.isSelected(cursor.getInt(indexID));
+		
+		tile.fill(c);
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		Tile tile = new Tile(context, parent);
+		Tile tile = new ContactTile(context, parent);
 		View views = tile.getViews();
 		return views;
 	}

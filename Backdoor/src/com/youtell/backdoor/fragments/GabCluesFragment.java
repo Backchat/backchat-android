@@ -8,7 +8,7 @@ import org.apache.http.NameValuePair;
 import com.android.vending.billing.IInAppBillingService;
 import com.j256.ormlite.dao.CloseableWrappedIterable;
 import com.j256.ormlite.dao.ForeignCollection;
-import com.youtell.backdoor.ClueTile;
+import com.youtell.backdoor.ClueGridItem;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.iap.IAP;
 import com.youtell.backdoor.iap.IAP.Observer;
@@ -72,7 +72,7 @@ implements UserObserver.Observer, ClueObserver.Observer {
 
 		for(int i=0;i<gab.getClueCount();i++) {
 			final int number = i;
-			ClueTile clueTile = new ClueTile(inflater, clueGrid, i, 3, 3, new OnClickListener() {		
+			ClueGridItem clueTile = new ClueGridItem(inflater, clueGrid, i, 3, 3, new OnClickListener() {		
 				@Override
 				public void onClick(View v) {
 					Clue c = new Clue();
@@ -164,7 +164,7 @@ implements UserObserver.Observer, ClueObserver.Observer {
 
 	private void updateClue(Clue c) {
 		if(!c.isNew()) {
-			ClueTile clueTile = new ClueTile(clueGrid, c.getNumber());
+			ClueGridItem clueTile = new ClueGridItem(clueGrid, c.getNumber());
 			clueTile.fillWithClue(c);
 		}
 

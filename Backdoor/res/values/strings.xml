@@ -38,4 +38,8 @@
     <string name="login_failure_dialog_title">Login failed</string>
     <string name="login_failure_dialog_text">Sorry, something went wrong. Please try again.</string>
     <string name="login_success">Welcome to Backdoor</string>
+    <string name="share_tile_title">Share</string>
+    <string name="share_tile_subtitle">Get more friends by sharing</string>
+    <string name="clues_tile_title">Get clues</string>
+    <string name="clues_tile_subtitle">Buy more clues</string>
 </resources>

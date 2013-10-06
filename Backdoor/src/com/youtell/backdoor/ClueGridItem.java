@@ -1,8 +1,5 @@
 package com.youtell.backdoor;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.youtell.backdoor.models.Clue;
 
@@ -10,20 +7,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridLayout.LayoutParams;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 //TODO  merge the cluetitle constructor
-public class ClueTile {
+public class ClueGridItem {
 	private View clueItem;
 	private TextView label;
 	private ImageView button;
 	
-	public ClueTile(LayoutInflater inflater, GridLayout clueGrid, int i, int width_count,
+	public ClueGridItem(LayoutInflater inflater, GridLayout clueGrid, int i, int width_count,
 			int height_count, OnClickListener listener) {
 		int x = i / height_count;
 		int y = i % height_count;
@@ -46,7 +41,7 @@ public class ClueTile {
 		clueGrid.addView(clueItem, lp);		
 	}
 
-	public ClueTile(GridLayout clueGrid, int i) {
+	public ClueGridItem(GridLayout clueGrid, int i) {
 		clueItem = clueGrid.findViewWithTag(Integer.valueOf(i));
 		label = (TextView) clueItem.findViewById(R.id.gab_clues_clue_icon_text);
 		button = (ImageView) clueItem.findViewById(R.id.gab_clues_clue_icon_button);

@@ -1,20 +1,16 @@
 package com.youtell.backdoor.iap;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender.SendIntentException;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -36,10 +32,9 @@ public class IAP {
 	private Observer observer;
 	private Activity activity;
 
-	public <T extends Observer> IAP(T act) {
-		observer = act;
-		activity = (Activity)act;
-
+	public IAP(Observer obv) {
+		observer = obv;
+		
 		billingConnection = new ServiceConnection() {
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
@@ -54,14 +49,20 @@ public class IAP {
 		};
 	}
 
-	public void connect() {
+	public void connect(Activity act) {
+		disconnect();
+		
+		activity = act;
 		activity.bindService(new 
 				Intent("com.android.vending.billing.InAppBillingService.BIND"),
 				billingConnection, Context.BIND_AUTO_CREATE);
 	}
 
 	public void disconnect() {
-		activity.unbindService(billingConnection);
+		if(activity != null) {
+			activity.unbindService(billingConnection);
+			activity = null;
+		}
 	}
 
 	private static final String[] iaps = {"clue_3"};

@@ -1,36 +1,27 @@
 package com.youtell.backdoor.activities;
 
-import java.util.List;
-
-import com.youtell.backdoor.R;
-import com.youtell.backdoor.api.PostPurchasedClueRequest;
-import com.youtell.backdoor.fragments.GabCluesFragment;
-import com.youtell.backdoor.fragments.GabDetailFragment;
-import com.youtell.backdoor.iap.IAP;
-import com.youtell.backdoor.iap.Item;
-import com.youtell.backdoor.iap.PurchasedItem;
-import com.youtell.backdoor.models.User;
-import com.youtell.backdoor.observers.UserObserver;
-import com.youtell.backdoor.services.APIService;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.youtell.backdoor.R;
+import com.youtell.backdoor.fragments.GabCluesFragment;
+import com.youtell.backdoor.iap.BuyClueIAP;
+import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.observers.UserObserver;
+
 //TODO refactor all these userObservers
 public class GabAnonymousDetailActivity extends BaseGabDetailActivity 
-implements GabCluesFragment.Callbacks, IAP.Observer, UserObserver.Observer {
+implements GabCluesFragment.Callbacks, UserObserver.Observer {
 	private GabCluesFragment cluesFragment;
 	private View cluesView;
-	private IAP iap;
 	private User user;
+	private BuyClueIAP buyClue = new BuyClueIAP(this);
 	private Object userObserver;
 
 	public void tagGab(View v) {
@@ -75,10 +66,6 @@ implements GabCluesFragment.Callbacks, IAP.Observer, UserObserver.Observer {
 		
 		cluesView = findViewById(R.id.gab_clues_container);
     	cluesView.setVisibility(View.GONE);
-
-		//TODO move out IAP stuff?
-		iap = new IAP(this);
-		iap.connect();
     }
     
     public void onCluesClick(View v) {
@@ -88,8 +75,7 @@ implements GabCluesFragment.Callbacks, IAP.Observer, UserObserver.Observer {
 		
     	cluesView.setVisibility(View.VISIBLE);
     }
-   
-    
+       
     @Override
     public void onResume()
     {
@@ -100,67 +86,25 @@ implements GabCluesFragment.Callbacks, IAP.Observer, UserObserver.Observer {
 	@Override
 	public void onCancel() {
 		cluesView.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void onUpdateItemList(final List<Item> items) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		String[] itemsAsStringArray = new String[items.size()];
-		int i=0;
-		for(Item item : items) {
-			itemsAsStringArray[i] = String.format("%s (%s)", item.description, item.price); //TODO stringify
-			i++;
-		}
-
-		builder.setTitle("Buy")
-		.setItems(itemsAsStringArray, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				Item obj = items.get(which);
-				iap.buy(obj, user);
-			}
-		})
-		.setNegativeButton(R.string.cancel_button, new OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// cancel				
-			}
-			
-		});
-		
-		builder.show();
-	}
+	}	
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		iap.disconnect();
+		buyClue.disconnect();
 	}
 	
 	@Override
 	public void onBuy() {
-		iap.getItems();
+		buyClue.present(user);
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)    
 	{
-		if(!iap.onActivityResult(requestCode, resultCode, data))			
+		if(buyClue == null || !buyClue.onActivityResult(requestCode, resultCode, data))			
 			super.onActivityResult(requestCode, resultCode, data);
-	}
-
-	@Override
-	public void onPurchaseSuccess(PurchasedItem item) {
-		//TODO throw up a progress bar
-		iap.consume(item);
-	}
-
-	@Override
-	public void onConsumeSuccess(PurchasedItem item) {
-		Log.e("IAP", "Should get some " + item.getSKU()); //TODO..change?
-		//TODO better system here
-		APIService.fire(new PostPurchasedClueRequest(item));
-	}
+	}	
     
 	@Override
 	public void onStop() {
@@ -174,6 +118,7 @@ implements GabCluesFragment.Callbacks, IAP.Observer, UserObserver.Observer {
 
 	@Override
 	public void onUserSwapped(User old, User newUser) {
+		buyClue.disconnect();
 		user = newUser;
 	}
 }

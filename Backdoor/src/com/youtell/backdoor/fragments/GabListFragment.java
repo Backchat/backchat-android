@@ -4,16 +4,18 @@ import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
 import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ListView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
-import com.youtell.backdoor.Tile;
 import com.youtell.backdoor.adapters.FriendListAdapter;
 import com.youtell.backdoor.adapters.GabListAdapter;
+import com.youtell.backdoor.adapters.ItemAdapter;
 import com.youtell.backdoor.adapters.MultipleListAdapter;
 import com.youtell.backdoor.api.GetGabsRequest;
 import com.youtell.backdoor.models.Friend;
@@ -23,6 +25,9 @@ import com.youtell.backdoor.observers.APIRequestObserver;
 import com.youtell.backdoor.observers.FriendObserver;
 import com.youtell.backdoor.observers.GabObserver;
 import com.youtell.backdoor.observers.UserObserver;
+import com.youtell.backdoor.tiles.BuyClueTile;
+import com.youtell.backdoor.tiles.ShareTile;
+import com.youtell.backdoor.tiles.Tile;
 
 public class GabListFragment extends ListFragment
 implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserObserver.Observer {
@@ -36,28 +41,31 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 		public void onGabSelected(Gab gab);
 		public void onFriendSelected(Friend f);
 		public PullToRefreshAttacher getPullToRefreshAttacher();
+		public void onBuyClue();
 	}
-	
+
 	private MultipleListAdapter adapter;
 	private GabListAdapter gabListAdapter;
 	private FriendListAdapter friendListAdapter;
 	private FriendListAdapter featuredListAdapter;
-	
+	private ItemAdapter shareAdapter;
+	private ItemAdapter buyClueAdapter;
+
 	private GabObserver gabObserver;	
 	private FriendObserver friendObserver;
 	private Object userObserver;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		gabObserver = new GabObserver(new GabObserver.Observer() {			
 			@Override
 			public void onChange(String action, int gabID) {
 				gabListAdapter.notifyDataSetChanged();
 			}
 		});
-		
+
 		friendObserver = new FriendObserver(new FriendObserver.Observer() {			
 			@Override
 			public void onChange() {
@@ -65,33 +73,52 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 				featuredListAdapter.notifyDataSetChanged();
 			}
 		});
-		
+
 		gabsRequestObserver = new APIRequestObserver<GetGabsRequest>(this, GetGabsRequest.class);
 	}	
-	
+
 	@Override 
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
 
 		adapter = new MultipleListAdapter();
-		
+
 		gabListAdapter = new GabListAdapter(getActivity());
 		friendListAdapter = new FriendListAdapter(getActivity(), FriendListAdapter.FRIENDS_MODE);		
 		featuredListAdapter = new FriendListAdapter(getActivity(), FriendListAdapter.FEATURED_MODE);
+		shareAdapter = new ItemAdapter(getActivity(), new ItemAdapter.Factory() {
+
+			@Override
+			public Tile newTile(Context context, ViewGroup parent) {
+				return new ShareTile(context, parent);
+			}
+
+		});
+		
+		buyClueAdapter = new ItemAdapter(getActivity(), new ItemAdapter.Factory() {
+
+			@Override
+			public Tile newTile(Context context, ViewGroup parent) {
+				// TODO Auto-generated method stub
+				return new BuyClueTile(context, parent);
+			}
+		});
 		
 		adapter.addSection(gabListAdapter);
 		adapter.addSection(friendListAdapter);
 		adapter.addSection(featuredListAdapter);
-		
+		adapter.addSection(shareAdapter);		
+		adapter.addSection(buyClueAdapter);
+
 		setListAdapter(this.adapter);
-		
+
 		//TODO use multiple image loaders
 		PauseOnScrollListener scrollPause = new PauseOnScrollListener(ImageLoader.getInstance(), false, true);
 		getListView().setOnScrollListener(scrollPause);
 		mCallbacks.getPullToRefreshAttacher().addRefreshableView(getListView(), this);
 	}
-	
+
 	@Override
 	public void onResume()
 	{		
@@ -101,7 +128,7 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 		userObserver = UserObserver.registerObserver(this);
 		gabsRequestObserver.startListening();
 	}
-	
+
 	@Override
 	public void onStop()
 	{
@@ -111,7 +138,7 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 		gabsRequestObserver.stopListening();
 		super.onStop();
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -138,8 +165,10 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 			mCallbacks.onGabSelected((Gab)obj);
 		else if(a == friendListAdapter || a == featuredListAdapter)
 			mCallbacks.onFriendSelected((Friend)obj);
+		else if(a == buyClueAdapter) 
+			mCallbacks.onBuyClue();
 	}		
-		
+
 	@Override
 	public void onUserChanged() {		
 	}
@@ -148,7 +177,7 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 	public void onUserSwapped(User old, User newUser) {
 		updateData(newUser);
 	}
-	
+
 	@Override
 	public void onRefreshStarted(View view) {
 		updateData(user);
@@ -167,7 +196,7 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 	}
 
 	private User user;
-	
+
 	private void updateData(User user) {
 		this.user = user;
 		if(this.user != null) {
@@ -176,5 +205,5 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 		}
 	}
 
-	
+
 }
