@@ -212,4 +212,9 @@ GCMNotificationObserver.Observer {
 	public void onBuyClue() {
 		buyClue.present(user);
 	}
+	
+	@Override
+	public void onInvite() {
+		inviteClick(null);
+	}
 }

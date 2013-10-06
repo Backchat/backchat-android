@@ -42,4 +42,6 @@
     <string name="share_tile_subtitle">Get more friends by sharing</string>
     <string name="clues_tile_title">Get clues</string>
     <string name="clues_tile_subtitle">Buy more clues</string>
+	<string name="invite_tile_title">Invite</string>
+	<string name="invite_tile_subtitle">Invite your friends to Backdoor</string>
 </resources>

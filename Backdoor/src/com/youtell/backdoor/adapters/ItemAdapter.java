@@ -8,20 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-public class ItemAdapter extends BaseAdapter {
-	public interface Factory {
-		public Tile newTile(Context context, ViewGroup parent);
-	}
-	
+public class ItemAdapter extends BaseAdapter {	
 	private Context context;
-	private Factory factory;
-	
-	public ItemAdapter(Context context, Factory f) {
+	private Class<?> clazz;
+
+	public <T extends Tile> ItemAdapter(Context context, Class<T> clazz) {
 		super();
-		this.factory = f;
+		this.clazz = clazz;
 		this.context = context;
 	}
-	
+
 	@Override
 	public int getCount() {
 		return 1;
@@ -42,15 +38,20 @@ public class ItemAdapter extends BaseAdapter {
 		Tile tile; 
 		if(convertView == null)
 		{
-			tile = factory.newTile(context, parent);
-			convertView = tile.getViews();
-			convertView.setTag(tile);
+			try {
+				tile = (Tile)clazz.getConstructor(Context.class, ViewGroup.class).newInstance(context, parent);
+				convertView = tile.getViews();
+				convertView.setTag(tile);
+			}
+			catch(Exception e) {
+				return null;
+			}
 		}
 		else
 			tile = (Tile) convertView.getTag();
-	 		
+
 		tile.fill(null);
-		
+
 		return convertView;
 	}
 

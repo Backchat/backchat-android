@@ -26,6 +26,7 @@ import com.youtell.backdoor.observers.FriendObserver;
 import com.youtell.backdoor.observers.GabObserver;
 import com.youtell.backdoor.observers.UserObserver;
 import com.youtell.backdoor.tiles.BuyClueTile;
+import com.youtell.backdoor.tiles.InviteTile;
 import com.youtell.backdoor.tiles.ShareTile;
 import com.youtell.backdoor.tiles.Tile;
 
@@ -42,6 +43,7 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 		public void onFriendSelected(Friend f);
 		public PullToRefreshAttacher getPullToRefreshAttacher();
 		public void onBuyClue();
+		public void onInvite();
 	}
 
 	private MultipleListAdapter adapter;
@@ -50,7 +52,8 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 	private FriendListAdapter featuredListAdapter;
 	private ItemAdapter shareAdapter;
 	private ItemAdapter buyClueAdapter;
-
+	private ItemAdapter inviteAdapter;
+	
 	private GabObserver gabObserver;	
 	private FriendObserver friendObserver;
 	private Object userObserver;
@@ -87,29 +90,16 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 		gabListAdapter = new GabListAdapter(getActivity());
 		friendListAdapter = new FriendListAdapter(getActivity(), FriendListAdapter.FRIENDS_MODE);		
 		featuredListAdapter = new FriendListAdapter(getActivity(), FriendListAdapter.FEATURED_MODE);
-		shareAdapter = new ItemAdapter(getActivity(), new ItemAdapter.Factory() {
-
-			@Override
-			public Tile newTile(Context context, ViewGroup parent) {
-				return new ShareTile(context, parent);
-			}
-
-		});
-		
-		buyClueAdapter = new ItemAdapter(getActivity(), new ItemAdapter.Factory() {
-
-			@Override
-			public Tile newTile(Context context, ViewGroup parent) {
-				// TODO Auto-generated method stub
-				return new BuyClueTile(context, parent);
-			}
-		});
+		shareAdapter = new ItemAdapter(getActivity(), ShareTile.class);
+		buyClueAdapter = new ItemAdapter(getActivity(), BuyClueTile.class);
+		inviteAdapter = new ItemAdapter(getActivity(), InviteTile.class);
 		
 		adapter.addSection(gabListAdapter);
 		adapter.addSection(friendListAdapter);
 		adapter.addSection(featuredListAdapter);
 		adapter.addSection(shareAdapter);		
 		adapter.addSection(buyClueAdapter);
+		adapter.addSection(inviteAdapter);
 
 		setListAdapter(this.adapter);
 
@@ -167,6 +157,8 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 			mCallbacks.onFriendSelected((Friend)obj);
 		else if(a == buyClueAdapter) 
 			mCallbacks.onBuyClue();
+		else if(a == inviteAdapter)
+			mCallbacks.onInvite();
 	}		
 
 	@Override
