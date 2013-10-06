@@ -88,8 +88,8 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 		adapter = new MultipleListAdapter();
 
 		gabListAdapter = new GabListAdapter(getActivity());
-		friendListAdapter = new FriendListAdapter(getActivity(), FriendListAdapter.FRIENDS_MODE);		
-		featuredListAdapter = new FriendListAdapter(getActivity(), FriendListAdapter.FEATURED_MODE);
+		friendListAdapter = new FriendListAdapter(getActivity(), FriendListAdapter.FRIENDS_MODE, 0.6);		
+		featuredListAdapter = new FriendListAdapter(getActivity(), FriendListAdapter.FEATURED_MODE, 1.0);
 		shareAdapter = new ItemAdapter(getActivity(), ShareTile.class);
 		buyClueAdapter = new ItemAdapter(getActivity(), BuyClueTile.class);
 		inviteAdapter = new ItemAdapter(getActivity(), InviteTile.class);

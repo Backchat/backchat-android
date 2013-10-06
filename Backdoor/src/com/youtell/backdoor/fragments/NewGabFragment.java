@@ -12,7 +12,7 @@ implements FriendObserver.Observer {
 	
 	@Override
 	protected FriendListAdapter createAdapter() {
-		return new FriendListAdapter(getActivity(), FriendListAdapter.FRIENDS_MODE);
+		return new FriendListAdapter(getActivity(), FriendListAdapter.FRIENDS_MODE, 1.0);
 	}
 
 	@Override

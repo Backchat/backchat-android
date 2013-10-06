@@ -19,6 +19,8 @@ public class ContactTile extends Tile {
 
 	@Override
 	public void fill(Object object) {
+		setAlpha(1.0);
+		
 		Contact contact = (Contact)object;
 
 		this.titleLabel.setText(contact.name);		

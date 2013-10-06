@@ -16,6 +16,8 @@ public class StaticTile extends Tile {
 
 	@Override
 	public void fill(Object object) {
+		setAlpha(1.0);
+
 		this.titleLabel.setText(titleR);
 		this.subtitleLabel.setText(subtitleR);
 		this.attributeIcon.setVisibility(View.INVISIBLE);

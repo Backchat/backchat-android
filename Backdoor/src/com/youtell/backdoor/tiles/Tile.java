@@ -63,5 +63,14 @@ public abstract class Tile {
 		ImageLoader.getInstance().displayImage(uri, this.icon, options);	
 	}
 	
+	protected void setAlpha(double a) {
+		float alpha = (float)a;
+		this.titleLabel.setAlpha(alpha);
+		this.subtitleLabel.setAlpha(alpha);
+		this.icon.setAlpha(alpha);
+		this.attributeIcon.setAlpha(alpha);
+		this.timeLabel.setAlpha(alpha);
+	}
+	
 	public abstract void fill(Object object);
 }

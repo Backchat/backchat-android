@@ -17,6 +17,8 @@ public class GabTile extends Tile {
 	
 	@Override
 	public void fill(Object obj) {
+		setAlpha(1.0);
+
 		Gab gab = (Gab)obj;
 		this.titleLabel.setText(gab.getTitle());
 		this.subtitleLabel.setText(gab.getContentSummary());
