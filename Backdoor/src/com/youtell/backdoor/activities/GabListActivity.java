@@ -24,6 +24,7 @@ import com.youtell.backdoor.fragments.SettingsMenuFragment;
 import com.youtell.backdoor.gcm.GCM;
 import com.youtell.backdoor.models.DBClosedEvent;
 import com.youtell.backdoor.models.Database;
+import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.GCMNotificationObserver;
@@ -94,11 +95,6 @@ GCMNotificationObserver.Observer {
 	public void inviteClick(View v) {
 		Intent intent = new Intent(this, InviteContactsActivity.class);
 		startActivity(intent);
-	}
-
-	@Override
-	public void onItemSelected(Gab gab) {
-		startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));
 	}
 
 	@Override
@@ -189,5 +185,18 @@ GCMNotificationObserver.Observer {
 	@Override
 	public void onNotification(String message, int gab_id) {
 		//override and do nothing.
+	}
+
+	@Override
+	public void onGabSelected(Gab gab) {
+		startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));		
+	}
+
+	@Override
+	public void onFriendSelected(Friend f) {
+		//TODO stop the listeners so we don't refresh the gab before going across
+		Gab gab = f.createNewGab();
+		gab.save();
+		startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));	
 	}
 }

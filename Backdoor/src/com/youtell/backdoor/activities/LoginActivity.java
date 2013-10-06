@@ -95,7 +95,7 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		gppClient.connect();
 	}
 
-	private void loginUser(String token, String provider) {		
+	private void loginUser(String token, String provider) {
 		/* save the provider preference */
 		SharedPreferences prefs = getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
 		Editor edit = prefs.edit();
@@ -118,8 +118,15 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		findViewById(R.id.login_gpp_button).setVisibility(v);
 	}
 
+	public void setButtonState(boolean enabled) {
+		findViewById(R.id.login_facebook_button).setEnabled(enabled);
+		findViewById(R.id.login_gpp_button).setEnabled(enabled);
+	}
+	
 	public void fbButtonClick(View v)
 	{
+		setButtonState(false);
+
 		/* if we're at a button, means we definitely need UI now: */
 		Session.openActiveSession(this, true, new StatusCallback() {
 			@Override
@@ -136,6 +143,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 
 	public void gppButtonClick(View v)
 	{
+		setButtonState(false);
+
 		gppLogin = true;
 		connectGPPClient();
 	}
@@ -182,7 +191,7 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		.show();
 
 		setButtonVisibility(View.VISIBLE);
-
+		setButtonState(true);
 	}
 
 	@Override
@@ -266,7 +275,6 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 				@Override
 				public void run() {
 					try {
-						// TODO Auto-generated method stub
 						final String token = GoogleAuthUtil.getToken(LoginActivity.this, gppClient.getAccountName(), 
 								"oauth2: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile");
 						//connected to GPP!

@@ -91,6 +91,26 @@ public class Friend extends DatabaseObject {
 			return new ArrayList<Friend>();
 		}
 	}
+	
+	public static List<Friend> allFriends() {
+		try {
+			return getDAO().queryBuilder().where().eq("isFeatured", false).query();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ArrayList<Friend>();
+		}
+	}
+	
+	public static List<Friend> allFeatured() {
+		try {
+			return getDAO().queryBuilder().where().eq("isFeatured", true).query();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new ArrayList<Friend>();
+		}
+	}	
 
 	@Override
 	public int getRemoteID() {

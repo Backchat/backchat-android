@@ -10,8 +10,14 @@ import android.view.ViewGroup;
 import android.content.Context;
 
 public class FriendListAdapter extends ORMListAdapter<Friend> {
-	public FriendListAdapter(Context context) {
+	private int mode;
+	
+	public static final int FEATURED_MODE = 0;
+	public static final int FRIENDS_MODE = 1;
+	
+	public FriendListAdapter(Context context, int mode) {
 		super(context);
+		this.mode = mode;
 		updateData();
 	}	
 
@@ -36,7 +42,10 @@ public class FriendListAdapter extends ORMListAdapter<Friend> {
 
 	@Override
 	protected List<Friend> getList() {
-		return Friend.all();
+		if(mode == FEATURED_MODE)
+			return Friend.allFeatured();
+		else
+			return Friend.allFriends();
 	}
 
 }

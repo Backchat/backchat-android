@@ -93,7 +93,6 @@ public class ORMUpdateService extends Service {
 			@Override
 			public void onChange(String action, int gabID, int objectID) {
 				if(action == ClueObserver.CLUE_INSERTED) {
-					Log.e("ORM", String.format("clue %d %d", gabID, objectID));
 					Clue clue = Clue.getByID(objectID);
 					APIService.fire(new PostGabClueRequest(clue));
 				}
