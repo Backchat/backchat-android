@@ -2,6 +2,7 @@ package com.youtell.backdoor.fragments;
 
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.Util;
+import com.youtell.backdoor.social.SocialProvider;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ public class SettingsMenuFragment extends CallbackListFragment<SettingsMenuFragm
 
 	public interface Callbacks {
 		public void onLogout();
+		public void onShareApp();
 	}
 
 	@Override 
@@ -45,7 +47,11 @@ public class SettingsMenuFragment extends CallbackListFragment<SettingsMenuFragm
 
 		switch(position) {
 		case 0:
+			mCallbacks.onShareApp();
+			break;
+		case 4:
 			mCallbacks.onLogout();
+			break;
 		default:
 		}
 	}

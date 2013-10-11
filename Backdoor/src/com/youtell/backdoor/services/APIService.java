@@ -7,7 +7,6 @@ import com.youtell.backdoor.api.PostLoginRequest;
 import com.youtell.backdoor.api.Request;
 import com.youtell.backdoor.models.Database;
 import com.youtell.backdoor.models.User;
-import com.youtell.backdoor.observers.UserObserver;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -16,11 +15,10 @@ import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.util.Log;
 
-public class APIService extends IntentService implements UserObserver.Observer {
+public class APIService extends IntentService {
 	public static Context applicationContext = null; //TODO
 	private static String userAgentString;
 	private AndroidHttpClient client;
-	private Object userObserver;
 
 	public static void initialize(Context c) {
 		applicationContext = c.getApplicationContext();
@@ -31,7 +29,6 @@ public class APIService extends IntentService implements UserObserver.Observer {
 	public void onDestroy() 
 	{
 		super.onDestroy();
-		UserObserver.unregisterObserver(userObserver);
 		OpenHelperManager.releaseHelper();
 		client.close();
 	}	
@@ -41,53 +38,60 @@ public class APIService extends IntentService implements UserObserver.Observer {
 	{
 		super.onCreate();
 		client = AndroidHttpClient.newInstance(userAgentString);
-		userObserver = UserObserver.registerObserver(this);
 	}
 
 	public APIService() {
 		super("APIService");
 	}
 
+	private static final String ARGS = "ARGS";
+	private static final String USER_ARG = "USER_ARG";
+	
 	public static void fire(Request r)
 	{
 		Bundle args = r.getArguments();
 		Intent fireIntent = new Intent(applicationContext, APIService.class);
-		fireIntent.putExtras(args);
+		fireIntent.putExtra(ARGS, args);
+		Bundle userBundle = new Bundle();
+		if(User.getCurrentUser() != null) {
+			User.getCurrentUser().serialize(userBundle);
+			fireIntent.putExtra(USER_ARG, userBundle);
+		}
 		applicationContext.startService(fireIntent);
 	}
 
+	private int lastUserID = -1;
+	
 	@Override
-	protected void onHandleIntent(Intent intent) {		
-		Request r = Request.inflateRequest(intent);
-		Log.v("APIService", String.format("intent %s", r.getClass().getName()));
+	protected void onHandleIntent(Intent intent) {
+		Request r = Request.inflateRequest(intent.getBundleExtra(ARGS));
+		User user = null;
+		
+		if(intent.hasExtra(USER_ARG)) {
+			user = new User();
+			user.deserialize(intent.getBundleExtra(USER_ARG));
+		}
+		
+		if(user != null && user.getID() != lastUserID) {
+			if(lastUserID != -1)
+				OpenHelperManager.releaseHelper();
+			
+			lastUserID = user.getID();
+			Database.setDatabaseForUser(user.getID());
+			OpenHelperManager.getHelper(this, Database.class);
+		}
+		
+		int userID = -1;
+		if(user != null) {
+			userID = user.getID();
+		}
+		Log.v("APIService", String.format("intent %s, user %d", r.getClass().getName(), userID));
+		
 		if(r instanceof PostLoginRequest) {//URGH TODO
 			r.execute(client, null);
 		}
-		else if(user != null) { 
-			r.execute(client, user.clone());
-		}
 		else {
-			Log.e("APIService", "attempted to handle an intent but user was null");
-		}
-	}
-
-	private User user;
-
-	@Override
-	public void onUserChanged() {	
-	}
-
-	@Override
-	public void onUserSwapped(User old, User newUser) {
-		if(old != null) {
-			OpenHelperManager.releaseHelper();
-		}
-		
-		if(newUser != null) {
-			Database.setDatabaseForUser(newUser.getID());
-			OpenHelperManager.getHelper(this, Database.class);
-		}
-
-		user = newUser;
+			r.execute(client, user);
+		}	
 	}
 }

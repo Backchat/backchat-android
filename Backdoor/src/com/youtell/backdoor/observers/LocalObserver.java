@@ -44,13 +44,14 @@ abstract public class LocalObserver<Observer> extends BroadcastReceiver {
 		broadcastManager.unregisterReceiver(this);
 	}
 	
-	static protected void broadcastChange(String someAction, Bundle args)
+	static protected Intent broadcastChange(String someAction, Bundle args)
 	{
 		Intent broadcastIntent = new Intent();
 		broadcastIntent.setAction(someAction);
 		broadcastIntent.putExtras(args);
 		broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
 		broadcastManager.sendBroadcast(broadcastIntent);
+		return broadcastIntent;
 	}
 
 	public static void initialize(Application application) {

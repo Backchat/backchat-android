@@ -18,32 +18,33 @@ import android.util.Log;
 public class BuyClueIAP implements IAP.Observer {
 	private IAP iap;
 	private Activity activity;
-	private User user; 
-	//purposely force the consuemr of this object to give us a user to bind.
+	private User user;
 
 	public BuyClueIAP(Activity activity) {
 		this.activity = activity;
 		this.iap = new IAP(this);
 	}
 	
+	public void connect() {
+		this.iap.connect(this.activity);
+	}
+	
 	public void disconnect()
 	{
 		iap.disconnect();
-		user = null;
 	}
 	
 	public void present(User user) {
 		iap.connect(activity);
-		
 		this.user = user;
 		iap.getItems();
 	}
 	
 	@Override
 	public void onUpdateItemList(final List<Item> items) {
-		if(user == null)
+		if(this.user == null)
 			return;
-		
+					
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		String[] itemsAsStringArray = new String[items.size()];
 		int i=0;

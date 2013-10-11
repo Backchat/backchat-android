@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import com.youtell.backdoor.gcm.GCM;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.UserObserver;
+import com.youtell.backdoor.social.SocialProvider;
 
 import android.os.Bundle;
 
@@ -28,9 +29,9 @@ public class PostLoginRequest extends Request {
 	private String hostName;
 	
 	public PostLoginRequest() {}
-	public PostLoginRequest(String token, String provider, String hostName) {
-		this.token = token;
-		this.provider = provider;
+	public PostLoginRequest(SocialProvider provider, String hostName) {
+		this.token = provider.getToken();
+		this.provider = provider.getProviderName();
 		this.hostName = hostName;
 	}
 	
@@ -84,7 +85,7 @@ public class PostLoginRequest extends Request {
 		user.setFullName(userData.getString("full_name"));
 		user.setGCMKey(GCM.GCM_KEY); //TODO dynamic
 		
-		UserObserver.broadcastUserSwapped(user);
+		User.setCurrentUser(user);
 	}
 
 }

@@ -35,7 +35,6 @@ public class MultipleListAdapter extends BaseAdapter  {
 	public Object getItem(int position) {  
 		for(Adapter adapter : this.sections) {
 			int size = adapter.getCount();
-			Log.i(TAG, String.format("position %d size %d", position, size));
 			// check if position inside this section   
 			if(position < size) return adapter.getItem(position);
 
@@ -49,7 +48,6 @@ public class MultipleListAdapter extends BaseAdapter  {
 		// total together all sections
 		int total = 0;  
 		for(Adapter adapter : this.sections) {
-			Log.i(TAG, String.format("size %d", adapter.getCount()));
 			total += adapter.getCount();
 		}
 		return total;  

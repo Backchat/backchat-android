@@ -142,8 +142,8 @@ implements OnClickListener, MessageObserver.Observer {
 	}
 
 	@Override
-	protected void updateData(User user) {
-		//TODO
+	protected void updateData() {
+		//DO nothing? TODO
 	}
 
 	@Override

@@ -71,19 +71,21 @@ UserObserver.Observer {
 		return view;
 	}
 
-	Object userObserver;
+	UserObserver userObserver = new UserObserver(this);
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		userObserver = UserObserver.registerObserver(this);
+		userObserver.startListening();
+		setInviteText();
 	}
 
 	@Override 
 	public void onStop() {
 		super.onStop();
-		UserObserver.unregisterObserver(userObserver);
+		userObserver.stopListening();
 	}
+	
 	private void setInviteText()
 	{
 		String personalizedURL = "http://bkdr.me";
@@ -163,10 +165,4 @@ UserObserver.Observer {
 		setInviteText();
 	}
 
-	@Override
-	public void onUserSwapped(User old, User newUser) {
-		user = newUser;
-		if(user != null)
-			setInviteText();
-	}
 }

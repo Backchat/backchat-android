@@ -19,7 +19,7 @@ import com.youtell.backdoor.observers.UserObserver;
 
 public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, ModelObserverType extends LocalObserver<?>, 
 CallbackType, CallbackT extends ListAdapterCallbackFragment.Callbacks<CallbackType>> 
-extends ListFragment implements UserObserver.Observer {
+extends ListFragment {
 	protected CallbackT mCallbacks = null;
 
 	protected interface Callbacks<CallbackType> {
@@ -35,21 +35,18 @@ extends ListFragment implements UserObserver.Observer {
 	protected abstract ModelObserverType createObserver();
 	
 	protected ModelObserverType observer;
-	
-	private Object userObserver;
-	
+		
 	@Override
 	public void onResume()
 	{		
 		super.onResume();
 		observer.startListening();
-		userObserver = UserObserver.registerObserver(this);
+		updateData();
 	}
 	
 	@Override
 	public void onStop()
 	{
-		UserObserver.unregisterObserver(userObserver);
 		observer.stopListening();
 		super.onStop();
 	}
@@ -103,14 +100,5 @@ extends ListFragment implements UserObserver.Observer {
 			mCallbacks.onItemSelected((CallbackType)adapter.getItem(position));
 	}		
 	
-	protected abstract void updateData(User user);
-	
-	@Override
-	public void onUserChanged() {		
-	}
-
-	@Override
-	public void onUserSwapped(User old, User newUser) {
-		updateData(newUser);
-	}
+	protected abstract void updateData();
 }

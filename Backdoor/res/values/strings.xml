@@ -44,4 +44,11 @@
     <string name="clues_tile_subtitle">Buy more clues</string>
 	<string name="invite_tile_title">Invite</string>
 	<string name="invite_tile_subtitle">Invite your friends to Backdoor</string>
+	
+	<string name="fb_share_app_name">Backdoor</string>
+	<string name="fb_share_app_caption">Send and receive anonymous messages</string>
+	<string name="fb_share_app_description">Backdoor is a new application for iOS that allows sending and receiving anonymous text and photo messages.</string>
+	<string name="share_app_link">https://itun.es/us/Y_GvN.i</string>
+	<string name="fb_share_app_picture">https://s3.amazonaws.com/backdoor_images/icon_114x114.png</string>
+	<string name="gpp_share_text">Message me anything you want anonymously with Backdoor. Backdoor Me!</string>
 </resources>

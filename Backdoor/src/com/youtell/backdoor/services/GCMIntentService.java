@@ -20,12 +20,10 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-public class GCMIntentService extends IntentService implements GCMNotificationObserver.Observer, UserObserver.Observer {
+public class GCMIntentService extends IntentService implements GCMNotificationObserver.Observer {
 	private static int GCM_KIND_MSG = 0;
 	private static int GCM_KIND_FRIEND = 1;
 	private GCMNotificationObserver observer;
-	private Object userObserver;
-	private User currentUser;
 
 	public GCMIntentService() {
 		super("GCMIntentService");
@@ -35,7 +33,7 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		if(currentUser == null)
+		if(User.getCurrentUser() == null) //TODO check ID?
 			return;
 		
 		Bundle extras = intent.getExtras();
@@ -82,13 +80,12 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		userObserver = UserObserver.registerObserver(this);
+		observer.startListening(0);
 	}
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		UserObserver.unregisterObserver(userObserver);
 		observer.stopListening();
 	}
 
@@ -119,24 +116,5 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 				(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		// Builds the notification and issues it.
 		mNotifyMgr.notify(mNotificationId, note);
-	}
-
-	@Override
-	public void onUserChanged() {
-		//don't care
-	}
-
-	@Override
-	public void onUserSwapped(User old, User newUser) {
-		if(old != null) {
-			observer.stopListening();
-		}
-		
-		if(newUser != null )
-		{
-			observer.startListening(0);
-		}
-		
-		currentUser = newUser;
 	}
 }

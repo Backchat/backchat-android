@@ -17,12 +17,10 @@ import com.youtell.backdoor.observers.UserObserver;
 
 //TODO refactor all these userObservers
 public class GabAnonymousDetailActivity extends BaseGabDetailActivity 
-implements GabCluesFragment.Callbacks, UserObserver.Observer {
+implements GabCluesFragment.Callbacks {
 	private GabCluesFragment cluesFragment;
 	private View cluesView;
-	private User user;
 	private BuyClueIAP buyClue = new BuyClueIAP(this);
-	private Object userObserver;
 
 	public void tagGab(View v) {
     	final EditText tagName = new EditText(this);
@@ -80,7 +78,6 @@ implements GabCluesFragment.Callbacks, UserObserver.Observer {
     public void onResume()
     {
     	super.onResume();
-		userObserver = UserObserver.registerObserver(this);
     }
 
 	@Override
@@ -96,7 +93,7 @@ implements GabCluesFragment.Callbacks, UserObserver.Observer {
 	
 	@Override
 	public void onBuy() {
-		buyClue.present(user);
+		buyClue.present(User.getCurrentUser().clone());
 	}
 	
 	@Override
@@ -109,16 +106,5 @@ implements GabCluesFragment.Callbacks, UserObserver.Observer {
 	@Override
 	public void onStop() {
 		super.onStop();
-		UserObserver.unregisterObserver(userObserver);
-	}
-
-	@Override
-	public void onUserChanged() {	
-	}
-
-	@Override
-	public void onUserSwapped(User old, User newUser) {
-		buyClue.disconnect();
-		user = newUser;
 	}
 }

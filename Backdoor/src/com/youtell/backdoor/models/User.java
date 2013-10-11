@@ -1,6 +1,7 @@
 package com.youtell.backdoor.models;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.youtell.backdoor.api.GetFeaturedRequest;
 import com.youtell.backdoor.api.GetFriendsRequest;
@@ -8,6 +9,7 @@ import com.youtell.backdoor.api.GetGabsRequest;
 import com.youtell.backdoor.api.PostDeviceRequest;
 import com.youtell.backdoor.observers.UserObserver;
 import com.youtell.backdoor.services.APIService;
+import com.youtell.backdoor.social.SocialProvider;
 
 public class User implements InflatableObject {
 
@@ -72,6 +74,8 @@ public class User implements InflatableObject {
 		APIService.fire(new PostDeviceRequest(id));
 	}
 
+	private static final String TAG = "USER";
+	
 	public void deserialize(Bundle b) {		
 		setGCMKey(b.getString("GCMKey"));
 		setTotalClueCount(b.getInt("totalClueCount"));
@@ -79,17 +83,16 @@ public class User implements InflatableObject {
 		setApiToken(b.getString("apiToken"));
 		setFullName(b.getString("fullName"));
 		setID(b.getInt("id"));
-		setSocialProvider(b.getString("socialProvider"));
 	}
 	
 	public void serialize(Bundle b) {
+		Log.i(TAG, "serialized");
 		b.putString("GCMKey", getGCMKey());
 		b.putInt("totalClueCount", getTotalClueCount());
 		b.putString("hostName", getApiServerHostName());
 		b.putString("apiToken", getApiToken());
 		b.putString("fullName", getFullName());
 		b.putInt("id", id);
-		b.putString("socialProvider", getSocialProvider());
 	}
 	
 	public User clone() {
@@ -100,7 +103,6 @@ public class User implements InflatableObject {
 		u.hostName = hostName;
 		u.id = id;
 		u.totalClueCount = totalClueCount;
-		u.socialProvider = socialProvider;
 		return u;
 	}
 
@@ -114,18 +116,18 @@ public class User implements InflatableObject {
 		this.id = id;
 	}
 
-	private String socialProvider;
-	
-	public void setSocialProvider(String s) {
-		socialProvider = s;
-	}
-	public String getSocialProvider() {
-		return this.socialProvider;
-	}
-
 	//TODO better dirty
 	public void updateTotalClues(int newValue) {
 		totalClueCount = newValue;
-		UserObserver.broadcastUserChange(this);	
+		UserObserver.broadcastUserChange();	
+	}
+
+	private static User currentUser;
+	public static void setCurrentUser(User user) {
+		currentUser = user;
+	}
+	
+	public static User getCurrentUser() {
+		return currentUser;
 	}
 }

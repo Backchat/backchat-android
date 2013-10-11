@@ -53,17 +53,17 @@ public abstract class Request {
 	protected abstract String getPath();
 
 	@SuppressWarnings("unchecked")
-	static public Request inflateRequest(Intent intent) {
-		String className = intent.getStringExtra(CLASS_NAME);
+	static public Request inflateRequest(Bundle bundle) {
+		String className = bundle.getString(CLASS_NAME);
 		try {
 			Request r = null;
 			Class<? extends Request> c;
 			c = (Class<? extends Request>) Class.forName(className);
 			r = c.newInstance();
-			r.inflateArguments(intent.getExtras());
+			r.inflateArguments(bundle);
 			return r;
 		} catch (Exception e) {
-			Log.e("REQUEST", String.format("EXCEPTION %s %s", className, intent.getExtras().toString()), e);
+			Log.e("REQUEST", String.format("EXCEPTION %s %s", className, bundle.toString()), e);
 			return null;
 		}
 	}	

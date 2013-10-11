@@ -27,8 +27,8 @@ implements FriendObserver.Observer {
 	}
 
 	@Override
-	protected void updateData(User user) {
-		user.getFriends();
+	protected void updateData() {
+		User.getCurrentUser().getFriends();
 	}
 
 }

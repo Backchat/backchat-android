@@ -32,20 +32,18 @@ import com.youtell.backdoor.observers.GCMNotificationObserver;
 import com.youtell.backdoor.observers.UserObserver;
 import com.youtell.backdoor.observers.UserObserver.Observer;
 import com.youtell.backdoor.services.ORMUpdateService;
+import com.youtell.backdoor.social.SocialProvider;
 
-public class GabListActivity extends SlidingActivity implements GabListFragment.Callbacks, SettingsMenuFragment.Callbacks, GCM.Callbacks, Observer, 
+public class GabListActivity extends SlidingActivity implements GabListFragment.Callbacks, SettingsMenuFragment.Callbacks, GCM.Callbacks,
 GCMNotificationObserver.Observer {
 	private PullToRefreshAttacher mPullToRefreshAttacher;
-	private Object userObserver;
 	private GCMNotificationObserver gcmNotifications;
 	private BuyClueIAP buyClue = new BuyClueIAP(this);
-
-	private User user;
+	private SocialProvider.ShareHelper shareHelper;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		userObserver = UserObserver.registerObserver(this);
 
 		setContentView(R.layout.activity_gab_list);
 
@@ -81,6 +79,20 @@ GCMNotificationObserver.Observer {
 		mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
 		
 		gcmNotifications = new GCMNotificationObserver(this, null);
+		
+		User user = User.getCurrentUser();
+		Log.e("DB", String.format("%d", user.getID()));
+		Database.setDatabaseForUser(user.getID());
+		OpenHelperManager.getHelper(this, Database.class);
+		final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class);
+		getApplicationContext().startService(ormUpdateIntent);
+		
+		GCM.getRegistrationID(user, this);
+		
+		shareHelper = SocialProvider.getActiveProvider().getShareHelper(this);
+		shareHelper.onCreate(savedInstanceState);
+		
+		buyClue.connect();
 	}
 
 	public PullToRefreshAttacher getPullToRefreshAttacher() {
@@ -105,6 +117,7 @@ GCMNotificationObserver.Observer {
 	public void onResume() {
 		super.onResume();
 		gcmNotifications.startListening(1);
+		shareHelper.onResume();
 	}
 
 	@Override
@@ -115,20 +128,30 @@ GCMNotificationObserver.Observer {
 
 	@Override
 	public void onLogout() {
-		UserObserver.broadcastUserSwapped(null);
+		User.setCurrentUser(null);
+		OpenHelperManager.releaseHelper();	
+
+		final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class); 
+		getApplicationContext().stopService(ormUpdateIntent);	
+		
+		Intent intent = new Intent(this, LoginActivity.class);
+		startActivity(intent);
+		overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);    
+		finish();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
+		
 		gcmNotifications.stopListening();
 	}
 	
 	@Override
 	protected void onDestroy() 
 	{
+		shareHelper.onDestroy();
 		buyClue.disconnect();		
-		UserObserver.unregisterObserver(userObserver);
 		super.onDestroy();
 	}
 
@@ -156,41 +179,6 @@ GCMNotificationObserver.Observer {
 	}
 
 	@Override
-	public void onUserChanged() {
-		//don't care.
-	}
-
-	@Override
-	public void onUserSwapped(User old, User newUser) {
-		buyClue.disconnect();
-		
-		if(old != null) {
-			final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class); 
-			getApplicationContext().stopService(ormUpdateIntent);				
-		}
-		
-		if(newUser != null) {			
-			Log.e("DB", String.format("%d", newUser.getID()));
-			OpenHelperManager.releaseHelper();
-			Database.setDatabaseForUser(newUser.getID());
-			OpenHelperManager.getHelper(this, Database.class);
-			final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class);
-			getApplicationContext().startService(ormUpdateIntent);
-			
-			GCM.getRegistrationID(newUser, this);
-		}
-		else {
-			OpenHelperManager.releaseHelper();			
-			Intent intent = new Intent(this, LoginActivity.class);
-			startActivity(intent);
-			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);    
-			finish();
-		}
-		
-		user = newUser;
-	}
-
-	@Override
 	public void onNotification(String message, int gab_id) {
 		//override and do nothing.
 	}
@@ -210,11 +198,34 @@ GCMNotificationObserver.Observer {
 	
 	@Override
 	public void onBuyClue() {
-		buyClue.present(user);
+		buyClue.present(User.getCurrentUser().clone());
 	}
 	
 	@Override
 	public void onInvite() {
 		inviteClick(null);
+	}
+
+	@Override
+	public void onShareApp() {
+		shareHelper.shareApp();
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		shareHelper.onPause();
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle state) {
+		super.onSaveInstanceState(state);
+		shareHelper.onSaveInstanceState(state);
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		shareHelper.onActivityResult(requestCode, resultCode, data);
 	}
 }

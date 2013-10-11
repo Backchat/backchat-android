@@ -31,7 +31,7 @@ import com.youtell.backdoor.tiles.ShareTile;
 import com.youtell.backdoor.tiles.Tile;
 
 public class GabListFragment extends ListFragment
-implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserObserver.Observer {
+implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 	private APIRequestObserver<GetGabsRequest> gabsRequestObserver;
 	private Callbacks mCallbacks = null;
 
@@ -44,6 +44,7 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 		public PullToRefreshAttacher getPullToRefreshAttacher();
 		public void onBuyClue();
 		public void onInvite();
+		public void onShareApp();
 	}
 
 	private MultipleListAdapter adapter;
@@ -56,7 +57,6 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 	
 	private GabObserver gabObserver;	
 	private FriendObserver friendObserver;
-	private Object userObserver;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -115,14 +115,14 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 		super.onResume();
 		gabObserver.startListening();
 		friendObserver.startListening();
-		userObserver = UserObserver.registerObserver(this);
 		gabsRequestObserver.startListening();
+		
+		updateData();
 	}
 
 	@Override
 	public void onStop()
 	{
-		UserObserver.unregisterObserver(userObserver);
 		gabObserver.stopListening();
 		friendObserver.stopListening();
 		gabsRequestObserver.stopListening();
@@ -159,20 +159,13 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 			mCallbacks.onBuyClue();
 		else if(a == inviteAdapter)
 			mCallbacks.onInvite();
+		else if(a == shareAdapter)
+			mCallbacks.onShareApp();
 	}		
-
-	@Override
-	public void onUserChanged() {		
-	}
-
-	@Override
-	public void onUserSwapped(User old, User newUser) {
-		updateData(newUser);
-	}
-
+	
 	@Override
 	public void onRefreshStarted(View view) {
-		updateData(user);
+		updateData();
 	}
 
 	@Override
@@ -187,14 +180,10 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest>, UserO
 			mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
 	}
 
-	private User user;
-
-	private void updateData(User user) {
-		this.user = user;
-		if(this.user != null) {
-			user.updateGabs();
-			user.getFriends();
-		}
+	private void updateData() {
+		User user = User.getCurrentUser();
+		user.updateGabs();
+		user.getFriends();
 	}
 
 

@@ -55,6 +55,7 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	private GridLayout clueGrid;
 	private TextView clueLabel;
 	private ClueObserver clueObserver;
+	private UserObserver userObserver = new UserObserver(this);
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -116,14 +117,13 @@ implements UserObserver.Observer, ClueObserver.Observer {
 			updateClue(clueList.get(i));
 		}
 	}
-
-	private Object userObserver;
-
+	
 	@Override
 	public void onResume() {
 		super.onResume();
-		userObserver = UserObserver.registerObserver(this);
+		userObserver.startListening();
 		clueObserver.startListening();
+		updateClueCount();
 		gab.updateClues(); //in case of change
 	}
 
@@ -131,29 +131,20 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	public void onPause() {
 		super.onPause();
 		clueObserver.stopListening();
-		UserObserver.unregisterObserver(userObserver);
+		userObserver.stopListening();
 	}
-
-	private User user;
-
+	
 	private void updateClueCount()
 	{
 		clueLabel.setText(String.format(getActivity().getResources().getString(R.string.gab_clue_status_text), 
-				user.getTotalClueCount()));
+				User.getCurrentUser().getTotalClueCount()));
 	}
 
 	@Override
 	public void onUserChanged() {
 		updateClueCount();		
 	}
-
-	@Override
-	public void onUserSwapped(User old, User newUser) {
-		user = newUser;
-		if(user != null)
-			updateClueCount();
-	}
-
+	
 	@Override
 	public void onChange(String action, int gabID, int objectID) {
 		if(action == ClueObserver.CLUE_UPDATED) {
