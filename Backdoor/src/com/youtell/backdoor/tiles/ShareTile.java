@@ -8,6 +8,7 @@ import com.youtell.backdoor.R;
 public class ShareTile extends StaticTile {
 
 	public ShareTile(Context context, ViewGroup parent) {
-		super(R.string.share_tile_title, R.string.share_tile_subtitle, context, parent);
+		super(R.string.share_tile_title, R.string.share_tile_subtitle, 
+				R.drawable.share_tile, context, parent);
 	}
 }

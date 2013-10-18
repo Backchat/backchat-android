@@ -37,7 +37,7 @@
             android:onClick="inviteClick"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
-            android:src="@drawable/header_invite_friends" />
+            android:src="@drawable/header_invite" />
     </LinearLayout>
 
     <LinearLayout

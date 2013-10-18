@@ -27,6 +27,7 @@ import com.youtell.backdoor.observers.GabObserver;
 import com.youtell.backdoor.observers.UserObserver;
 import com.youtell.backdoor.tiles.BuyClueTile;
 import com.youtell.backdoor.tiles.InviteTile;
+import com.youtell.backdoor.tiles.MoreFriendsTile;
 import com.youtell.backdoor.tiles.ShareTile;
 import com.youtell.backdoor.tiles.Tile;
 
@@ -35,6 +36,8 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 	private APIRequestObserver<GetGabsRequest> gabsRequestObserver;
 	private Callbacks mCallbacks = null;
 
+	private static final int MAX_FRIEND_COUNT = 3;
+	
 	public interface Callbacks {
 		/**
 		 * Callback for when an item has been selected.
@@ -45,6 +48,7 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 		public void onBuyClue();
 		public void onInvite();
 		public void onShareApp();
+		public void onMoreFriends();
 	}
 
 	private MultipleListAdapter adapter;
@@ -53,6 +57,7 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 	private FriendListAdapter featuredListAdapter;
 	private ItemAdapter shareAdapter;
 	private ItemAdapter buyClueAdapter;
+	private ItemAdapter moreFriendsAdapter;
 	private ItemAdapter inviteAdapter;
 	
 	private GabObserver gabObserver;	
@@ -74,6 +79,16 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 			public void onChange() {
 				friendListAdapter.notifyDataSetChanged();
 				featuredListAdapter.notifyDataSetChanged();
+				
+				int fcount = Friend.allFriends().size();
+				if(fcount > MAX_FRIEND_COUNT) {
+					friendListAdapter.setVisibleCount(MAX_FRIEND_COUNT);
+					moreFriendsAdapter.setVisible(true);
+				}
+				else {
+					friendListAdapter.setVisibleCount(FriendListAdapter.ALL_VISIBLE);
+					moreFriendsAdapter.setVisible(false);
+				}
 			}
 		});
 
@@ -93,10 +108,13 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 		shareAdapter = new ItemAdapter(getActivity(), ShareTile.class);
 		buyClueAdapter = new ItemAdapter(getActivity(), BuyClueTile.class);
 		inviteAdapter = new ItemAdapter(getActivity(), InviteTile.class);
+		moreFriendsAdapter = new ItemAdapter(getActivity(), MoreFriendsTile.class);
+		moreFriendsAdapter.setVisible(false);
 		
+		adapter.addSection(featuredListAdapter);
 		adapter.addSection(gabListAdapter);
 		adapter.addSection(friendListAdapter);
-		adapter.addSection(featuredListAdapter);
+		adapter.addSection(moreFriendsAdapter);		
 		adapter.addSection(shareAdapter);		
 		adapter.addSection(buyClueAdapter);
 		adapter.addSection(inviteAdapter);
@@ -161,6 +179,8 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 			mCallbacks.onInvite();
 		else if(a == shareAdapter)
 			mCallbacks.onShareApp();
+		else if(a == moreFriendsAdapter)
+			mCallbacks.onMoreFriends();
 	}		
 	
 	@Override
@@ -180,10 +200,11 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 			mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
 	}
 
+	
 	private void updateData() {
 		User user = User.getCurrentUser();
 		user.updateGabs();
-		user.getFriends();
+		user.getFriends();		
 	}
 
 

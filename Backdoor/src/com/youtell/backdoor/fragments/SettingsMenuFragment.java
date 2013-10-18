@@ -20,6 +20,9 @@ public class SettingsMenuFragment extends CallbackListFragment<SettingsMenuFragm
 	public interface Callbacks {
 		public void onLogout();
 		public void onShareApp();
+		public void onChangeNotificationSettings();
+		public void onReportAbuse();
+		public void onAboutUs();
 	}
 
 	@Override 
@@ -48,6 +51,15 @@ public class SettingsMenuFragment extends CallbackListFragment<SettingsMenuFragm
 		switch(position) {
 		case 0:
 			mCallbacks.onShareApp();
+			break;
+		case 1:
+			mCallbacks.onChangeNotificationSettings();
+			break;
+		case 2:
+			mCallbacks.onReportAbuse();
+			break;
+		case 3:
+			mCallbacks.onAboutUs();
 			break;
 		case 4:
 			mCallbacks.onLogout();

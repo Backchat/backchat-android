@@ -11,16 +11,21 @@ import android.widget.BaseAdapter;
 public class ItemAdapter extends BaseAdapter {	
 	private Context context;
 	private Class<?> clazz;
+	private boolean visible;
 
 	public <T extends Tile> ItemAdapter(Context context, Class<T> clazz) {
 		super();
 		this.clazz = clazz;
 		this.context = context;
+		this.visible = true;
 	}
 
 	@Override
 	public int getCount() {
-		return 1;
+		if(this.visible)
+			return 1;
+		else
+			return 0;
 	}
 
 	@Override
@@ -53,6 +58,11 @@ public class ItemAdapter extends BaseAdapter {
 		tile.fill(null);
 
 		return convertView;
+	}
+
+	public void setVisible(boolean b) {
+		visible = b;
+		this.notifyDataSetChanged();
 	}
 
 }

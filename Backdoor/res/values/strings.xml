@@ -51,4 +51,8 @@
 	<string name="share_app_link">https://itun.es/us/Y_GvN.i</string>
 	<string name="fb_share_app_picture">https://s3.amazonaws.com/backdoor_images/icon_114x114.png</string>
 	<string name="gpp_share_text">Message me anything you want anonymously with Backdoor. Backdoor Me!</string>
+	<string name="abuse_dialog_title">Report abuse</string>
+	<string name="abuse_dialog_text">Please describe as fully as possible the situation so we can address the issue</string>
+	<string name="abuse_dialog_info_hint">Type here</string>
+	<string name="abuse_dialg_report_button">Report</string>
 </resources>

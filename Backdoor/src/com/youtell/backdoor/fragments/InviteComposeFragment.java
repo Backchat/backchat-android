@@ -30,8 +30,7 @@ import android.widget.Switch;
 
 //TODO button enable disable text empty also send should fail unless loader done
 public class InviteComposeFragment extends CallbackFragment<InviteComposeFragment.Callbacks> 
-implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbacks<Cursor>,
-UserObserver.Observer {
+implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
 	public interface Callbacks {
 		public void afterSend();
 	}
@@ -43,8 +42,6 @@ UserObserver.Observer {
 	private ArrayList<Integer> contactIDs;
 	private Button sendButton;
 	private ArrayList<String> numbers;
-
-	private User user;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,28 +65,26 @@ UserObserver.Observer {
 
 		sendButton.setEnabled(false);
 
+		setInviteText();
+		
 		return view;
 	}
-
-	UserObserver userObserver = new UserObserver(this);
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		userObserver.startListening();
 		setInviteText();
 	}
 
 	@Override 
 	public void onStop() {
 		super.onStop();
-		userObserver.stopListening();
 	}
 	
 	private void setInviteText()
 	{
 		String personalizedURL = "http://bkdr.me";
-		String username = user.getFullName();
+		String username = User.getCurrentUser().getFullName();
 		int stringID;
 
 		if(anonSwitch.isChecked()) 
@@ -158,11 +153,6 @@ UserObserver.Observer {
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		sendButton.setEnabled(false);
-	}
-
-	@Override
-	public void onUserChanged() {
-		setInviteText();
 	}
 
 }

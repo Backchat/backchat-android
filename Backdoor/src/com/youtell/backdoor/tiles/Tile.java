@@ -2,6 +2,7 @@ package com.youtell.backdoor.tiles;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.R.id;
 import com.youtell.backdoor.R.layout;
@@ -58,7 +59,10 @@ public abstract class Tile {
 
 	protected void loadAvatar(String uri)
 	{
-		DisplayImageOptions options = new DisplayImageOptions.Builder().cacheInMemory(true).build();
+		DisplayImageOptions options = new DisplayImageOptions.Builder()
+				.cacheInMemory(true)				
+				.displayer(new RoundedBitmapDisplayer(15))
+				.build();
 		
 		ImageLoader.getInstance().displayImage(uri, this.icon, options);	
 	}

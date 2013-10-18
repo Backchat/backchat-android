@@ -7,7 +7,7 @@ import android.content.Context;
 import android.widget.BaseAdapter;
 
 public abstract class ORMListAdapter<T extends DatabaseObject> extends BaseAdapter {	
-	private List<T> items;
+	protected List<T> items;
 	protected Context context;
 	
 	public ORMListAdapter(Context context) {

@@ -8,5 +8,6 @@
     <color name="dark_green_background_color">#4a8530</color>
     <color name="action_bar_text_color">#FFFFFF</color>
     <color name="light_blue_background">#EDEDED</color>
-    <color name="off_black_background">#414141</color> 
+    <color name="off_black_background">#414141</color>
+    <color name="light_grey_background">#E4E4E4</color> 
 </resources>

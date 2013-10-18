@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -227,5 +228,48 @@ GCMNotificationObserver.Observer {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		shareHelper.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onMoreFriends() {
+		newGabClick(null);
+	}
+
+	@Override
+	public void onChangeNotificationSettings() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onReportAbuse() {
+		final EditText abuseInfo = new EditText(this);
+
+		abuseInfo.setHint(R.string.abuse_dialog_info_hint);
+		abuseInfo.setMinLines(3);
+		abuseInfo.setMaxLines(5);
+		abuseInfo.setBackgroundColor(getResources().getColor(R.color.light_grey_background));
+		abuseInfo.setGravity(Gravity.TOP);
+
+    	new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
+    	  .setTitle(R.string.abuse_dialog_title)
+    	  .setMessage(R.string.abuse_dialog_text)
+    	  .setView(abuseInfo)
+    	  .setPositiveButton(R.string.abuse_dialg_report_button, new DialogInterface.OnClickListener() {
+    	    public void onClick(DialogInterface dialog, int whichButton) {
+    	      
+    	    }
+    	  })
+    	  .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+    	    public void onClick(DialogInterface dialog, int whichButton) {
+    	    }
+    	  })
+    	  .show(); 
+	}
+
+	@Override
+	public void onAboutUs() {
+		// TODO Auto-generated method stub
+		
 	}
 }
