@@ -15,7 +15,6 @@ import com.youtell.backdoor.iap.BuyClueIAP;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.UserObserver;
 
-//TODO refactor all these userObservers
 public class GabAnonymousDetailActivity extends BaseGabDetailActivity 
 implements GabCluesFragment.Callbacks {
 	private GabCluesFragment cluesFragment;

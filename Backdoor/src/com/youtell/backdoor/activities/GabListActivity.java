@@ -20,6 +20,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 import com.squareup.otto.Subscribe;
 import com.youtell.backdoor.R;
+import com.youtell.backdoor.api.PostAbuseReportRequest;
 import com.youtell.backdoor.fragments.GabListFragment;
 import com.youtell.backdoor.fragments.SettingsMenuFragment;
 import com.youtell.backdoor.gcm.GCM;
@@ -32,6 +33,7 @@ import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.GCMNotificationObserver;
 import com.youtell.backdoor.observers.UserObserver;
 import com.youtell.backdoor.observers.UserObserver.Observer;
+import com.youtell.backdoor.services.APIService;
 import com.youtell.backdoor.services.ORMUpdateService;
 import com.youtell.backdoor.social.SocialProvider;
 
@@ -257,7 +259,7 @@ GCMNotificationObserver.Observer {
     	  .setView(abuseInfo)
     	  .setPositiveButton(R.string.abuse_dialg_report_button, new DialogInterface.OnClickListener() {
     	    public void onClick(DialogInterface dialog, int whichButton) {
-    	      
+    	    	APIService.fire(new PostAbuseReportRequest(abuseInfo.getText().toString()));
     	    }
     	  })
     	  .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {

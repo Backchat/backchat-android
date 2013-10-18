@@ -20,40 +20,22 @@ import com.youtell.backdoor.social.SocialProvider;
 import android.os.Bundle;
 
 public class PostLoginRequest extends Request {
-	private static final String TOKEN_ARG = "TOKEN_ARG";
-	private static final String PROVIDER_ARG = "PROVIDER_ARG";
-	private static final String HOSTNAME_ARG = "HOSTNAME_ARG";
-	
-	private String token;
-	private String provider;
-	private String hostName;
+	private StringArgumentHandler token = new StringArgumentHandler("token", this);
+	private StringArgumentHandler provider = new StringArgumentHandler("provider", this);
+	private StringArgumentHandler hostName = new StringArgumentHandler("hostname", this);
 	
 	public PostLoginRequest() {}
 	public PostLoginRequest(SocialProvider provider, String hostName) {
-		this.token = provider.getToken();
-		this.provider = provider.getProviderName();
-		this.hostName = hostName;
-	}
-	
-	@Override
-	protected void inflateArguments(Bundle args) {
-		this.token = args.getString(TOKEN_ARG);
-		this.provider = args.getString(PROVIDER_ARG);
-		this.hostName = args.getString(HOSTNAME_ARG);
-	}
-	
-	@Override
-	protected void addArguments(Bundle b) {
-		b.putString(TOKEN_ARG, this.token);
-		b.putString(PROVIDER_ARG, this.provider);
-		b.putString(HOSTNAME_ARG, this.hostName);
-	}
+		this.token.content = provider.getToken();
+		this.provider.content = provider.getProviderName();
+		this.hostName.content = hostName;
+	}	
 	
 	@Override
 	protected List<NameValuePair> getParameters() {
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("access_token", token));
-		pairs.add(new BasicNameValuePair("provider", provider));
+		pairs.add(new BasicNameValuePair("access_token", token.content));
+		pairs.add(new BasicNameValuePair("provider", provider.content));
 		return pairs;
 	}
 
@@ -65,7 +47,7 @@ public class PostLoginRequest extends Request {
 	@Override
 	protected HttpUriRequest getRequest(User user) throws Exception {
 		List<NameValuePair> nameValuePairs = getParameters();
-		URI uri = new URI("http", hostName, getPath(), null, null); 
+		URI uri = new URI("http", hostName.content, getPath(), null, null); 
 		HttpPost request = new HttpPost(uri);
 		request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		
@@ -77,8 +59,8 @@ public class PostLoginRequest extends Request {
 		/* user is null! */
 		/* parse out the stuff into a user */
 		User user = new User();
-		user.setApiServerHostName(hostName);
-		user.setApiToken(token);
+		user.setApiServerHostName(hostName.content);
+		user.setApiToken(token.content);
 		JSONObject userData = result.getJSONObject("user");
 		user.setID(userData.getInt("id"));
 		user.setTotalClueCount(userData.getInt("available_clues"));

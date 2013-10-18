@@ -14,29 +14,18 @@ import android.os.Bundle;
 
 //TODO merge string,int to simplehandler
 public class PostDeviceRequest extends PostRequest {
-	private String deviceToken;
-	private final static String DEVICE_TOKEN_ARG = "DEVICE_TOKEN_ARG";
+	private StringArgumentHandler deviceToken = new StringArgumentHandler("deviceToken", this);
 	
 	public PostDeviceRequest() {}
 	
 	public PostDeviceRequest(String id) {
-		deviceToken = id;
-	}
-	
-	@Override 
-	protected void addArguments(Bundle b) {
-		b.putString(DEVICE_TOKEN_ARG, deviceToken);
-	}
-	
-	@Override
-	protected void inflateArguments(Bundle args) {
-		deviceToken = args.getString(DEVICE_TOKEN_ARG);
-	}
+		deviceToken.content = id;
+	}	
 	
 	@Override
 	protected List<NameValuePair> getParameters() {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("device_token", deviceToken));
+		params.add(new BasicNameValuePair("device_token", deviceToken.content));
 		params.add(new BasicNameValuePair("kind", "GOOGLE"));
 		return params;
 	}
