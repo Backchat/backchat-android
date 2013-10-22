@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Switch;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -239,8 +240,19 @@ GCMNotificationObserver.Observer {
 
 	@Override
 	public void onChangeNotificationSettings() {
-		// TODO Auto-generated method stub
-		
+		final Switch switchSummary = new Switch(this);
+
+		switchSummary.setText(R.string.notification_settings_dialog_summary_text);
+
+    	new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
+    	  .setTitle(R.string.notification_settings_dialog_title)
+    	  .setMessage(R.string.notification_settings_dialog_text)
+    	  .setView(switchSummary)
+    	  .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+    	    public void onClick(DialogInterface dialog, int whichButton) {
+    	    }
+    	  })
+    	  .show(); 		
 	}
 
 	@Override

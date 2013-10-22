@@ -1,6 +1,10 @@
 package com.youtell.backdoor.models;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.util.Log;
 
 import com.youtell.backdoor.api.GetFeaturedRequest;
@@ -126,8 +130,70 @@ public class User implements InflatableObject {
 	public static void setCurrentUser(User user) {
 		currentUser = user;
 	}
-	
+
 	public static User getCurrentUser() {
 		return currentUser;
 	}
+	
+	private static final String PREFS_LOGIN = "PREFS_LOGIN";
+	private static final String CACHED_SOCIAL = "CACHED_SOCIAL";
+	private static final String CACHED_TOKEN = "CACHED_TOKEN";
+	private static final String CACHED_HOSTNAME = "CACHED_HOSTNAME";
+	private static final String CACHED_FULL_NAME = "CACHED_FULL_NAME";
+	private static final String CACHED_USER_ID = "CACHED_USER_ID";
+	
+	public static void clearCachedCredentials(Context context) {
+		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
+		Editor edit = prefs.edit();
+		final String[] allPrefs = {CACHED_SOCIAL, CACHED_HOSTNAME, CACHED_FULL_NAME, CACHED_TOKEN, CACHED_USER_ID};
+		for(String s: allPrefs)
+			edit.putString(s, "");
+		edit.commit();
+	}
+	
+	public static String getCachedSocialProvider(Context context) {
+		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);		
+		return prefs.getString(CACHED_SOCIAL, "");
+	}
+	
+	public static void setCachedSocialProvider(Context context, SocialProvider provider) {
+		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
+		Editor edit = prefs.edit();
+		edit.putString(CACHED_SOCIAL, provider.getProviderName());
+		edit.commit();
+	}
+	
+	public static void setCachedCredentials(Context context) {
+		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
+		Editor edit = prefs.edit();
+		currentUser.serializeToPrefs(edit);		
+	}
+
+	private void serializeToPrefs(Editor edit) {
+		edit.putString(CACHED_FULL_NAME, getFullName());
+		edit.putString(CACHED_TOKEN, getApiToken());
+		edit.putString(CACHED_HOSTNAME, getApiServerHostName());
+		edit.putInt(CACHED_USER_ID, getID());
+	}
+	
+	private void deserializeFromPrefs(SharedPreferences prefs) {
+		fullName = prefs.getString(CACHED_FULL_NAME, null);
+		apiToken = prefs.getString(CACHED_TOKEN, null);
+		hostName = prefs.getString(CACHED_HOSTNAME, null);
+		id = prefs.getInt(CACHED_USER_ID, -1);
+		
+		if(id == -1 || fullName == null || apiToken == null || hostName == null)
+			throw new RuntimeException("Deserializing user object from empty prefs");
+	}
+	
+	public static User getCachedUser(Context context) {
+		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);		
+		if(prefs.contains(CACHED_TOKEN) && prefs.getString(CACHED_TOKEN, null).length() > 0) {
+			User u = new User();
+			u.deserializeFromPrefs(prefs);
+			return u;
+		}
+		else
+			return null;
+	}			
 }

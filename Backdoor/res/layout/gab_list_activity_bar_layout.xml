@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:paddingLeft="4dp" >
+    android:paddingLeft="0dp" >
 
     <LinearLayout
         style="?android:attr/buttonBarStyle"
@@ -18,14 +18,13 @@
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="2"
             android:background="@drawable/green_tint_button_selector"
             android:contentDescription="@string/settings_button_accessible"
-            android:minWidth="24dp"
+            android:minWidth="48dp"
             android:onClick="settingsClick"
-            android:paddingLeft="6dp"
-            android:paddingRight="18dp"
-            android:src="@drawable/dot" />
+			android:gravity="left"
+			android:scaleType="fitStart"		
+            android:src="@drawable/dot"/>
 
         <ImageButton
             android:id="@+id/gab_list_invite_friends_button"
@@ -43,7 +42,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="4"
+        android:layout_weight="6"
         android:gravity="center_horizontal"
         android:orientation="horizontal" >
 
@@ -56,9 +55,8 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="2"
         android:gravity="right"
         android:orientation="horizontal" >
 
@@ -66,13 +64,12 @@
             android:id="@+id/gab_list_new_gab_button"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
             android:background="@drawable/green_tint_button_selector"
             android:contentDescription="@string/new_gab_button_accessible"
             android:gravity="center"
             android:onClick="newGabClick"
-            android:scaleType="fitCenter"
             android:src="@drawable/new_gab" />
     </LinearLayout>
 

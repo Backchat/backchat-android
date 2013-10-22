@@ -8,7 +8,9 @@
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
         <item name="android:actionMenuTextColor">@color/action_bar_text_color</item>
         <item name="android:actionModeCloseDrawable">@drawable/close</item>
-        <item name="android:actionModeBackground">@color/green_background_color</item>
+        <item name="android:actionModeBackground">@drawable/green_tint_button_selector</item>
+        <item name="android:actionBarItemBackground">@drawable/green_tint_button_selector</item>
+        <item name="android:actionModeCloseButtonStyle">@style/close_button_cab</item>
     </style>
 
     <style name="ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
@@ -24,6 +26,10 @@
     <!-- ActionBar tabs text styles -->
     <style name="ActionBarTabText" parent="@android:style/Widget.Holo.ActionBar.TabText">
         <item name="android:textColor">@color/action_bar_text_color</item>
+    </style>
+
+    <style name="close_button_cab" parent="android:style/Widget.ActionButton.CloseMode">
+        <item name="android:background">@drawable/green_tint_button_selector</item>
     </style>
 
 </resources>

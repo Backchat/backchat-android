@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostLoginRequest;
+import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.APIRequestObserver;
 import com.youtell.backdoor.services.APIService;
 import com.youtell.backdoor.social.FacebookProvider;
@@ -23,8 +24,6 @@ import com.youtell.backdoor.social.SocialProvider;
 
 public class LoginActivity extends BaseActivity implements APIRequestObserver.Observer<PostLoginRequest>,
 SocialProvider.Callback {
-	private static final String PREFS_LOGIN = "PREFS_LOGIN";
-	private static final String CACHED_SOCIAL = "CACHED_SOCIAL";
 	private static final String TAG = "LoginActivity";
 	
 	private APIRequestObserver<PostLoginRequest> observer = new APIRequestObserver<PostLoginRequest>(this, PostLoginRequest.class);
@@ -49,27 +48,22 @@ SocialProvider.Callback {
 		Intent args = getIntent();
 		boolean firstStart = args.getBooleanExtra(FIRST_START_ARG, false);
 		String cachedProvider = null;
-		SharedPreferences prefs = getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
 
 		if(!firstStart) {
 			//we are logging outut, yo! note that this is called before we try to log in in onCreate
 			//if old is NULL AND new is NULL, we haven't checked anything yet.
 			SocialProvider.getActiveProvider().logout();
 			SocialProvider.setActiveProvider(null);
-
-			Editor edit = prefs.edit();
-			edit.putString(CACHED_SOCIAL, "");
-			edit.commit();
+			User.clearCachedCredentials(getApplicationContext());			
 		}
 		else {
 			//if we got here, that means we don't have a cached BD login.
 			//check to see if we have stored in shared prefs the social provider we last used.
-			cachedProvider = prefs.getString(CACHED_SOCIAL, "");
-			if(cachedProvider != null)
-				Log.e(TAG, cachedProvider);
+			cachedProvider = User.getCachedSocialProvider(getApplicationContext());
+			socialProvider = SocialProvider.createByProviderName(cachedProvider, this);
+			Log.e(TAG, cachedProvider);
 		}
 		
-		socialProvider = SocialProvider.createByProviderName(cachedProvider, this);
 		
 		if(socialProvider != null) {
 			socialProvider.tryCachedLogin(this);
@@ -83,12 +77,8 @@ SocialProvider.Callback {
 	@Override
 	public void onAuthenticated(SocialProvider provider) {
 		/* save the provider preference */
-		SharedPreferences prefs = getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
-		Editor edit = prefs.edit();
 		Log.e(TAG, String.format("caching login %s", provider.getProviderName()));
-		edit.putString(CACHED_SOCIAL, provider.getProviderName());
-		edit.commit();
-
+		User.setCachedSocialProvider(getApplicationContext(), provider);
 		/* attempt to login and throw up a progress dialog */
 		progressDialog = ProgressDialog.show(this, "Logging in", null, true, false); //TODO stringify
 		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();

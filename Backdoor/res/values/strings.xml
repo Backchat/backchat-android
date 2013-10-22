@@ -55,4 +55,7 @@
 	<string name="abuse_dialog_text">Please describe as fully as possible the situation so we can address the issue</string>
 	<string name="abuse_dialog_info_hint">Type here</string>
 	<string name="abuse_dialg_report_button">Report</string>
+	<string name="notification_settings_dialog_summary_text">Show message content in notifications</string>
+	<string name="notification_settings_dialog_title">Configure notification settings</string>
+	<string name="notification_settings_dialog_text"></string>
 </resources>
