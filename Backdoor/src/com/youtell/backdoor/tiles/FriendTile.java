@@ -14,6 +14,10 @@ public class FriendTile extends Tile {
 	public FriendTile(Context context, ViewGroup parent) {
 		super(context, parent);
 	}
+	
+	public FriendTile(Context context, View existing) {
+		super(context, existing);
+	}
 
 	@Override
 	public void fill(Object object) {

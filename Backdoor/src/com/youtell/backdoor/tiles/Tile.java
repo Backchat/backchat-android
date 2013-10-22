@@ -59,9 +59,11 @@ public abstract class Tile {
 
 	protected void loadAvatar(String uri)
 	{
+		int rounding = (int)context.getResources().getDimension(R.dimen.tile_avatar_rounding);
+
 		DisplayImageOptions options = new DisplayImageOptions.Builder()
 				.cacheInMemory(true)				
-				.displayer(new RoundedBitmapDisplayer(15))
+				.displayer(new RoundedBitmapDisplayer(rounding))
 				.build();
 		
 		ImageLoader.getInstance().displayImage(uri, this.icon, options);	

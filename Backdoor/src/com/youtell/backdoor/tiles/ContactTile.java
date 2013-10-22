@@ -8,15 +8,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class ContactTile extends Tile {
+	private boolean showSelectedState;
 
 	public ContactTile(Context context, ViewGroup parent) {
 		super(context, parent);
+		showSelectedState = true;
 	}
 
 	public ContactTile(Context context, View view) {
 		super(context, view);
+		showSelectedState = true;
 	}
 
+	public void setShowSelected(boolean show) {
+		showSelectedState = show;
+	}
+	
 	@Override
 	public void fill(Object object) {
 		setAlpha(1.0);
@@ -33,7 +40,11 @@ public class ContactTile extends Tile {
 		else
 			this.attributeIcon.setBackgroundResource(R.drawable.unselect);
 
+		if(!showSelectedState) 
+			this.attributeIcon.setVisibility(View.GONE);
+		else
+			this.attributeIcon.setVisibility(View.VISIBLE);
+			
 		loadAvatar(contact.photoURI);
-
 	}
 }

@@ -21,6 +21,7 @@
     <string name="invite_compose_anon_text">Someone you know wants you to try Backdoor! Anonymously message your friends.</string>
     <string name="invite_compose_nonanon_text">Your friend %s wants you to try Backdoor! Anonymously message your friends.</string>
     <string name="invite_contacts_select_all">Select all</string>
+    <string name="invite_compose_to_header">To</string>
     <string name="invite_compose_toggle_anonymous">Send anonymously</string>
     <string name="invite_compose_sending_invite_dialog_title">Sending invites</string>
     <string name="invite_compose_sending_invite_dialog_body">Please wait</string>

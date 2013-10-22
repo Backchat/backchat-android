@@ -2,55 +2,92 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp" >
+    android:orientation="vertical" >
 
-    <RelativeLayout 
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="10dp" 
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/invite_compose_anon_text_label"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/invite_compose_toggle_anonymous"
-            android:textAppearance="?android:attr/textAppearanceMedium" />            
-            
-        <Switch
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff="@string/no_button"
-            android:textOn="@string/yes_button"
-            android:layout_alignParentRight="true"
-            android:layout_alignBaseline="@id/invite_compose_anon_text_label"
-            android:id="@+id/invite_compose_anonymous_switch"
-            />
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/invite_compose_to_header"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    </RelativeLayout>
-    <EditText
-        android:id="@+id/invite_compose_text"
+        <include
+            android:id="@+id/invite_compose_single_to_row"
+            layout="@layout/tile_row_layout" />
+
+        <HorizontalScrollView
+            android:id="@+id/invite_compose_multiple_to_scroll"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/invite_compose_multiple_to_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:lines="5"
-        android:minLines="5"
-        android:padding="5sp"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:scrollHorizontally="false"
-        android:scrollbars="vertical" />
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp" >
 
-    <Button
-        android:id="@+id/invite_compose_send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/send_button_text" 
-        android:layout_gravity="right"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" >
+
+            <TextView
+                android:id="@+id/invite_compose_anon_text_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/invite_compose_toggle_anonymous"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Switch
+                android:id="@+id/invite_compose_anonymous_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/invite_compose_anon_text_label"
+                android:layout_alignParentRight="true"
+                android:textOff="@string/no_button"
+                android:textOn="@string/yes_button" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/invite_compose_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:minLines="5"
+            android:paddingBottom="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:scrollHorizontally="false"
+            android:scrollbars="vertical" />
+
+        <Button
+            android:id="@+id/invite_compose_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="@string/send_button_text" />
+    </LinearLayout>
 
 </LinearLayout>
