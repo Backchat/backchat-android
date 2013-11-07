@@ -46,11 +46,11 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 		toastObserver.setWatchingGab(gab);
 	}
 
-	protected void setupFragment(int fromRes, int toRes, int fromTextColor, int toTextColor) {
-		setupFragment(fromRes, toRes, fromTextColor, toTextColor, getIntent().getBooleanExtra(BaseGabDetailActivity.ARG_KEYBOARD_OPEN, false));
+	protected void setupFragment(int fromRes, int toRes, int buttonSendRes, int fromTextColor, int toTextColor) {
+		setupFragment(fromRes, toRes, buttonSendRes, fromTextColor, toTextColor, getIntent().getBooleanExtra(BaseGabDetailActivity.ARG_KEYBOARD_OPEN, false));
 	}
 
-	protected void setupFragment(int fromRes, int toRes, int fromTextColorRes, int toTextColorRes, boolean keyboardState)
+	protected void setupFragment(int fromRes, int toRes, int buttonSendRes, int fromTextColorRes, int toTextColorRes, boolean keyboardState)
 	{
 		Bundle arguments = new Bundle();
 		arguments.putInt(GabDetailFragment.ARG_GAB_ID, gabID);
@@ -58,6 +58,7 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 		arguments.putInt(GabDetailFragment.TO_MESSAGE_RES, toRes);
 		arguments.putInt(GabDetailFragment.FROM_MESSAGE_COLOR_RES, fromTextColorRes);
 		arguments.putInt(GabDetailFragment.TO_MESSAGE_COLOR_RES, toTextColorRes);
+		arguments.putInt(GabDetailFragment.SEND_BUTTON_RES, buttonSendRes);
 		GabDetailFragment fragment = new GabDetailFragment();
 		fragment.setArguments(arguments);
 		getFragmentManager().beginTransaction()
@@ -86,6 +87,19 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 	
 	public void onDeleteClick(View v) {
 		gab.remove();
+		
+		runOnNextScreen(
+				new Runnable() {
+					@Override
+					public void run() {
+						Toast toast = Toast.makeText(getApplicationContext(), 
+								getResources().getText(R.string.gab_deleted_toast), Toast.LENGTH_SHORT);
+
+						toast.show();							
+					}
+				}
+			);
+		
 		goUp();
 	}
 
@@ -130,5 +144,12 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 		
 		gab.refresh();
 		setTitle(gab.getTitle());
+	}
+
+	@Override
+	public void onMessageImageClick(Message message) {
+		Intent imageIntent = new Intent(this, ViewImageActivity.class);
+		imageIntent.putExtra(ViewImageActivity.IMAGE_URL, message.getImageRemotePath());
+		startActivity(imageIntent);
 	}
 }

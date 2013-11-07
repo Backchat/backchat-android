@@ -65,7 +65,7 @@ public class IAP {
 		}
 	}
 
-	private static final String[] iaps = {"clue_3"};
+	private static final String[] iaps = {"clue_3", "clue_9", "clue_27"};
 
 	public void getItems() {
 		Thread t = new Thread(new Runnable() {
@@ -122,7 +122,6 @@ public class IAP {
 	public void buy(Item obj, User user) {
 		try {
 			String sku = obj.getSKU();
-			sku = "android.test.purchased";
 			Bundle buyIntentBundle = billingService.getBuyIntent(3, activity.getPackageName(),
 					sku, "inapp", 
 					String.format("%d", user.getID()) /*dev payload*/);
@@ -134,15 +133,7 @@ public class IAP {
 
 				String purchaseData = buyIntentBundle.getString("INAPP_PURCHASE_DATA");
 				PurchasedItem purchased;
-				
-				if(purchaseData == null) {
-					String token = "inapp:"+activity.getPackageName()+":android.test.purchased";
-					purchased = new PurchasedItem(sku, token); //TODO this won't work...
-				}
-				else {
-					purchased = new PurchasedItem(purchaseData);
-				}
-				
+				purchased = new PurchasedItem(purchaseData);
 				consume(purchased);
 			}
 			else {

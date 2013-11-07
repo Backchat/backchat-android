@@ -1,13 +1,20 @@
 package com.youtell.backdoor.fragments;
 
+import java.io.File;
 import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.BitmapFactory.Options;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,14 +37,15 @@ import com.youtell.backdoor.observers.MessageObserver;
  * A fragment representing a single Gab detail screen.
  */
 public class GabDetailFragment extends ListAdapterCallbackFragment<GabDetailMessageAdapter, MessageObserver, Message, GabDetailFragment.Callbacks> 
-implements OnClickListener, MessageObserver.Observer {
+implements OnClickListener, MessageObserver.Observer, GabDetailMessageAdapter.Callbacks {
 	public static final String ARG_GAB_ID = "gab_id";
 
 	public static final String FROM_MESSAGE_RES = "FROM_MESSAGE_RES";
 	public static final String TO_MESSAGE_RES = "TO_MESSAGE_RES";
 	public static final String FROM_MESSAGE_COLOR_RES = "FROM_MESSAGE_COLOR_RES";
 	public static final String TO_MESSAGE_COLOR_RES = "TO_MESSAGE_COLOR_RES";
-
+	public static final String SEND_BUTTON_RES = "SEND_BUTTON_RES";
+	
 	private EditText textInput;
 	private Gab gab;
 	
@@ -45,6 +53,7 @@ implements OnClickListener, MessageObserver.Observer {
 
 	public interface Callbacks extends ListAdapterCallbackFragment.Callbacks<Message> {
 		public void beforeMessageSend(Message message);
+		public void onMessageImageClick(Message message);
 	}
 
 	public GabDetailFragment() {
@@ -62,11 +71,14 @@ implements OnClickListener, MessageObserver.Observer {
 		View view = inflater.inflate(R.layout.fragment_gab_detail, container, false);
 
 		textInput = (EditText) view.findViewById(R.id.gab_input_text);
+
+		int sendButtonRes = getArguments().getInt(SEND_BUTTON_RES);
 		Button button = (Button) view.findViewById(R.id.gab_send_button);
+		button.setBackgroundResource(sendButtonRes);
 		button.setOnClickListener(this); 
 		ImageButton i_button = (ImageButton)view.findViewById(R.id.gab_detail_camera_button);
 		i_button.setOnClickListener(this);
-
+	    
 		return view;
 	}
 
@@ -79,19 +91,13 @@ implements OnClickListener, MessageObserver.Observer {
 
 	public void onClick(View v) {
 		if(v.getId() == R.id.gab_send_button) {
+			String text = textInput.getText().toString();
+			if(text.trim().length() == 0)
+				return;
+			
 			Message m = new Message();
-			m.setText(textInput.getText().toString());
-			m.setMine(true);
-			m.setCreatedAt(new Date());
-			m.setRemoteID(DatabaseObject.NEW_OBJECT);
-
-			if(mCallbacks != null) {
-				mCallbacks.beforeMessageSend(m);
-			}
-
-			gab.addMessage(m);
-
-			textInput.setText(null);
+			m.setText(text);
+			sendMessage(m);
 		}
 		else if(v.getId() == R.id.gab_detail_camera_button) {
 			Intent pickIntent = new Intent();
@@ -100,7 +106,7 @@ implements OnClickListener, MessageObserver.Observer {
 
 			Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-			String pickTitle = "Select or take a new Picture"; //TODO stringify
+			String pickTitle = getResources().getString(R.string.gab_pick_image_description);
 			Intent chooserIntent = Intent.createChooser(pickIntent, pickTitle);
 			chooserIntent.putExtra
 			(
@@ -133,7 +139,7 @@ implements OnClickListener, MessageObserver.Observer {
 		int fromColor = getResources().getColor(getArguments().getInt(FROM_MESSAGE_COLOR_RES));
 		int toColor = getResources().getColor(getArguments().getInt(TO_MESSAGE_COLOR_RES));
 		return new GabDetailMessageAdapter(getActivity(), 
-				gab, fromMessageRes, toMessageRes, fromColor, toColor);
+				gab, this, fromMessageRes, toMessageRes, fromColor, toColor);
 	}
 
 	@Override
@@ -151,13 +157,48 @@ implements OnClickListener, MessageObserver.Observer {
 	    if(requestCode == PICK_IMAGE && data != null && data.getData() != null) {
 	        Uri _uri = data.getData();
 
-	        Cursor cursor = getActivity().getContentResolver().query(_uri, new String[] { android.provider.MediaStore.Images.ImageColumns.DATA }, null, null, null);
+	        Cursor cursor = getActivity().getContentResolver().query(_uri, new String[] { 
+	        		android.provider.MediaStore.Images.ImageColumns.DATA,
+	        		android.provider.MediaStore.Images.ImageColumns.ORIENTATION
+	        		}, null, null, null);
 	        cursor.moveToFirst();
-
-	        final String imageFilePath = cursor.getString(0);
+	        final int dataColumn = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.DATA);
+	        final int orientationColumn = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.ORIENTATION);
+	        final String imageFilePath = cursor.getString(dataColumn);
+	        final int degrees = cursor.getInt(orientationColumn);
+	        
 	        Log.e("IMAGE_PICKER", imageFilePath);
+	        
+	        final File imageFile = new File(imageFilePath);
+	        
+            Message m = new Message();
+			m.setFilePath(imageFile);
+			sendMessage(m);
+			
 	        cursor.close();
 	    }
 	    super.onActivityResult(requestCode, resultCode, data);
 	}
+	
+	private void sendMessage(Message m) {
+		m.setMine(true);
+		m.setCreatedAt(new Date());
+		m.setRemoteID(DatabaseObject.NEW_OBJECT);
+		
+		if(mCallbacks != null) {
+			mCallbacks.beforeMessageSend(m);
+		}
+
+		gab.addMessage(m);
+
+		textInput.setText(null);
+	}
+
+	@Override
+	public void onImageClick(Message which) {
+		if(mCallbacks != null) {
+			mCallbacks.onMessageImageClick(which);
+		}
+	}
+	
 }

@@ -2,10 +2,15 @@ package com.youtell.backdoor.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -18,7 +23,6 @@ import com.youtell.backdoor.observers.UserObserver;
 public class GabAnonymousDetailActivity extends BaseGabDetailActivity 
 implements GabCluesFragment.Callbacks {
 	private GabCluesFragment cluesFragment;
-	private View cluesView;
 	private BuyClueIAP buyClue = new BuyClueIAP(this);
 
 	public void tagGab(View v) {
@@ -50,19 +54,14 @@ implements GabCluesFragment.Callbacks {
         setupActionBar(SHOW_ANON_BUTTONS | SHOW_DELETE_BUTTON);
                 
         if(savedInstanceState == null) {
-        	setupFragment(R.drawable.blue_bubble, R.drawable.black_bubble_from, R.color.blue_bubble_text_color, R.color.black_bubble_from_text_color);
+        	setupFragment(R.drawable.blue_bubble, R.drawable.black_bubble_from, R.drawable.send_blue_button_selector, R.color.blue_bubble_text_color, R.color.black_bubble_from_text_color);
         }        
-        
+              
 		Bundle arguments = new Bundle();
 		arguments.putInt(GabCluesFragment.ARG_GAB_ID, gabID);
 		cluesFragment = new GabCluesFragment();
 		cluesFragment.setArguments(arguments);
-		getFragmentManager().beginTransaction()
-		.add(R.id.gab_clues_container, cluesFragment)
-		.commit();
 		
-		cluesView = findViewById(R.id.gab_clues_container);
-    	cluesView.setVisibility(View.GONE);
     }
     
     public void onCluesClick(View v) {
@@ -70,7 +69,7 @@ implements GabCluesFragment.Callbacks {
 	    InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
 	    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
 		
-    	cluesView.setVisibility(View.VISIBLE);
+        cluesFragment.show(getFragmentManager(), "CLUES");
     }
        
     @Override
@@ -81,7 +80,7 @@ implements GabCluesFragment.Callbacks {
 
 	@Override
 	public void onCancel() {
-		cluesView.setVisibility(View.GONE);
+		cluesFragment.dismiss();
 	}	
 
 	@Override

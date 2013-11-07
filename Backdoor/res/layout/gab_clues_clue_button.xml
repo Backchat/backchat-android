@@ -2,22 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical" 
-    android:padding="10dp">
+    android:orientation="vertical"
+    android:padding="10dp" >
 
-    <ImageView
-        android:id="@+id/gab_clues_clue_icon_button"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:src="@drawable/clue_question_mark"
-        android:contentDescription="@string/gab_clue_button_accessible"/>
-    
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/gab_clues_clue_icon_button"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:contentDescription="@string/gab_clue_button_accessible"
+            android:src="@drawable/clue_question_mark" />
+
+        <ProgressBar
+            android:id="@+id/gab_clues_clue_icon_progress"
+            android:layout_width="30dp"
+            android:layout_height="30dp" 
+            android:layout_gravity="center_vertical|center_horizontal"/>
+    </FrameLayout>
+
     <TextView
         android:id="@+id/gab_clues_clue_icon_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="#FFFFFF"
-        />
+        android:maxLines="2"
+        android:minLines="2"
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.youtell.backdoor"
-    android:versionCode="11"
+    android:versionCode="15"
     android:versionName="1.0" >
 
     <uses-sdk
@@ -76,6 +76,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.youtell.backdoor.activities.GabListActivity" />
+        </activity>
+        <activity
+            android:name="com.youtell.backdoor.activities.ViewImageActivity"
+            android:screenOrientation="portrait" 
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
         </activity>
         <activity
             android:name="com.youtell.backdoor.activities.NewGabActivity"

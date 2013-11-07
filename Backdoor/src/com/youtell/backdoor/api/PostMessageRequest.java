@@ -1,5 +1,6 @@
 package com.youtell.backdoor.api;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,10 @@ import com.youtell.backdoor.models.Message;
 import com.youtell.backdoor.models.User;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
+import android.util.Base64;
 
 public class PostMessageRequest extends PostRequest {
 	private TypedArgumentHandler<Gab> gab = new TypedArgumentHandler<Gab>(Gab.class, this);
@@ -54,8 +58,25 @@ public class PostMessageRequest extends PostRequest {
 	@Override
 	protected List<NameValuePair> getParameters() {
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
-        nameValuePairs.add(new BasicNameValuePair("content", message.object.getContent()));
-        nameValuePairs.add(new BasicNameValuePair("kind", Integer.valueOf(message.object.getKind()).toString()));
+		String content;
+		String kind;
+		if(message.object.getKind() == Message.KIND_TEXT) {
+			content = message.object.getContent();
+			kind = "0";
+		}
+		else {
+			//cloned from iOS app, JPEG @ 0.85
+			ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+			Bitmap b = Util.openBitmap(message.object.getContent(),  false);
+			b.compress(CompressFormat.JPEG, 85, byteStream);
+			byte[] array = byteStream.toByteArray();
+			String asBase64 = Base64.encodeToString(array, Base64.DEFAULT);
+			b.recycle();
+			content = asBase64;
+			kind = "1";
+		}
+        nameValuePairs.add(new BasicNameValuePair("content", content));
+        nameValuePairs.add(new BasicNameValuePair("kind", kind));
         message.object.setKey(Util.generatePseudoRandomString(16)); //TODO move?
         nameValuePairs.add(new BasicNameValuePair("key", message.object.getKey()));
         return nameValuePairs;

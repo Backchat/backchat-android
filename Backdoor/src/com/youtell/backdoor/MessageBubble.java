@@ -3,11 +3,17 @@ package com.youtell.backdoor;
 import com.youtell.backdoor.models.Message;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.format.DateUtils;
+import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
 
@@ -18,6 +24,14 @@ public class MessageBubble {
 	private View views;
 	private TextView headerTextLabel;
 	private TextView statusLabel;
+	private ImageView imageView;
+	private LinearLayout backgroundBubble;
+	private Object additionalInfo;
+	private Callback listener;
+	
+	public interface Callback {
+		void onImageClick(MessageBubble which, Object additionalInfo);
+	}
 	 
 	public MessageBubble(Context context, ViewGroup parent) {
 		this.context = context;
@@ -30,15 +44,35 @@ public class MessageBubble {
 		this.message = (TextView) this.views.findViewById(R.id.gab_message_text);
 		this.statusLabel = (TextView) this.views.findViewById(R.id.gab_message_status_label);
 		this.headerTextLabel = (TextView) this.views.findViewById(R.id.gab_message_header_text);
-		 
+		this.imageView = (ImageView) this.views.findViewById(R.id.gab_message_image);
+		this.backgroundBubble = (LinearLayout) this.views.findViewById(R.id.gab_message_background_bubble);
+		
+		this.imageView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(listener != null)
+					listener.onImageClick(MessageBubble.this, MessageBubble.this.additionalInfo);
+			}			
+		});
+		
 		this.views.setTag(this);
+		
 		return this.views;
 	}
 	
-	public void fillWithMessage(Message m, int fromRes, int toRes, int fromColor, int toColor, boolean isLast, boolean showHeader)
+	public void fillWithMessage(Message m, int fromRes, int toRes, int fromColor, int toColor, boolean isLast, boolean showHeader,
+			Callback listener, Object additionalInfo)
 	{
-		if(m.getKind() == Message.KIND_TEXT)
+		if(m.getKind() == Message.KIND_TEXT) {
+			this.message.setVisibility(View.VISIBLE);
+			this.imageView.setVisibility(View.GONE);
 			this.message.setText(m.getContent());
+		}
+		else {
+			this.imageView.setVisibility(View.VISIBLE);
+			this.message.setVisibility(View.GONE);			
+			this.imageView.setImageBitmap(m.getThumbnailBitmap());
+		}
 		
 		int gravity;
 		int messageBackground;		
@@ -57,32 +91,43 @@ public class MessageBubble {
 			color = toColor;
 		}
 
-		LayoutParams lp = (LayoutParams) this.message.getLayoutParams();
+		LayoutParams lp = (LayoutParams) this.backgroundBubble.getLayoutParams();
 		lp.gravity = gravity;
-		this.message.setLayoutParams(lp);
-		this.message.setBackgroundResource(messageBackground);
+		
+		this.backgroundBubble.setLayoutParams(lp);
+		this.backgroundBubble.setBackgroundResource(messageBackground);
+		
 		this.message.setTextColor(color);
 
 		lp = (LayoutParams) this.statusLabel.getLayoutParams();
 		lp.gravity = gravity;
 		this.statusLabel.setLayoutParams(lp);
 		
-		if(m.isSent()) {
-			if(isLast) {
-				this.statusLabel.setText("Delivered");
-			}		
+		if(m.isMine()) {
+			this.statusLabel.setVisibility(View.VISIBLE);
+
+			if(m.isSent()) {
+				if(isLast) {
+					this.statusLabel.setText("Delivered");
+				}		
+				else {
+					this.statusLabel.setVisibility(View.GONE);
+				}
+			}
 			else {
-				this.statusLabel.setVisibility(View.GONE);
+				this.statusLabel.setText("Pending");
 			}
 		}
-		else {
-			this.statusLabel.setText("Pending");
-		}
+		else 
+			this.statusLabel.setVisibility(View.GONE);
 		
 		if(showHeader)
 			this.headerTextLabel.setText(DateUtils.formatDateTime(context, m.getCreatedAt().getTime(), 
 					DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME));
 		else 
 			this.headerTextLabel.setVisibility(View.GONE);
+		
+		this.listener = listener;
+		this.additionalInfo = additionalInfo;
 	}
 }

@@ -11,15 +11,21 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class GabDetailMessageAdapter extends ORMListAdapter<Message> {
-
+public class GabDetailMessageAdapter extends ORMListAdapter<Message> implements MessageBubble.Callback {
+	public interface Callbacks
+	{
+		void onImageClick(Message which);
+	}
+	
 	private Gab gab;
 	private int fromMessageRes;
 	private int toMessageRes;
 	private int fromColor;
 	private int toColor;
+	private Callbacks callback;
 	
-	public GabDetailMessageAdapter(Context context, Gab gab, int fromMessageRes, int toMessageRes, int fromColor, int toColor) 
+	public GabDetailMessageAdapter(Context context, Gab gab, Callbacks callback,
+			int fromMessageRes, int toMessageRes, int fromColor, int toColor) 
 	{
 		super(context);
 		this.gab = gab;
@@ -27,6 +33,7 @@ public class GabDetailMessageAdapter extends ORMListAdapter<Message> {
 		this.toMessageRes = toMessageRes;
 		this.fromColor = fromColor;
 		this.toColor = toColor;
+		this.callback = callback;
 		
 		updateData();
 	}
@@ -57,7 +64,9 @@ public class GabDetailMessageAdapter extends ORMListAdapter<Message> {
 			long distance = message.getCreatedAt().getTime() - prevMessage.getCreatedAt().getTime();
 			showHeader = distance > 2*60*1000; // 2 minutes
 		}
-		bubble.fillWithMessage(message, fromMessageRes, toMessageRes, fromColor, toColor, position == getCount() - 1, showHeader);
+		
+		bubble.fillWithMessage(message, fromMessageRes, toMessageRes, fromColor, toColor, position == getCount() - 1, showHeader, 
+				this, message);
 		
 		return convertView;
 	}
@@ -65,5 +74,11 @@ public class GabDetailMessageAdapter extends ORMListAdapter<Message> {
 	@Override
 	protected List<Message> getList() {
 		return new ArrayList<Message>(gab.getMessages());
+	}
+
+	@Override
+	public void onImageClick(MessageBubble which, Object additionalInfo) {
+		if(callback != null)
+			callback.onImageClick((Message)additionalInfo);
 	}
 }

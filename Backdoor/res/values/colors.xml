@@ -9,5 +9,7 @@
     <color name="action_bar_text_color">#FFFFFF</color>
     <color name="light_blue_background">#EDEDED</color>
     <color name="off_black_background">#414141</color>
-    <color name="light_grey_background">#E4E4E4</color> 
+    <color name="off_black_down_background">#2B2B2B</color>
+    <color name="light_grey_background">#F0F0F0</color>
+    <color name="white">#FFFFFF</color> 
 </resources>

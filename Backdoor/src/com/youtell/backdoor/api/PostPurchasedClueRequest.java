@@ -36,7 +36,7 @@ public class PostPurchasedClueRequest extends PostRequest {
 	@Override
 	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		int total_available = result.getInt("available_clues");
-		user.updateTotalClues(total_available);
+		User.getCurrentUser().updateTotalClues(total_available); //TODO should be broadcuast
 	}
 
 }

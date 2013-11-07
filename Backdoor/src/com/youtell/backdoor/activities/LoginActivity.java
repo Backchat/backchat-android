@@ -125,6 +125,7 @@ SocialProvider.Callback {
 	
 	@Override
 	public void onSuccess() {
+		User.setCachedCredentials(this);
 		SocialProvider.setActiveProvider(socialProvider);
 		//yes!
 		if(progressDialog != null) {
@@ -177,4 +178,9 @@ SocialProvider.Callback {
 		setButtonVisibility(View.VISIBLE);
 		setButtonState(true);
 	}
+	
+	@Override
+	public void goUp() {		
+	}
+	
 }

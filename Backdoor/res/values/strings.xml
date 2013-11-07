@@ -58,5 +58,14 @@
 	<string name="abuse_dialg_report_button">Report</string>
 	<string name="notification_settings_dialog_summary_text">Show message content in notifications</string>
 	<string name="notification_settings_dialog_title">Configure notification settings</string>
-	<string name="notification_settings_dialog_text"></string>
+	<string name="notification_settings_dialog_vibrate_text">Vibrate when a message arrives</string>
+	<string name="gab_deleted_toast">Conversation deleted</string>
+	<string name="gab_pick_image_description">Select or take a new Picture</string>
+	<string name="clue_translated_like">Likes</string>
+	<string name="clue_translated_work">Work</string>
+	<string name="clue_translated_gender">Gender</string>
+	<string name="clue_translated_location">Lives in</string>
+	<string name="clue_translated_school">School</string>
+	<string name="gab_clue_updating_remaining">Updating&#8230;</string>
+	
 </resources>

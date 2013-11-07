@@ -36,7 +36,7 @@ public class PostGabClueRequest extends PostRequest {
 	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		Log.e("postgabclues", result.toString());
 		int availableClues = result.getInt("available_clues"); 
-		user.updateTotalClues(availableClues);
+		User.getCurrentUser().updateTotalClues(availableClues); //TODO should be broadcast
 		JSONObject clueData = result.getJSONObject("clue");
 		int remoteID = clueData.getInt("id");
 		clue.object.setRemoteID(remoteID);

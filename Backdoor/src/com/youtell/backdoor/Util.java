@@ -1,5 +1,6 @@
 package com.youtell.backdoor;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,6 +11,10 @@ import org.json.JSONException;
 
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.text.format.DateUtils;
 
 public class Util {
@@ -55,5 +60,45 @@ public class Util {
 			sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
 		return sb.toString();
 
+	}
+	
+	public static Bitmap openBitmap(String absolutePath, boolean scaled) {
+		BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inPurgeable = true;
+        o.inInputShareable = true;
+        Bitmap myBitmap = BitmapFactory.decodeFile(absolutePath, o);
+        ExifInterface exif;
+        
+		try {
+			exif = new ExifInterface(absolutePath);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		if(scaled) {
+            //resize for the thumbnail (220x220 c&p from server)
+			double scaleFactor = 220.0 / Math.max(o.outWidth, o.outHeight); 
+			int newWidth = (int) (o.outWidth * scaleFactor);
+			int newHeight = (int) (o.outHeight * scaleFactor);
+            Bitmap bmpScaled = Bitmap.createScaledBitmap(myBitmap, newWidth, newHeight, false);
+            myBitmap = bmpScaled;
+		}
+		
+        Matrix matrix = new Matrix();
+        int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);
+        if (orientation == ExifInterface.ORIENTATION_NORMAL) {
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+        	matrix.postRotate(90);
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+        	matrix.postRotate(180);
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+        	matrix.postRotate(270);
+        }
+        Bitmap bmpRotated = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, false);
+        myBitmap.recycle();
+        
+        return bmpRotated;
 	}
 }

@@ -37,7 +37,7 @@ public class GetGabCluesRequest extends GetRequest {
 	@Override
 	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
 		JSONArray clues = result.getJSONArray("clues");
-		user.updateTotalClues(result.getInt("available_clues")); 
+		User.getCurrentUser().updateTotalClues(result.getInt("available_clues")); //TODO this should be broadcast not assumed 
 		
 		for(int i=0;i<clues.length();i++) {
 			JSONObject clue = clues.getJSONObject(i);

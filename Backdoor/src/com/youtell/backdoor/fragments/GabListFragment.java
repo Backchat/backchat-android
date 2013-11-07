@@ -1,5 +1,7 @@
 package com.youtell.backdoor.fragments;
 
+import java.util.Locale;
+
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshAttacher.OnRefreshListener;
 import android.app.Activity;
@@ -111,7 +113,13 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 		moreFriendsAdapter = new ItemAdapter(getActivity(), MoreFriendsTile.class);
 		moreFriendsAdapter.setVisible(false);
 		
-		adapter.addSection(featuredListAdapter);
+		boolean shouldShowFeatured = false;
+		if(Locale.getDefault().getISO3Country().equalsIgnoreCase("BRA"))
+			shouldShowFeatured = true;
+		
+		if(shouldShowFeatured)
+			adapter.addSection(featuredListAdapter);
+		
 		adapter.addSection(gabListAdapter);
 		adapter.addSection(friendListAdapter);
 		adapter.addSection(moreFriendsAdapter);		

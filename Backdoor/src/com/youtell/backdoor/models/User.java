@@ -17,6 +17,8 @@ import com.youtell.backdoor.social.SocialProvider;
 
 public class User implements InflatableObject {
 
+	public static final int UNKNOWN_CLUE_COUNT = -1;
+	
 	public void updateGabs() {
 		APIService.fire(new GetGabsRequest());
 	}
@@ -56,7 +58,7 @@ public class User implements InflatableObject {
 		return fullName;
 	}
 
-	private int totalClueCount;
+	private int totalClueCount = UNKNOWN_CLUE_COUNT;
 	
 	public void setTotalClueCount(int n) {
 		totalClueCount = n;
@@ -82,10 +84,11 @@ public class User implements InflatableObject {
 	
 	public void deserialize(Bundle b) {		
 		setGCMKey(b.getString("GCMKey"));
-		setTotalClueCount(b.getInt("totalClueCount"));
+		this.totalClueCount = b.getInt("totalClueCount");
 		setApiServerHostName(b.getString("hostName"));
 		setApiToken(b.getString("apiToken"));
 		setFullName(b.getString("fullName"));
+		this.message_preview = b.getBoolean("message_preview");
 		setID(b.getInt("id"));
 	}
 	
@@ -96,6 +99,7 @@ public class User implements InflatableObject {
 		b.putString("hostName", getApiServerHostName());
 		b.putString("apiToken", getApiToken());
 		b.putString("fullName", getFullName());
+		b.putBoolean("message_preview", message_preview);
 		b.putInt("id", id);
 	}
 	
@@ -141,6 +145,7 @@ public class User implements InflatableObject {
 	private static final String CACHED_HOSTNAME = "CACHED_HOSTNAME";
 	private static final String CACHED_FULL_NAME = "CACHED_FULL_NAME";
 	private static final String CACHED_USER_ID = "CACHED_USER_ID";
+	private static final String PREFS_LOCAL_SETTINGS = "PREFS_LOCAL_SETTINGS";
 	
 	public static void clearCachedCredentials(Context context) {
 		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
@@ -166,7 +171,8 @@ public class User implements InflatableObject {
 	public static void setCachedCredentials(Context context) {
 		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOGIN, Context.MODE_PRIVATE);
 		Editor edit = prefs.edit();
-		currentUser.serializeToPrefs(edit);		
+		currentUser.serializeToPrefs(edit);	
+		edit.commit();
 	}
 
 	private void serializeToPrefs(Editor edit) {
@@ -191,9 +197,36 @@ public class User implements InflatableObject {
 		if(prefs.contains(CACHED_TOKEN) && prefs.getString(CACHED_TOKEN, null).length() > 0) {
 			User u = new User();
 			u.deserializeFromPrefs(prefs);
+			u.totalClueCount = UNKNOWN_CLUE_COUNT;
 			return u;
 		}
 		else
 			return null;
+	}
+	
+	private boolean message_preview;
+
+	public void setMessagePreview(boolean message_preview) {
+		this.message_preview = message_preview;
+		UserObserver.broadcastUserChange();
 	}			
+	
+	public boolean getMessagePreview()
+	{
+		return message_preview;
+	}
+	
+	private static final String LOCAL_VIBRATE_SETTING = "LOCAL_VIBRATE_SETTING";
+	
+	public boolean getVibratePref(Context context) {
+		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOCAL_SETTINGS, Context.MODE_PRIVATE);
+		return prefs.getBoolean(LOCAL_VIBRATE_SETTING, true);
+	}
+	
+	public void setVibratePref(Context context, boolean value) {
+		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOCAL_SETTINGS, Context.MODE_PRIVATE);
+		Editor edit = prefs.edit();
+		edit.putBoolean(LOCAL_VIBRATE_SETTING, value);
+		edit.commit();
+	}
 }

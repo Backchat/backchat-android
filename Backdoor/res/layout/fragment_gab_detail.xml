@@ -7,45 +7,53 @@
         android:id="@+id/gab_detail_input_bar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true" 
+        android:background="@color/green_background_color"
+        android:orientation="horizontal">
 
         <ImageButton
+            android:id="@+id/gab_detail_camera_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:id="@+id/gab_detail_camera_button"
-            android:padding="5sp"
-            android:paddingLeft="15sp"
-            android:paddingRight="15sp"
-            android:src="@drawable/camera"
-            android:background="#FFFFFF"
-            android:contentDescription="@string/camera_button_accessible" />
-
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/green_tint_button_selector"
+            android:contentDescription="@string/camera_button_accessible"
+            android:padding="5dp"
+            android:src="@drawable/camera" />
+        
         <EditText
             android:id="@+id/gab_input_text"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5sp"
             android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:hint="@string/gab_detail_hint_send"
             android:inputType="textMultiLine"
             android:lines="5"
             android:minLines="1"
-            android:padding="5sp"
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            android:layout_marginTop="7dp"            
             android:scrollHorizontally="false"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical" 
+            android:background="#FFFFFF"
+            />
 
         <Button
+            android:id="@+id/gab_send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:id="@+id/gab_send_button"
-            android:paddingBottom="5sp"
-            android:paddingLeft="15sp"
-            android:paddingRight="15sp"
-            android:paddingTop="5sp"
+            android:layout_margin="5dp"
+            android:layout_marginTop="13dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:padding="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:text="@string/send_button_text"
             android:textColor="#FFF" />
+        
     </LinearLayout>
 
     <ListView

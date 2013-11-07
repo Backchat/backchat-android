@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
     android:orientation="vertical" >
-   
+
     <LinearLayout
         android:id="@+id/gab_clues_grid_container"
         android:layout_width="match_parent"
@@ -29,31 +30,38 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="20dp"
-            android:background="#000000"
+            android:background="@drawable/rounded_black_corners_selector"
             android:text="@string/gab_clues_get_more"
-            android:textColor="#FFFFFF" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFFFFF"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
 
         <Button
             android:id="@+id/gab_clues_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
             android:layout_marginTop="10dp"
-            android:background="#000000"
+            android:background="@drawable/rounded_black_corners_selector"
             android:text="@string/cancel_button"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="15dp" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFFFFF" 
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            />
     </LinearLayout>
-    
-     <TextView
-         android:id="@+id/gab_clues_status_label"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_above="@id/gab_clues_grid_container"
-         android:background="#000000"
-         android:gravity="center"
-         android:paddingBottom="5dp"
-         android:paddingTop="5dp"
-         android:textAppearance="?android:attr/textAppearanceLarge"
-         android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/gab_clues_status_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/gab_clues_grid_container"
+        android:background="@color/off_black_background"
+        android:gravity="center"
+        android:paddingBottom="7dp"
+        android:paddingTop="7dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#FFFFFF" />
 
 </RelativeLayout>

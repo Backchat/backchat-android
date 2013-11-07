@@ -5,4 +5,5 @@
     <dimen name="tile_avatar_margin">10dp</dimen>
     <dimen name="tile_avatar_size">50dp</dimen>
 
+    <dimen name="clue_tile_rounding">10dp</dimen>
 </resources>

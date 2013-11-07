@@ -11,6 +11,7 @@
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="@drawable/green_tint_button_selector"
         android:gravity="center"
         android:onClick="tagGab"
         android:text="@string/gab_detail_tag"
@@ -21,6 +22,7 @@
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="@drawable/green_tint_button_selector"
         android:gravity="center"
         android:onClick="onCluesClick"
         android:text="@string/gab_detail_clue"
@@ -28,24 +30,26 @@
 
     <ImageButton
         android:id="@+id/gab_delete_button"
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="@drawable/green_tint_button_selector"
+        android:contentDescription="@string/trash_button_accessible"
         android:gravity="center"
         android:onClick="onDeleteClick"
         android:paddingLeft="10dp"
-        android:src="@drawable/trash"
-        android:contentDescription="@string/trash_button_accessible"
-        style="?android:attr/buttonBarButtonStyle" />
+        android:src="@drawable/trash" />
 
     <Button
         android:id="@+id/gab_cancel_button"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="@drawable/green_tint_button_selector"
         android:gravity="center"
-        android:paddingRight="4dp"
-        android:textColor="#FFFFFF"
         android:onClick="onCancelClick"
-        android:text="@string/cancel_button" />
+        android:paddingRight="4dp"
+        android:text="@string/cancel_button"
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>

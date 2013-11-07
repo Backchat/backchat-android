@@ -1,49 +1,32 @@
 package com.youtell.backdoor.fragments;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.NameValuePair;
-
-import com.android.vending.billing.IInAppBillingService;
-import com.j256.ormlite.dao.CloseableWrappedIterable;
-import com.j256.ormlite.dao.ForeignCollection;
-import com.youtell.backdoor.ClueGridItem;
-import com.youtell.backdoor.R;
-import com.youtell.backdoor.iap.IAP;
-import com.youtell.backdoor.iap.IAP.Observer;
-import com.youtell.backdoor.iap.Item;
-import com.youtell.backdoor.models.Clue;
-import com.youtell.backdoor.models.DatabaseObject;
-import com.youtell.backdoor.models.Gab;
-import com.youtell.backdoor.models.Message;
-import com.youtell.backdoor.models.User;
-import com.youtell.backdoor.observers.ClueObserver;
-import com.youtell.backdoor.observers.UserObserver;
-import com.youtell.backdoor.services.APIService;
-
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.GridLayout;
-import android.widget.GridLayout.LayoutParams;
 import android.widget.TextView;
-import android.os.IBinder;
 
-//TODO spinny while loading
-public class GabCluesFragment extends CallbackFragment<GabCluesFragment.Callbacks> 
+import com.j256.ormlite.dao.ForeignCollection;
+import com.youtell.backdoor.ClueGridItem;
+import com.youtell.backdoor.R;
+import com.youtell.backdoor.models.Clue;
+import com.youtell.backdoor.models.DatabaseObject;
+import com.youtell.backdoor.models.Gab;
+import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.observers.ClueObserver;
+import com.youtell.backdoor.observers.UserObserver;
+
+public class GabCluesFragment extends DialogFragment
 implements UserObserver.Observer, ClueObserver.Observer {
 	public interface Callbacks {
 		public void onCancel();
@@ -56,12 +39,22 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	private TextView clueLabel;
 	private ClueObserver clueObserver;
 	private UserObserver userObserver = new UserObserver(this);
+	private Callbacks mCallbacks;
+	
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    	Dialog d = new Dialog(getActivity(), android.R.style.Theme);
+    	d.getWindow().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+    	d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        return d;
+    }
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		gab = Gab.getByID(getArguments().getInt(ARG_GAB_ID, -1)); //TODO
 		super.onCreate(savedInstanceState);
 		clueObserver = new ClueObserver(this, gab);
+		
 	}       
 
 	@Override 
@@ -73,15 +66,16 @@ implements UserObserver.Observer, ClueObserver.Observer {
 
 		for(int i=0;i<gab.getClueCount();i++) {
 			final int number = i;
-			ClueGridItem clueTile = new ClueGridItem(inflater, clueGrid, i, 3, 3, new OnClickListener() {		
+			final ClueGridItem clueTile = new ClueGridItem(inflater, clueGrid, i, 3, 3, new ClueGridItem.Callback() {
+				
 				@Override
-				public void onClick(View v) {
+				public void onClick(ClueGridItem which) {
+					which.startProgress();
 					Clue c = new Clue();
 					c.setRemoteID(DatabaseObject.NEW_OBJECT);
 					c.setNumber(number);
-					gab.addClue(c);
+					gab.addClue(c);					
 				}
-
 			});
 		}
 
@@ -136,8 +130,13 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	
 	private void updateClueCount()
 	{
-		clueLabel.setText(String.format(getActivity().getResources().getString(R.string.gab_clue_status_text), 
-				User.getCurrentUser().getTotalClueCount()));
+		if(User.getCurrentUser().getTotalClueCount() == User.UNKNOWN_CLUE_COUNT) {
+			clueLabel.setText(R.string.gab_clue_updating_remaining);
+		}
+		else {
+			clueLabel.setText(String.format(getActivity().getResources().getString(R.string.gab_clue_status_text), 
+					User.getCurrentUser().getTotalClueCount()));
+		}
 	}
 
 	@Override
@@ -159,5 +158,17 @@ implements UserObserver.Observer, ClueObserver.Observer {
 			clueTile.fillWithClue(c);
 		}
 
+	}
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		mCallbacks = (Callbacks) activity;
+	}
+
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		mCallbacks = null;
 	}
 }

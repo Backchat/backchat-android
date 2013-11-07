@@ -23,6 +23,7 @@ import com.squareup.otto.Subscribe;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostAbuseReportRequest;
 import com.youtell.backdoor.fragments.GabListFragment;
+import com.youtell.backdoor.fragments.NotificationSettingsFragment;
 import com.youtell.backdoor.fragments.SettingsMenuFragment;
 import com.youtell.backdoor.gcm.GCM;
 import com.youtell.backdoor.iap.BuyClueIAP;
@@ -240,19 +241,8 @@ GCMNotificationObserver.Observer {
 
 	@Override
 	public void onChangeNotificationSettings() {
-		final Switch switchSummary = new Switch(this);
-
-		switchSummary.setText(R.string.notification_settings_dialog_summary_text);
-
-    	new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
-    	  .setTitle(R.string.notification_settings_dialog_title)
-    	  .setMessage(R.string.notification_settings_dialog_text)
-    	  .setView(switchSummary)
-    	  .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
-    	    public void onClick(DialogInterface dialog, int whichButton) {
-    	    }
-    	  })
-    	  .show(); 		
+		NotificationSettingsFragment notifications = new NotificationSettingsFragment();
+		notifications.show(getFragmentManager(), "notifications");
 	}
 
 	@Override

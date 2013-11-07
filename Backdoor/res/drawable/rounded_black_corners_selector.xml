@@ -8,6 +8,6 @@
     <item android:drawable="@drawable/rounded_black_button" android:state_focused="true" android:state_pressed="false" android:state_selected="false"/>
     <item android:drawable="@drawable/rounded_black_button" android:state_focused="true" android:state_pressed="false" android:state_selected="true"/>
 <!--   Pressed  -->
-    <item android:drawable="@drawable/rounded_black_button" android:state_pressed="true"/>
+    <item android:drawable="@drawable/rounded_black_button_down" android:state_pressed="true"/>
 
 </selector>
