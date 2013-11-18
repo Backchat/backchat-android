@@ -113,9 +113,11 @@ public class GPPProvider extends SocialProvider {
 	private class GPPShareHelper implements ShareHelper
 	{
 		private Activity activity;
+		private ShareCallback callback;
 		
 		public GPPShareHelper(Activity act) {	
 			activity = act;
+			callback = (ShareCallback)act;
 		}
 
 		@Override
@@ -151,8 +153,11 @@ public class GPPProvider extends SocialProvider {
 		@Override
 		public void onActivityResult(int requestCode, int resultCode,
 				Intent data) {
-			// TODO Auto-generated method stub
-			
+			if(resultCode == Activity.RESULT_OK) {
+				onSuccessShare(callback);
+			}
+			else 
+				callback.onFailure();
 		}
 
 		@Override

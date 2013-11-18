@@ -16,6 +16,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -101,14 +102,21 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 		PendingIntent pendingIntent =
 		        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_UPDATE_CURRENT);
 		
-		Notification note = new NotificationCompat.Builder(this)
+		NotificationCompat.Builder notebuilder = new NotificationCompat.Builder(this)
 		.setContentTitle("Backdoor") //TODO stringify
 		.setSmallIcon(R.drawable.ic_launcher)
 		.setContentText(message)
 		.setTicker(message)
 		.setContentIntent(pendingIntent)
-		.setAutoCancel(true)
-		.build();
+		.setAutoCancel(true);
+		
+		if(User.getCurrentUser().getVibratePref(this))
+			notebuilder.setVibrate(new long[] {0, 100});
+		
+		if(User.getCurrentUser().getSoundPref(this))
+			notebuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+		
+		Notification note = notebuilder.build();
 		//						TODO
 		int mNotificationId = 001;
 		// Gets an instance of the NotificationManager service

@@ -58,15 +58,15 @@ public abstract class BaseActivity extends Activity {
 		goUp();
 	}
 	
-	protected void runOnNextScreen(final Runnable runnable) {
+	static public void runOnNextScreen(final Activity activity, final Runnable runnable) {
 		new Handler().postDelayed(
 				new Runnable() {
 					@Override
 					public void run() {
-						runOnUiThread(runnable);
+						activity.runOnUiThread(runnable);
 					}
 				},
-				getResources().getInteger(android.R.integer.config_longAnimTime)
+				activity.getResources().getInteger(android.R.integer.config_longAnimTime)
 				);		
 	}
 	

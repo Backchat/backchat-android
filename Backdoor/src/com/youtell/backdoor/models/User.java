@@ -1,5 +1,6 @@
 package com.youtell.backdoor.models;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -60,9 +61,6 @@ public class User implements InflatableObject {
 
 	private int totalClueCount = UNKNOWN_CLUE_COUNT;
 	
-	public void setTotalClueCount(int n) {
-		totalClueCount = n;
-	}
 	public int getTotalClueCount() {
 		return totalClueCount; 
 	}
@@ -217,6 +215,7 @@ public class User implements InflatableObject {
 	}
 	
 	private static final String LOCAL_VIBRATE_SETTING = "LOCAL_VIBRATE_SETTING";
+	private static final String LOCAL_SOUND_SETTING = "LOCAL_SOUND_SETTING";
 	
 	public boolean getVibratePref(Context context) {
 		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOCAL_SETTINGS, Context.MODE_PRIVATE);
@@ -228,5 +227,21 @@ public class User implements InflatableObject {
 		Editor edit = prefs.edit();
 		edit.putBoolean(LOCAL_VIBRATE_SETTING, value);
 		edit.commit();
+	}
+
+	public void setTotalClueCount(int clue) {
+		totalClueCount = clue;
+	}
+
+	public boolean getSoundPref(Context context) {
+		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOCAL_SETTINGS, Context.MODE_PRIVATE);
+		return prefs.getBoolean(LOCAL_SOUND_SETTING, true);
+	}
+
+	public void setSoundPref(Context context, boolean checked) {
+		SharedPreferences prefs = context.getSharedPreferences(PREFS_LOCAL_SETTINGS, Context.MODE_PRIVATE);
+		Editor edit = prefs.edit();
+		edit.putBoolean(LOCAL_SOUND_SETTING, checked);
+		edit.commit();		
 	}
 }

@@ -1,5 +1,8 @@
 package com.youtell.backdoor.social;
 
+import com.youtell.backdoor.api.PostFreeShareClueRequest;
+import com.youtell.backdoor.services.APIService;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,10 +37,15 @@ public abstract class SocialProvider {
 		abstract public void shareApp();
 	}
 	
+	public interface ShareCallback {
+		abstract public void onSuccess();
+		abstract public void onFailure();
+	}
+	
 	abstract public ShareHelper getShareHelper(Activity act);
 	
-	protected static final String FB_PROVIDER = "facebook";
-	protected static final String GPP_PROVIDER = "gpp";
+	public static final String FB_PROVIDER = "facebook";
+	public static final String GPP_PROVIDER = "gpp";
 	
 	public static <T extends Activity & Callback> SocialProvider createByProviderName(String providerName, T activity) {
 		if(providerName == null)
@@ -59,5 +67,11 @@ public abstract class SocialProvider {
 	
 	public static void setActiveProvider(SocialProvider newProvider) {
 		current = newProvider;
+	}
+	
+	protected static void onSuccessShare(ShareCallback callback) 
+	{
+		APIService.fire(new PostFreeShareClueRequest()); //TODO make this actually wait?
+		callback.onSuccess();
 	}
 }

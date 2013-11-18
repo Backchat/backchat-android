@@ -80,7 +80,7 @@ APIRequestObserver.Observer<PostInviteRequest> {
 	public void onSuccess() {
 		closeProgressDialog();
 		
-		runOnNextScreen(
+		runOnNextScreen(this, 
 			new Runnable() {
 				@Override
 				public void run() {

@@ -11,35 +11,31 @@
         android:orientation="vertical" >
 
         <ImageView
-            android:background="@drawable/login_icon" 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"/>
-        
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/login_icon" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
+            android:gravity="center"
             android:text="@string/app_name"
             android:textColor="#FFFFFF"
-            
-                        android:textSize="30sp"
-                                    android:gravity="center"
-                        
-            />
-        
+            android:textSize="30sp" />
+
         <Button
+            android:id="@+id/login_facebook_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_white_button"
-            android:textColor="#000000"            
             android:layout_marginTop="20dp"
-            android:text="@string/login_facebook_button" 
-            android:id="@+id/login_facebook_button"
+            android:background="@drawable/rounded_white_button"
             android:onClick="fbButtonClick"
-            android:textStyle="bold"           
-            />
-        
+            android:text="@string/login_facebook_button"
+            android:textColor="#000000"
+            android:textStyle="bold" />
+
         <Button
             android:id="@+id/login_gpp_button"
             android:layout_width="match_parent"
@@ -50,7 +46,6 @@
             android:text="@string/login_gpp_button"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
-
     </LinearLayout>
 
 </RelativeLayout>

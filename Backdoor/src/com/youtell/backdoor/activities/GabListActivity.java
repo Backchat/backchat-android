@@ -12,9 +12,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -22,9 +27,11 @@ import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 import com.squareup.otto.Subscribe;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostAbuseReportRequest;
+import com.youtell.backdoor.fragments.GabCluesFragment;
 import com.youtell.backdoor.fragments.GabListFragment;
 import com.youtell.backdoor.fragments.NotificationSettingsFragment;
 import com.youtell.backdoor.fragments.SettingsMenuFragment;
+import com.youtell.backdoor.fragments.WebViewDialogFragment;
 import com.youtell.backdoor.gcm.GCM;
 import com.youtell.backdoor.iap.BuyClueIAP;
 import com.youtell.backdoor.models.DBClosedEvent;
@@ -40,12 +47,14 @@ import com.youtell.backdoor.services.ORMUpdateService;
 import com.youtell.backdoor.social.SocialProvider;
 
 public class GabListActivity extends SlidingActivity implements GabListFragment.Callbacks, SettingsMenuFragment.Callbacks, GCM.Callbacks,
-GCMNotificationObserver.Observer {
+GCMNotificationObserver.Observer, SocialProvider.ShareCallback {
+	public static final String SHOW_TOUR_ARG = "SHOW_TOUR_ARG";
+
 	private PullToRefreshAttacher mPullToRefreshAttacher;
 	private GCMNotificationObserver gcmNotifications;
 	private BuyClueIAP buyClue = new BuyClueIAP(this);
 	private SocialProvider.ShareHelper shareHelper;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -82,22 +91,48 @@ GCMNotificationObserver.Observer {
 		sm.setShadowDrawable(R.drawable.sliding_menu_shadow);
 
 		mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
-		
+
 		gcmNotifications = new GCMNotificationObserver(this, null);
-		
+
 		User user = User.getCurrentUser();
 		Log.e("DB", String.format("%d", user.getID()));
 		Database.setDatabaseForUser(user.getID());
 		OpenHelperManager.getHelper(this, Database.class);
 		final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class);
 		getApplicationContext().startService(ormUpdateIntent);
-		
+
 		GCM.getRegistrationID(user, this);
-		
+
 		shareHelper = SocialProvider.getActiveProvider().getShareHelper(this);
 		shareHelper.onCreate(savedInstanceState);
-		
+
 		buyClue.connect();
+		
+
+
+		boolean showTour = false;
+		Bundle extras = getIntent().getExtras();
+		if(extras != null) {
+			showTour = extras.getBoolean(SHOW_TOUR_ARG);
+		}
+
+		if(showTour) {
+			Intent intent = new Intent(this, TourActivity.class);
+			startActivity(intent);
+		}
+		else {
+			BaseActivity.runOnNextScreen(this, new Runnable() {
+
+				@Override
+				public void run() {
+					Toast toast = Toast.makeText(getApplicationContext(), 
+							getResources().getText(R.string.login_success), Toast.LENGTH_SHORT); //TODO add name
+
+					toast.show();					
+				}
+				
+			});
+		}
 	}
 
 	public PullToRefreshAttacher getPullToRefreshAttacher() {
@@ -138,7 +173,7 @@ GCMNotificationObserver.Observer {
 
 		final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class); 
 		getApplicationContext().stopService(ormUpdateIntent);	
-		
+
 		Intent intent = new Intent(this, LoginActivity.class);
 		startActivity(intent);
 		overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);    
@@ -148,10 +183,10 @@ GCMNotificationObserver.Observer {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		
+
 		gcmNotifications.stopListening();
 	}
-	
+
 	@Override
 	protected void onDestroy() 
 	{
@@ -200,12 +235,12 @@ GCMNotificationObserver.Observer {
 		gab.save();
 		startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));	
 	}
-	
+
 	@Override
 	public void onBuyClue() {
 		buyClue.present(User.getCurrentUser().clone());
 	}
-	
+
 	@Override
 	public void onInvite() {
 		inviteClick(null);
@@ -215,19 +250,19 @@ GCMNotificationObserver.Observer {
 	public void onShareApp() {
 		shareHelper.shareApp();
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
 		shareHelper.onPause();
 	}
-	
+
 	@Override
 	public void onSaveInstanceState(Bundle state) {
 		super.onSaveInstanceState(state);
 		shareHelper.onSaveInstanceState(state);
 	}
-	
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -255,25 +290,49 @@ GCMNotificationObserver.Observer {
 		abuseInfo.setBackgroundColor(getResources().getColor(R.color.light_grey_background));
 		abuseInfo.setGravity(Gravity.TOP);
 
-    	new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
-    	  .setTitle(R.string.abuse_dialog_title)
-    	  .setMessage(R.string.abuse_dialog_text)
-    	  .setView(abuseInfo)
-    	  .setPositiveButton(R.string.abuse_dialg_report_button, new DialogInterface.OnClickListener() {
-    	    public void onClick(DialogInterface dialog, int whichButton) {
-    	    	APIService.fire(new PostAbuseReportRequest(abuseInfo.getText().toString()));
-    	    }
-    	  })
-    	  .setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-    	    public void onClick(DialogInterface dialog, int whichButton) {
-    	    }
-    	  })
-    	  .show(); 
+		new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
+		.setTitle(R.string.abuse_dialog_title)
+		.setMessage(R.string.abuse_dialog_text)
+		.setView(abuseInfo)
+		.setPositiveButton(R.string.abuse_dialg_report_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				APIService.fire(new PostAbuseReportRequest(abuseInfo.getText().toString()));
+			}
+		})
+		.setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+			}
+		})
+		.show(); 
 	}
 
 	@Override
 	public void onAboutUs() {
+		webViewDialog("http://backdoorapp.com/about", R.string.about_us_dialog_title);
+	}
+
+	@Override
+	public void onPrivacyLegal() {
+		webViewDialog("file:///android_asset/privacy.html", R.string.privacy_dialog_title);
+	}
+
+	private void webViewDialog(String uri, int titleRes) {
+		WebViewDialogFragment dialog = new WebViewDialogFragment();
+		Bundle args = new Bundle();
+		args.putString(WebViewDialogFragment.URI_ARGUMENT, uri);
+		args.putInt(WebViewDialogFragment.TITLE_RES_ARGUMENT, titleRes);
+		dialog.setArguments(args);
+		dialog.show(getFragmentManager(), "webView");
+	}
+
+	@Override
+	public void onSuccess() {
 		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public void onFailure() {
+		// TODO Auto-generated method stub
+
 	}
 }

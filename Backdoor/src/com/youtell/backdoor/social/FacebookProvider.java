@@ -38,9 +38,11 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 	private class FBShareHelper implements ShareHelper, StatusCallback, com.facebook.widget.FacebookDialog.Callback {
 		private UiLifecycleHelper uiHelper;
 		private Activity activity;
+		private ShareCallback callback;
 
 		public FBShareHelper(Activity act) {
 			this.activity = act;
+			this.callback = (ShareCallback)act;
 			uiHelper = new UiLifecycleHelper(act, this);
 		}
 		
@@ -121,15 +123,13 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 
 		@Override
 		public void onComplete(PendingCall pendingCall, Bundle data) {
-			// TODO Auto-generated method stub
-			
+			onSuccessShare(callback);
 		}
 
 		@Override
 		public void onError(PendingCall pendingCall, Exception error,
 				Bundle data) {
-			// TODO Auto-generated method stub
-			
+			callback.onFailure();
 		}
 	}
 	
@@ -176,7 +176,7 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 			/* the user didn't cancel, etc. */
 			callback.onAuthenticated(FacebookProvider.this);
 		}
-		else
+		else if(state.isClosed())
 			callback.onFailedLogin();		
 	}
 

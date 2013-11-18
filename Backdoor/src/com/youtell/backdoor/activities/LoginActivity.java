@@ -80,7 +80,7 @@ SocialProvider.Callback {
 		Log.e(TAG, String.format("caching login %s", provider.getProviderName()));
 		User.setCachedSocialProvider(getApplicationContext(), provider);
 		/* attempt to login and throw up a progress dialog */
-		progressDialog = ProgressDialog.show(this, "Logging in", null, true, false); //TODO stringify
+		progressDialog = ProgressDialog.show(this, getResources().getString(R.string.login_dialog_title), null, true, false);
 		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
 
 		lp.copyFrom(progressDialog.getWindow().getAttributes());
@@ -133,22 +133,16 @@ SocialProvider.Callback {
 			progressDialog = null;
 		}
 
+		boolean shouldTour = true;
+		
 		Intent intent = null;	
 		intent = new Intent(this, GabListActivity.class);
+		Bundle args = new Bundle();
+		args.putBoolean(GabListActivity.SHOW_TOUR_ARG, shouldTour);
+		intent.putExtras(args);
 		startActivity(intent);
-		finish();
-
-		runOnNextScreen(
-				new Runnable() {
-					@Override
-					public void run() {
-						Toast toast = Toast.makeText(getApplicationContext(), 
-								getResources().getText(R.string.login_success), Toast.LENGTH_SHORT); //TODO add name
-
-						toast.show();							
-					}
-				}
-				);
+		
+		finish();	
 	}
 
 	@Override

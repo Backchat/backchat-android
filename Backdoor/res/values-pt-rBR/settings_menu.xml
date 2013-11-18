@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+   <string-array name="settings_menu_values">
+        <item>Receba Pistas Gratutia</item>
+        <item>Ajustes de Notificacaoes    </item>        
+        <item>Denunciar Abuso</item>
+        <item>Privacidade e Legal</item>
+        <item>Sobre Nos</item>
+        <item>Desligar</item>
+    </string-array>
+
+</resources>

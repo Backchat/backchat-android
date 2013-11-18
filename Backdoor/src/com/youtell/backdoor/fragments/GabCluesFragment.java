@@ -1,10 +1,15 @@
 package com.youtell.backdoor.fragments;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,9 +19,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.j256.ormlite.dao.ForeignCollection;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.youtell.backdoor.ClueGridItem;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.models.Clue;
@@ -40,21 +50,22 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	private ClueObserver clueObserver;
 	private UserObserver userObserver = new UserObserver(this);
 	private Callbacks mCallbacks;
-	
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-    	Dialog d = new Dialog(getActivity(), android.R.style.Theme);
-    	d.getWindow().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
-    	d.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return d;
-    }
+
+	@Override
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
+		Dialog d = new Dialog(getActivity(), android.R.style.Theme);
+		d.getWindow().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+	    d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+	    
+		return d;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		gab = Gab.getByID(getArguments().getInt(ARG_GAB_ID, -1)); //TODO
 		super.onCreate(savedInstanceState);
 		clueObserver = new ClueObserver(this, gab);
-		
+
 	}       
 
 	@Override 
@@ -65,16 +76,34 @@ implements UserObserver.Observer, ClueObserver.Observer {
 		clueGrid = (GridLayout)view.findViewById(R.id.gab_clues_grid);
 
 		for(int i=0;i<gab.getClueCount();i++) {
-			final int number = i;
 			final ClueGridItem clueTile = new ClueGridItem(inflater, clueGrid, i, 3, 3, new ClueGridItem.Callback() {
-				
+
 				@Override
 				public void onClick(ClueGridItem which) {
-					which.startProgress();
-					Clue c = new Clue();
-					c.setRemoteID(DatabaseObject.NEW_OBJECT);
-					c.setNumber(number);
-					gab.addClue(c);					
+					ForeignCollection<Clue> clues = gab.getClues();
+					ArrayList<Clue> clueList = new ArrayList<Clue>(clues);
+					Collections.sort(clueList, new Comparator<Clue>() {
+						@Override
+						public int compare(Clue lhs, Clue rhs) {
+							return lhs.getNumber() - rhs.getNumber();
+						}		
+					});
+					if(clueList.size() > which.getNumber()) {
+						Clue c = clueList.get(which.getNumber());
+						//TODO move somewhere else?
+						new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT)
+						.setTitle(R.string.clue_information_dialog_title)
+						.setMessage(c.getDisplayText(getActivity()))
+						.setPositiveButton(R.string.ok_button, null) 
+						.show(); 	    
+					}
+					else {
+						which.startProgress();
+						Clue c = new Clue();
+						c.setRemoteID(DatabaseObject.NEW_OBJECT);
+						c.setNumber(which.getNumber());
+						gab.addClue(c);
+					}
 				}
 			});
 		}
@@ -106,12 +135,19 @@ implements UserObserver.Observer, ClueObserver.Observer {
 
 	private void updateClueGrid() {
 		ForeignCollection<Clue> clues = gab.getClues();
+		//TODO move into DAO
 		ArrayList<Clue> clueList = new ArrayList<Clue>(clues);
+		Collections.sort(clueList, new Comparator<Clue>() {
+			@Override
+			public int compare(Clue lhs, Clue rhs) {
+				return lhs.getNumber() - rhs.getNumber();
+			}		
+		});
 		for(int i=0;i<clueList.size();i++) {
 			updateClue(clueList.get(i));
 		}
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -127,7 +163,7 @@ implements UserObserver.Observer, ClueObserver.Observer {
 		clueObserver.stopListening();
 		userObserver.stopListening();
 	}
-	
+
 	private void updateClueCount()
 	{
 		if(User.getCurrentUser().getTotalClueCount() == User.UNKNOWN_CLUE_COUNT) {
@@ -143,7 +179,7 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	public void onUserChanged() {
 		updateClueCount();		
 	}
-	
+
 	@Override
 	public void onChange(String action, int gabID, int objectID) {
 		if(action == ClueObserver.CLUE_UPDATED) {
@@ -159,7 +195,7 @@ implements UserObserver.Observer, ClueObserver.Observer {
 		}
 
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);

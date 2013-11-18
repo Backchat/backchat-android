@@ -89,7 +89,7 @@ public class BuyClueIAP implements IAP.Observer {
 	public void onConsumeSuccess(PurchasedItem item) {
 		Log.e("IAP", "Should get some " + item.getSKU()); //TODO..change?
 		//TODO better system here
-		User.getCurrentUser().setTotalClueCount(User.UNKNOWN_CLUE_COUNT);
+		User.getCurrentUser().updateTotalClues(User.UNKNOWN_CLUE_COUNT);
 		APIService.fire(new PostPurchasedClueRequest(item));
 	}
 }

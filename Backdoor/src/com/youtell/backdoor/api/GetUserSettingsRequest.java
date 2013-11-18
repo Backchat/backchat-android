@@ -28,8 +28,8 @@ public class GetUserSettingsRequest extends GetRequest {
 		JSONObject userobj = result.getJSONObject("user");
 		JSONObject settings = userobj.getJSONObject("settings");
 		boolean message_preview = settings.getBoolean("message_preview");
-		
-		user.setMessagePreview(message_preview);
+		//TODO fix
+		User.getCurrentUser().setMessagePreview(message_preview);
 	}
 
 }

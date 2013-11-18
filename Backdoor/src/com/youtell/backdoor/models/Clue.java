@@ -6,6 +6,9 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.content.res.Resources;
+
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -128,5 +131,29 @@ public class Clue extends DatabaseGabObject {
 
 	public boolean isNew() {
 		return getRemoteID() == DatabaseObject.NEW_OBJECT;
+	}
+
+	//TODO efficiency split earlier in inflate?
+	public String getDisplayText(Context context) {
+		int pos = getValue().indexOf("|");
+		String title = getValue().substring(pos+1);
+		
+		String translation_tag = String.format("clue_translated_%s", getField());
+		Resources res = context.getResources();
+		String packageName = context.getPackageName();
+		int title_resid = res.getIdentifier(translation_tag, "string", packageName);
+		if(title_resid != 0) {
+			String translated_title = res.getString(title_resid);
+			return String.format("%s: %s", translated_title, title);
+		}
+		else {
+			return title;
+		}
+	}
+	
+	public String getURL()
+	{
+		int pos = getValue().indexOf("|");		
+		return getValue().substring(0, pos);
 	}
 }

@@ -94,7 +94,7 @@ public class Friend extends DatabaseObject {
 	
 	public static List<Friend> allFriends() {
 		try {
-			return getDAO().queryBuilder().where().eq("isFeatured", false).query();
+			return getDAO().queryBuilder().orderBy("first_name", true).where().eq("isFeatured", false).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -104,7 +104,7 @@ public class Friend extends DatabaseObject {
 	
 	public static List<Friend> allFeatured() {
 		try {
-			return getDAO().queryBuilder().where().eq("isFeatured", true).query();
+			return getDAO().queryBuilder().orderBy("first_name", true).where().eq("isFeatured", true).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

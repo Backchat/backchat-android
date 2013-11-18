@@ -88,7 +88,7 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 	public void onDeleteClick(View v) {
 		gab.remove();
 		
-		runOnNextScreen(
+		runOnNextScreen(this,
 				new Runnable() {
 					@Override
 					public void run() {

@@ -15,7 +15,11 @@ public class PostUserSettingsRequest extends PostRequest {
 	@Override
 	protected List<NameValuePair> getParameters() {
 		List<NameValuePair> args = new ArrayList<NameValuePair>();
-		args.add(new BasicNameValuePair("", ""));
+		
+		//TODO better?
+		String messagePreview = User.getCurrentUser().getMessagePreview() ? "true" : "false";
+		args.add(new BasicNameValuePair("settings[message_preview]", messagePreview));
+		
 		return args;
 	}
 

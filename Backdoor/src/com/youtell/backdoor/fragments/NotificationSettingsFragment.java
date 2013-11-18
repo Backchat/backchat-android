@@ -25,6 +25,7 @@ public class NotificationSettingsFragment extends DialogFragment implements Obse
 	private UserObserver user = new UserObserver(this);
 	private Switch messagePreview;
 	private Switch vibrate;
+	private Switch sound;
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class NotificationSettingsFragment extends DialogFragment implements Obse
         settings = view.findViewById(R.id.notification_settings_settings);
         vibrate = (Switch) view.findViewById(R.id.notification_settings_vibrate_switch);
         messagePreview = (Switch) view.findViewById(R.id.notification_settings_message_preview);
+        sound = (Switch) view.findViewById(R.id.notification_settings_sound_switch);
         settings.setVisibility(View.INVISIBLE);
         
         APIService.fire(new GetUserSettingsRequest());
@@ -48,6 +50,7 @@ public class NotificationSettingsFragment extends DialogFragment implements Obse
 	                    	User user = User.getCurrentUser();
 	                    	user.setVibratePref(getActivity(), vibrate.isChecked());
 	                    	user.setMessagePreview(messagePreview.isChecked());
+	                    	user.setSoundPref(getActivity(), sound.isChecked());
 	                    	//TODO spinny
 	                    	APIService.fire(new PostUserSettingsRequest());
 	                    }
@@ -68,6 +71,7 @@ public class NotificationSettingsFragment extends DialogFragment implements Obse
 		User user = User.getCurrentUser();
 		
 		vibrate.setChecked(user.getVibratePref(getActivity()));
+		sound.setChecked(user.getSoundPref(getActivity()));
 		messagePreview.setChecked(user.getMessagePreview());
 		
 		settings.setVisibility(View.VISIBLE);

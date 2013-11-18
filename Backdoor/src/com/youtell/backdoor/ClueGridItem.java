@@ -80,24 +80,8 @@ public class ClueGridItem {
 		button.setImageResource(R.drawable.black_background);
 	}
 	
-	public void fillWithClue(Clue c) {
-		int pos = c.getValue().indexOf("|");
-		String url = c.getValue().substring(0, pos);
-		String title = c.getValue().substring(pos+1);
-		
-		String translation_tag = String.format("clue_translated_%s", c.getField());
-		Resources res = clueItem.getContext().getResources();
-		String packageName = clueItem.getContext().getPackageName();
-		int title_resid = res.getIdentifier(translation_tag, "string", packageName);
-		if(title_resid != 0) {
-			String translated_title = res.getString(title_resid);
-			setLabel(String.format("%s: %s", translated_title, title));
-		}
-		else {
-			setLabel(title);
-		}
-		button.setClickable(false);
-		
+	public void fillWithClue(Clue c) {	
+		setLabel(c.getDisplayText(clueItem.getContext()));
 		int rounding = (int)clueItem.getContext().getResources().getDimension(R.dimen.clue_tile_rounding);
 
 		DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -108,12 +92,16 @@ public class ClueGridItem {
 		
 		startProgress();
 		
-		ImageLoader.getInstance().displayImage(url, button, options, new SimpleImageLoadingListener() {
+		ImageLoader.getInstance().displayImage(c.getURL(), button, options, new SimpleImageLoadingListener() {
 	        @Override
 	        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 	        	progress.setVisibility(View.INVISIBLE);
 	        }
 		});
+	}
+
+	public int getNumber() {
+		return ((Integer)clueItem.getTag()).intValue();
 	}
 
 }

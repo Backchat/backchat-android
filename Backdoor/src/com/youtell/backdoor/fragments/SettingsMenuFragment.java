@@ -23,6 +23,7 @@ public class SettingsMenuFragment extends CallbackListFragment<SettingsMenuFragm
 		public void onChangeNotificationSettings();
 		public void onReportAbuse();
 		public void onAboutUs();
+		public void onPrivacyLegal();
 	}
 
 	@Override 
@@ -59,9 +60,12 @@ public class SettingsMenuFragment extends CallbackListFragment<SettingsMenuFragm
 			mCallbacks.onReportAbuse();
 			break;
 		case 3:
-			mCallbacks.onAboutUs();
+			mCallbacks.onPrivacyLegal();
 			break;
 		case 4:
+			mCallbacks.onAboutUs();
+			break;
+		case 5:
 			mCallbacks.onLogout();
 			break;
 		default:

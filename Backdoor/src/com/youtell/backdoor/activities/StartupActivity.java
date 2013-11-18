@@ -25,6 +25,7 @@ public class StartupActivity extends android.app.Activity implements SocialProvi
 		
 		Intent intent = null;
 		User u = User.getCachedUser(this);
+
 		if(u != null) {
 			//TODO?
 			//user.setTotalClueCount(userData.getInt("available_clues"));
@@ -35,19 +36,13 @@ public class StartupActivity extends android.app.Activity implements SocialProvi
 			provider.tryCachedLogin(this);
 			SocialProvider.setActiveProvider(provider);
 			
-			intent = new Intent(this, GabListActivity.class);
-
-
-			Toast toast = Toast.makeText(getApplicationContext(), 
-					getResources().getText(R.string.login_success), Toast.LENGTH_SHORT); //TODO add name
-
-			toast.show();			
+			intent = new Intent(this, GabListActivity.class);		
 		}
 		else {
 			intent = new Intent(this, LoginActivity.class);
 			intent.putExtra(LoginActivity.FIRST_START_ARG, true);
 		}
-		
+
 		startActivity(intent);
 		overridePendingTransition(0,0);	
 		finish();
