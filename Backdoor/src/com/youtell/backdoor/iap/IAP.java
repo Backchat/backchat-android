@@ -24,7 +24,8 @@ public class IAP {
 	public interface Observer {
 		void onUpdateItemList(List<Item> items);
 		void onPurchaseSuccess(PurchasedItem item);
-		void onConsumeSuccess(PurchasedItem item);		
+		void onConsumeSuccess(PurchasedItem item);
+		void onConnectedToIAP();
 	}
 
 	private IInAppBillingService billingService;
@@ -45,6 +46,7 @@ public class IAP {
 			public void onServiceConnected(ComponentName name, 
 					IBinder service) {
 				billingService = IInAppBillingService.Stub.asInterface(service);
+				observer.onConnectedToIAP();
 			}
 		};
 	}

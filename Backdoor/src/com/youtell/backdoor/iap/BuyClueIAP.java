@@ -19,14 +19,16 @@ public class BuyClueIAP implements IAP.Observer {
 	private IAP iap;
 	private Activity activity;
 	private User user;
-
-	public BuyClueIAP(Activity activity) {
-		this.activity = activity;
-		this.iap = new IAP(this);
-	}
+	private Observer observer;
 	
-	public void connect() {
-		this.iap.connect(this.activity);
+	public interface Observer {
+		public void onReadyIAP();
+	}
+
+	public <T extends Activity & Observer> BuyClueIAP(T activity) {
+		this.activity = activity;
+		this.observer = activity;
+		this.iap = new IAP(this);
 	}
 	
 	public void disconnect()
@@ -35,7 +37,6 @@ public class BuyClueIAP implements IAP.Observer {
 	}
 	
 	public void present(User user) {
-		iap.connect(activity);
 		this.user = user;
 		iap.getItems();
 	}
@@ -91,5 +92,14 @@ public class BuyClueIAP implements IAP.Observer {
 		//TODO better system here
 		User.getCurrentUser().updateTotalClues(User.UNKNOWN_CLUE_COUNT);
 		APIService.fire(new PostPurchasedClueRequest(item));
+	}
+
+	@Override
+	public void onConnectedToIAP() {
+		this.observer.onReadyIAP();
+	}
+
+	public void connect() {
+		iap.connect(activity);
 	}
 }

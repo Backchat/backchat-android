@@ -48,7 +48,7 @@ import com.youtell.backdoor.services.ORMUpdateService;
 import com.youtell.backdoor.social.SocialProvider;
 
 public class GabListActivity extends SlidingActivity implements GabListFragment.Callbacks, SettingsMenuFragment.Callbacks, GCM.Callbacks,
-GCMNotificationObserver.Observer, SocialProvider.ShareCallback {
+GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Observer {
 	public static final String SHOW_TOUR_ARG = "SHOW_TOUR_ARG";
 
 	private PullToRefreshAttacher mPullToRefreshAttacher;
@@ -111,9 +111,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback {
 		GCM.getRegistrationID(user, this);
 
 		shareHelper = SocialProvider.getActiveProvider().getShareHelper(this);
-		shareHelper.onCreate(savedInstanceState);
-
-		buyClue.connect();		
+		shareHelper.onCreate(savedInstanceState);	
 		
 		boolean showTour = false;
 		Bundle extras = getIntent().getExtras();
@@ -142,7 +140,6 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback {
 		}
 				
 		new Thread(new Runnable() {
-
 			@Override
 			public void run() {
 				SocialProvider.getActiveProvider().getUserInfo();
@@ -184,6 +181,8 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback {
 		else {
 			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
 		}
+		
+    	buyClue.connect();
 	}
 
 	@Override
@@ -360,5 +359,10 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback {
 	public void onFailure() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onReadyIAP() {
+		//TODO
 	}
 }

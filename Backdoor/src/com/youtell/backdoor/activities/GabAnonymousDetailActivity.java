@@ -20,8 +20,7 @@ import com.youtell.backdoor.iap.BuyClueIAP;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.UserObserver;
 
-public class GabAnonymousDetailActivity extends BaseGabDetailActivity 
-implements GabCluesFragment.Callbacks {
+public class GabAnonymousDetailActivity extends BaseGabDetailActivity implements BuyClueIAP.Observer, GabCluesFragment.Callbacks {
 	private GabCluesFragment cluesFragment;
 	private BuyClueIAP buyClue = new BuyClueIAP(this);
 
@@ -76,6 +75,7 @@ implements GabCluesFragment.Callbacks {
     public void onResume()
     {
     	super.onResume();
+    	buyClue.connect();
     }
 
 	@Override
@@ -104,5 +104,10 @@ implements GabCluesFragment.Callbacks {
 	@Override
 	public void onStop() {
 		super.onStop();
+	}
+
+	@Override
+	public void onReadyIAP() {
+		cluesFragment.enableBuyButton();
 	}
 }

@@ -50,7 +50,9 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	private ClueObserver clueObserver;
 	private UserObserver userObserver = new UserObserver(this);
 	private Callbacks mCallbacks;
-
+	private Button clueButton;
+	private boolean enabled = false;
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Dialog d = new Dialog(getActivity(), android.R.style.Theme);
@@ -119,8 +121,8 @@ implements UserObserver.Observer, ClueObserver.Observer {
 
 		});
 
-		final Button moreButton = (Button)view.findViewById(R.id.gab_clues_more);
-		moreButton.setOnClickListener(new OnClickListener() {
+		clueButton = (Button)view.findViewById(R.id.gab_clues_more);
+		clueButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if(mCallbacks != null)
@@ -128,6 +130,9 @@ implements UserObserver.Observer, ClueObserver.Observer {
 			}
 
 		});
+		if(!enabled)
+			clueButton.setEnabled(false); //TODO make sure color different?	
+
 
 		updateClueGrid();
 		return view;
@@ -206,5 +211,13 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	public void onDetach() {
 		super.onDetach();
 		mCallbacks = null;
+	}
+
+	public void enableBuyButton() {
+		enabled = true;
+
+		if(clueButton != null) {
+			clueButton.setEnabled(true);
+		}		
 	}
 }
