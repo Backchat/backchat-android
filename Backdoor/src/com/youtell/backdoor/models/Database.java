@@ -17,9 +17,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 public class Database extends OrmLiteSqliteOpenHelper {
-	// name of the database file for your application -- change to something appropriate for your app
 	private static String databaseName = null;
-	// any time you make changes to your database objects, you may have to increase the database version
 	private static final int DATABASE_VERSION = 1;
 
 	static {
@@ -34,7 +32,7 @@ public class Database extends OrmLiteSqliteOpenHelper {
 
 	public Database(Context context) {
 		super(context, databaseName, null, DATABASE_VERSION);
-		Log.v("ORM", String.format("ORM DB Constructed with %s", databaseName));
+		Log.v("ORM", String.format("ORM DB Constructed with %s, version %d", databaseName, DATABASE_VERSION));
 		try {
 			createDAOs();
 			ModelBus.events.register(this);
@@ -62,15 +60,16 @@ public class Database extends OrmLiteSqliteOpenHelper {
 	public void onOpen(SQLiteDatabase DB) 
 	{
 		Log.v("ORM", "Open");
-		try {
-			
-			AndroidConnectionSource dsource = new AndroidConnectionSource(DB);
-			dsource.saveSpecialConnection(new AndroidDatabaseConnection(DB, true));
-			dropTables(dsource);
-			createTables(dsource);
-		}
-		catch(Exception e) {
-			android.util.Log.e("ORM," , "Your Message", e);
+		if(false) {//debugging
+			try {
+
+				AndroidConnectionSource dsource = new AndroidConnectionSource(DB);
+				dsource.saveSpecialConnection(new AndroidDatabaseConnection(DB, true));
+				createTables(dsource);
+			}
+			catch(Exception e) {
+				android.util.Log.e("ORM," , "failed", e);
+			}
 		}
 	}
 
