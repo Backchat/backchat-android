@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -54,6 +55,12 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback {
 	private GCMNotificationObserver gcmNotifications;
 	private BuyClueIAP buyClue = new BuyClueIAP(this);
 	private SocialProvider.ShareHelper shareHelper;
+	private int startFrom;
+	
+	public static final int LOGIN_START = 1;
+	public static final int STARTUP_START = 2;
+	private static final int RESUME_START = 3;
+	public static final String START_ARG = "START_ARG";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -106,14 +113,14 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback {
 		shareHelper = SocialProvider.getActiveProvider().getShareHelper(this);
 		shareHelper.onCreate(savedInstanceState);
 
-		buyClue.connect();
+		buyClue.connect();		
 		
-
-
 		boolean showTour = false;
 		Bundle extras = getIntent().getExtras();
+		startFrom = RESUME_START;
 		if(extras != null) {
 			showTour = extras.getBoolean(SHOW_TOUR_ARG);
+			startFrom = extras.getInt(START_ARG);
 		}
 
 		if(showTour) {
@@ -133,6 +140,15 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback {
 				
 			});
 		}
+				
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				SocialProvider.getActiveProvider().getUserInfo();
+			}
+			
+		}).start();
 	}
 
 	public PullToRefreshAttacher getPullToRefreshAttacher() {
@@ -158,6 +174,16 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback {
 		super.onResume();
 		gcmNotifications.startListening(1);
 		shareHelper.onResume();
+		if(startFrom == LOGIN_START) {
+			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+			startFrom = RESUME_START;
+		}
+		else if(startFrom == STARTUP_START) {
+			startFrom = RESUME_START;
+		}
+		else {
+			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+		}
 	}
 
 	@Override

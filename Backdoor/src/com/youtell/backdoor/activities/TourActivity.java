@@ -151,13 +151,6 @@ public class TourActivity extends BaseActivity implements SocialProvider.ShareCa
 	}
 
 	@Override
-	public void goUp() {
-		super.goUp();
-		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-
-	}
-
-	@Override
 	public void onResume() {
 		super.onResume();
 		shareHelper.onResume();

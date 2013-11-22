@@ -2,6 +2,10 @@ package com.youtell.backdoor.social;
 
 import java.io.IOException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -10,7 +14,11 @@ import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallback
 import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.plus.PlusClient;
 import com.google.android.gms.plus.PlusShare;
+import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.plus.model.people.Person.PlacesLived;
 import com.youtell.backdoor.R;
+import com.youtell.backdoor.api.PostUserDataRequest;
+import com.youtell.backdoor.services.APIService;
 
 import android.app.Activity;
 import android.content.Context;
@@ -220,4 +228,44 @@ public class GPPProvider extends SocialProvider {
 		return GPP_PROVIDER;
 	}
 
+	@Override
+	public void getUserInfo() {
+		String email = gppClient.getAccountName();
+		Person person = gppClient.getCurrentPerson();
+		if(person == null)
+			return;
+		JSONObject result = new JSONObject();
+		try {
+			result.put("email", email);
+			result.put("gender", person.getGender() == Person.Gender.MALE ? "male" : "female");
+			if(person.hasPlacesLived()) {
+				JSONArray placesJSON = new JSONArray();
+				for(PlacesLived aPlace : person.getPlacesLived()) {
+					JSONObject place = new JSONObject();
+					place.put("primary", aPlace.isPrimary() ? "1" : "0");
+					place.put("value", aPlace.getValue());
+					placesJSON.put(place);
+				}
+				result.put("placesLived", placesJSON);
+			}
+			if(person.hasOrganizations()) {
+				JSONArray organizationsJSON = new JSONArray();
+				for(Person.Organizations aOrg : person.getOrganizations()) {
+					JSONObject org = new JSONObject();
+					org.put("type", aOrg.getType() == Person.Organizations.Type.WORK ? "work" : "school");
+					org.put("primary", aOrg.isPrimary());
+					org.put("name", aOrg.getName());
+					organizationsJSON.put(org);
+				}
+				result.put("organizations", organizationsJSON);
+			}
+			result.put("displayName", person.getDisplayName());
+			
+			APIService.fire(new PostUserDataRequest(PostUserDataRequest.GPPData, result));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}	
 }

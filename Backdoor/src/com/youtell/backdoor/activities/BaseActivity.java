@@ -43,8 +43,11 @@ public abstract class BaseActivity extends Activity {
 	}
 	
 	protected void goUp() {
-        NavUtils.navigateUpFromSameTask(this);
-		overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+		Intent intent = NavUtils.getParentActivityIntent(this);
+		intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		super.startActivity(intent);
+
+		finish();
 	}
 
 	@Override

@@ -26,6 +26,7 @@ public abstract class SocialProvider {
 	abstract public void disconnect();	
 	abstract public String getToken();
 	abstract public String getProviderName();
+	abstract public void getUserInfo();
 	
 	public interface ShareHelper {
 		abstract public void onCreate(Bundle state);
