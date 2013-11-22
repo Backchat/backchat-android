@@ -49,8 +49,6 @@ import com.youtell.backdoor.social.SocialProvider;
 
 public class GabListActivity extends SlidingActivity implements GabListFragment.Callbacks, SettingsMenuFragment.Callbacks, GCM.Callbacks,
 GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Observer {
-	public static final String SHOW_TOUR_ARG = "SHOW_TOUR_ARG";
-
 	private PullToRefreshAttacher mPullToRefreshAttacher;
 	private GCMNotificationObserver gcmNotifications;
 	private BuyClueIAP buyClue = new BuyClueIAP(this);
@@ -117,10 +115,11 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		Bundle extras = getIntent().getExtras();
 		startFrom = RESUME_START;
 		if(extras != null) {
-			showTour = extras.getBoolean(SHOW_TOUR_ARG);
 			startFrom = extras.getInt(START_ARG);
 		}
 
+		showTour = user.isNewUser();
+		
 		if(showTour) {
 			Intent intent = new Intent(this, TourActivity.class);
 			startActivity(intent);

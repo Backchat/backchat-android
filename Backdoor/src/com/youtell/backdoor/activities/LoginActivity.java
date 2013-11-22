@@ -133,12 +133,10 @@ SocialProvider.Callback {
 			progressDialog = null;
 		}
 
-		boolean shouldTour = true;
-		
+
 		Intent intent = null;	
 		intent = new Intent(this, GabListActivity.class);
 		Bundle args = new Bundle();
-		args.putBoolean(GabListActivity.SHOW_TOUR_ARG, shouldTour);
 		args.putInt(GabListActivity.START_ARG, GabListActivity.LOGIN_START);
 		intent.putExtras(args);
 		startActivity(intent);

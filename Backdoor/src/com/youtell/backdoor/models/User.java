@@ -88,6 +88,7 @@ public class User implements InflatableObject {
 		setFullName(b.getString("fullName"));
 		this.message_preview = b.getBoolean("message_preview");
 		setID(b.getInt("id"));
+		setIsNewUser(b.getBoolean("isNewUser"));
 	}
 	
 	public void serialize(Bundle b) {
@@ -98,6 +99,7 @@ public class User implements InflatableObject {
 		b.putString("apiToken", getApiToken());
 		b.putString("fullName", getFullName());
 		b.putBoolean("message_preview", message_preview);
+		b.putBoolean("isNewUser", isNewUser());
 		b.putInt("id", id);
 	}
 	
@@ -110,6 +112,17 @@ public class User implements InflatableObject {
 		u.id = id;
 		u.totalClueCount = totalClueCount;
 		return u;
+	}
+	
+	private boolean isNewUser;
+	
+	public void setIsNewUser(boolean b) 
+	{
+		isNewUser = b;
+	}
+	
+	public boolean isNewUser() {
+		return isNewUser;
 	}
 
 	private int id;
