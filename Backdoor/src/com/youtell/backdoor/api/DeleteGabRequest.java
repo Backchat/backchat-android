@@ -7,7 +7,9 @@ import org.apache.http.NameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.services.APIService;
 
 import android.os.Bundle;
 
@@ -43,7 +45,7 @@ public class DeleteGabRequest extends DeleteRequest {
 
 	@Override
 	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
-		//???
+		APIService.mixpanel.track("Deleted Thread", null);
 	}
 
 

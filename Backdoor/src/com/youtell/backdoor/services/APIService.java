@@ -2,6 +2,8 @@ package com.youtell.backdoor.services;
 
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.Util;
 import com.youtell.backdoor.api.PostLoginRequest;
 import com.youtell.backdoor.api.Request;
@@ -19,7 +21,8 @@ public class APIService extends IntentService {
 	public static Context applicationContext = null; //TODO
 	private static String userAgentString;
 	private AndroidHttpClient client;
-
+	public static MixpanelAPI mixpanel;
+	
 	public static void initialize(Context c) {
 		applicationContext = c.getApplicationContext();
 		userAgentString = String.format("ANDROID %s", Util.getVersionName(applicationContext));		
@@ -28,9 +31,13 @@ public class APIService extends IntentService {
 	@Override
 	public void onDestroy() 
 	{
-		super.onDestroy();
+		if(mixpanel != null)
+			mixpanel.flush();
+		
 		OpenHelperManager.releaseHelper();
 		client.close();
+		
+		super.onDestroy();
 	}	
 
 	@Override
@@ -79,12 +86,20 @@ public class APIService extends IntentService {
 			lastUserID = user.getID();
 			Database.setDatabaseForUser(user.getID());
 			OpenHelperManager.getHelper(this, Database.class);
+			
+			if(mixpanel != null) {
+				mixpanel.flush();
+			}
+			
+			mixpanel = Application.getMixpanelInstance(applicationContext);
+			mixpanel.identify(String.format("%d", user.getID()));
 		}
 		
 		int userID = -1;
 		if(user != null) {
 			userID = user.getID();
 		}
+		
 		Log.v("APIService", String.format("intent %s, user %d", r.getClass().getName(), userID));
 		
 		if(r instanceof PostLoginRequest) {//URGH TODO

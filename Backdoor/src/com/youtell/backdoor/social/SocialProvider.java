@@ -1,5 +1,10 @@
 package com.youtell.backdoor.social;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.youtell.backdoor.api.PostFreeShareClueRequest;
 import com.youtell.backdoor.services.APIService;
 
@@ -26,7 +31,7 @@ public abstract class SocialProvider {
 	abstract public void disconnect();	
 	abstract public String getToken();
 	abstract public String getProviderName();
-	abstract public void getUserInfo();
+	abstract public void getUserInfo(Activity activity);
 	
 	public interface ShareHelper {
 		abstract public void onCreate(Bundle state);
@@ -74,5 +79,24 @@ public abstract class SocialProvider {
 	{
 		APIService.fire(new PostFreeShareClueRequest()); //TODO make this actually wait?
 		callback.onSuccess();
+	}
+	
+	protected int calculateAge(String birthday, String format) {
+		if(birthday.length() > 0) {
+			Date date;
+			try {
+				date = new SimpleDateFormat(format).parse(birthday);
+				Date now = new Date();
+				long diff = now.getTime() - date.getTime();
+				int years = (int) ((double)diff / 1000.0 / 60.0 / 60.0 / 24.0 / 365.0);
+				return years;
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return 0;
+			}
+		}
+		
+		return 0;
 	}
 }

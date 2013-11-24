@@ -9,11 +9,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.models.Friend;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.GabObserver;
+import com.youtell.backdoor.services.APIService;
 
 public class PostNewGabRequest extends PostRequest {
 	private TypedArgumentHandler<Gab> gab = new TypedArgumentHandler<Gab>(Gab.class, this);
@@ -71,6 +73,8 @@ public class PostNewGabRequest extends PostRequest {
 		m.inflate(msgData);
 		m.save();
 		
+		APIService.mixpanel.track("Created Thread", null);
+
 		GabObserver.broadcastChange(GabObserver.GAB_INSERTED, gab.object);
 	}
 }

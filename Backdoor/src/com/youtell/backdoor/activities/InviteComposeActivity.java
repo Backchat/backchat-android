@@ -11,6 +11,7 @@ import android.widget.Toast;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostInviteRequest;
 import com.youtell.backdoor.fragments.InviteComposeFragment;
@@ -79,6 +80,8 @@ APIRequestObserver.Observer<PostInviteRequest> {
 	@Override
 	public void onSuccess() {
 		closeProgressDialog();
+		
+		Application.mixpanel.track("Tapped Compose Invite View / Send Button", null);
 		
 		runOnNextScreen(this, 
 			new Runnable() {

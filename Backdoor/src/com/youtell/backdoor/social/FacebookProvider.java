@@ -1,5 +1,8 @@
 package com.youtell.backdoor.social;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONException;
@@ -24,6 +27,9 @@ import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.FacebookDialog.PendingCall;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.mixpanel.android.mpmetrics.MixpanelAPI.People;
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostUserDataRequest;
 import com.youtell.backdoor.services.APIService;
@@ -135,12 +141,23 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 
 		@Override
 		public void onComplete(PendingCall pendingCall, Bundle data) {
-			onSuccessShare(callback);
+			String gesture = FacebookDialog.getNativeDialogCompletionGesture(data);
+			if (gesture != null) {
+				if ("post".equals(gesture)) {
+					Application.mixpanel.track("Shared On Facebook", null);
+					onSuccessShare(callback);
+					return;
+				}
+			}
+
+			Application.mixpanel.track("Cancelled Facebook Share", null);
+			callback.onFailure();
 		}
 
 		@Override
 		public void onError(PendingCall pendingCall, Exception error,
 				Bundle data) {
+			Application.mixpanel.track("Cancelled Facebook Share", null);
 			callback.onFailure();
 		}
 	}
@@ -186,6 +203,7 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 		if(state.isOpened()) {
 			FacebookProvider.this.session = session;
 			/* the user didn't cancel, etc. */
+			Application.mixpanel.track("Signed In With Facebook", null);
 			callback.onAuthenticated(FacebookProvider.this);
 		}
 		else if(state.isClosed())
@@ -193,15 +211,15 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 	}
 
 	@Override
-	public void getUserInfo() {
+	public void getUserInfo(Activity activity) {
 		String[] names = {null, "family", "interests", "likes"};
+
+		List<Response> responses = com.facebook.Request.executeBatchAndWait(com.facebook.Request.newMeRequest(session, null),
+				com.facebook.Request.newGraphPathRequest(session, "me/family", null),
+				com.facebook.Request.newGraphPathRequest(session, "me/interests", null),
+				com.facebook.Request.newGraphPathRequest(session, "me/likes", null));
+
 		try {
-
-			List<Response> responses = com.facebook.Request.executeBatchAndWait(com.facebook.Request.newMeRequest(session, null),
-					com.facebook.Request.newGraphPathRequest(session, "me/family", null),
-					com.facebook.Request.newGraphPathRequest(session, "me/interests", null),
-					com.facebook.Request.newGraphPathRequest(session, "me/likes", null));
-
 			JSONObject result = null;
 
 			for(int i=0;i<names.length;i++) {
@@ -214,11 +232,61 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 				}			
 			}
 			APIService.fire(new PostUserDataRequest(PostUserDataRequest.FacebookData, result));
+
 		}
-		
+
 		catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		final GraphUser u = responses.get(0).getGraphObjectAs(GraphUser.class);
+
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				People p = Application.mixpanel.getPeople();
+
+				p.append("$created", new Date());
+
+				Object gender = u.getProperty("gender");
+				if(gender != null) {
+					String genderString = gender.toString();
+					if(genderString.compareTo("male") == 0)
+						p.set("Gender", "Male");
+					else
+						p.set("Gender", "Female");
+				}
+
+				String birthday = u.getBirthday();
+				p.set("age", calculateAge(birthday, "MM/dd/yyyy"));
+
+				String firstName = u.getFirstName();
+				String lastName = u.getLastName();
+				JSONObject obj = new JSONObject();
+
+				final String uid = u.getId();
+				Object emailObj = u.getProperty("email");
+				String email = "";
+				if(emailObj != null) {
+					email = emailObj.toString();
+				}
+				else {
+					email = String.format("%s@facebook.com", uid);
+				}
+
+				try {
+					obj.put("$first_name", firstName);
+					obj.put("$last_name", lastName);
+					obj.put("Facebook Id", uid);
+					obj.put("$email", email);
+					p.set(obj);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		});
 	}
 }

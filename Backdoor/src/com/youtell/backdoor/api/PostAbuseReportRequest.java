@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.services.APIService;
 
 public class PostAbuseReportRequest extends PostRequest {
 	private StringArgumentHandler message = new StringArgumentHandler("message", this);
@@ -36,6 +37,7 @@ public class PostAbuseReportRequest extends PostRequest {
 	protected void handleJSONResponse(JSONObject result, User user)
 			throws JSONException {
 		//always good.
+		APIService.mixpanel.track("Sent Abuse Report", null);
 	}
 
 }

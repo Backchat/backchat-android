@@ -1,5 +1,6 @@
 package com.youtell.backdoor.activities;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.fragments.NewGabFragment;
 import com.youtell.backdoor.models.Friend;
@@ -18,7 +19,14 @@ public class NewGabActivity extends BaseActivity implements NewGabFragment.Callb
 	}
 
 	@Override
+	protected void goUp() {
+		super.goUp();		
+		Application.mixpanel.track("Tapped New Gab View / Cancel Button", null);
+	}
+	
+	@Override
 	public void onItemSelected(Friend f) {
+		Application.mixpanel.track("Tapped New Gab View / Friend Item", null);
 		Gab gab = f.createNewGab();
 		gab.save();
 		startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));

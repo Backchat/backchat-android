@@ -26,6 +26,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 import com.squareup.otto.Subscribe;
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostAbuseReportRequest;
 import com.youtell.backdoor.fragments.GabCluesFragment;
@@ -63,6 +64,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Application.mixpanel = Application.getMixpanelInstance(getApplicationContext());
 
 		setContentView(R.layout.activity_gab_list);
 
@@ -100,6 +102,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		gcmNotifications = new GCMNotificationObserver(this, null);
 
 		User user = User.getCurrentUser();
+		Application.mixpanel.identify(String.format("%d", user.getID()));
 		Log.e("DB", String.format("%d", user.getID()));
 		Database.setDatabaseForUser(user.getID());
 		OpenHelperManager.getHelper(this, Database.class);
@@ -141,7 +144,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				SocialProvider.getActiveProvider().getUserInfo();
+				SocialProvider.getActiveProvider().getUserInfo(GabListActivity.this);
 			}
 			
 		}).start();
@@ -156,11 +159,13 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 	}
 
 	public void newGabClick(View v) {
+		Application.mixpanel.track("Tapped New Gab Button", null);
 		Intent intent = new Intent(this, NewGabActivity.class);
 		startActivity(intent);
 	}
 
 	public void inviteClick(View v) {
+		Application.mixpanel.track("Tapped Invite Button", null);
 		Intent intent = new Intent(this, InviteContactsActivity.class);
 		startActivity(intent);
 	}
@@ -214,6 +219,8 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 	@Override
 	protected void onDestroy() 
 	{
+		Application.mixpanel.flush();
+
 		shareHelper.onDestroy();
 		buyClue.disconnect();		
 		super.onDestroy();
@@ -305,7 +312,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 	}
 
 	@Override
-	public void onReportAbuse() {
+	public void onReportAbuse() {	
 		final EditText abuseInfo = new EditText(this);
 
 		abuseInfo.setHint(R.string.abuse_dialog_info_hint);

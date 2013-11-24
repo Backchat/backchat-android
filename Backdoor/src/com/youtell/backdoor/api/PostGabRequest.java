@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.services.APIService;
 
 import android.os.Bundle;
 
@@ -42,6 +43,7 @@ public class PostGabRequest extends PostRequest {
 		JSONObject gabData = result.getJSONObject("gab");
 		gab.object.inflate(gabData);
 		gab.object.save();
+		APIService.mixpanel.track("Tagged Thread", null);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.youtell.backdoor.fragments;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.Util;
 import com.youtell.backdoor.social.SocialProvider;
@@ -51,12 +52,14 @@ public class SettingsMenuFragment extends CallbackListFragment<SettingsMenuFragm
 
 		switch(position) {
 		case 0:
+			Application.mixpanel.track("Tapped Share With Friends (Free Clues) Settings Button", null);
 			mCallbacks.onShareApp();
 			break;
 		case 1:
 			mCallbacks.onChangeNotificationSettings();
 			break;
 		case 2:
+			Application.mixpanel.track("Tapped Report Abuse Button", null);
 			mCallbacks.onReportAbuse();
 			break;
 		case 3:
@@ -66,6 +69,7 @@ public class SettingsMenuFragment extends CallbackListFragment<SettingsMenuFragm
 			mCallbacks.onAboutUs();
 			break;
 		case 5:
+			Application.mixpanel.track("Logged out", null);
 			mCallbacks.onLogout();
 			break;
 		default:

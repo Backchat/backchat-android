@@ -1,6 +1,7 @@
 package com.youtell.backdoor.social;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +16,11 @@ import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailed
 import com.google.android.gms.plus.PlusClient;
 import com.google.android.gms.plus.PlusShare;
 import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.plus.model.people.Person.Name;
 import com.google.android.gms.plus.model.people.Person.PlacesLived;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.mixpanel.android.mpmetrics.MixpanelAPI.People;
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostUserDataRequest;
 import com.youtell.backdoor.services.APIService;
@@ -55,6 +60,7 @@ public class GPPProvider extends SocialProvider {
 							activity.runOnUiThread(new Runnable() {
 								@Override
 								public void run() {
+									Application.mixpanel.track("Signed In With Google+", null);
 									GPPProvider.this.callback.onAuthenticated(GPPProvider.this);
 								}
 							});
@@ -77,7 +83,7 @@ public class GPPProvider extends SocialProvider {
 			public void onDisconnected() {
 				// don't care				
 			}
-			
+
 		}, new OnConnectionFailedListener() {
 			@Override
 			public void onConnectionFailed(ConnectionResult result) {
@@ -88,19 +94,19 @@ public class GPPProvider extends SocialProvider {
 						gppClient.connect();
 					}
 				}
-				
+
 				// Save the result and resolve the connection failure upon a user click.
 				gppConnectionResult = result;
 				callback.onFailedLogin();				
 			}
-			
+
 		})
 		.setScopes("https://www.googleapis.com/auth/plus.login", "https://www.googleapis.com/auth/userinfo.email") // https://www.googleapis.com/auth/userinfo.profile 
 		.build();
-		
+
 		gppClient.connect();
 	}
-	
+
 	@Override
 	public void tryCachedLogin(Activity act) {
 		buildGppClient(act);
@@ -114,7 +120,7 @@ public class GPPProvider extends SocialProvider {
 		else {
 			Log.e(TAG, "Logout with NULL GPPCLIENT");
 		}
-		
+
 		disconnect();
 	}
 
@@ -122,7 +128,7 @@ public class GPPProvider extends SocialProvider {
 	{
 		private Activity activity;
 		private ShareCallback callback;
-		
+
 		public GPPShareHelper(Activity act) {	
 			activity = act;
 			callback = (ShareCallback)act;
@@ -131,41 +137,44 @@ public class GPPProvider extends SocialProvider {
 		@Override
 		public void onCreate(Bundle state) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void onResume() {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void onPause() {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void onDestroy() {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void onSaveInstanceState(Bundle state) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void onActivityResult(int requestCode, int resultCode,
 				Intent data) {
 			if(resultCode == Activity.RESULT_OK) {
+				Application.mixpanel.track("Shared On Google+", null);
 				onSuccessShare(callback);
 			}
-			else 
+			else {
+				Application.mixpanel.track("Cancelled Google+ Share", null);
 				callback.onFailure();
+			}				
 		}
 
 		@Override
@@ -179,13 +188,13 @@ public class GPPProvider extends SocialProvider {
 
 			// Set the content url (for desktop use).
 			builder.setContentUrl(uri).
-				setType("text/plain").
-				setText(activity.getString(R.string.gpp_share_text));
+			setType("text/plain").
+			setText(activity.getString(R.string.gpp_share_text));
 
 			activity.startActivityForResult(builder.getIntent(), 0);
 		}
 	}
-	
+
 	@Override
 	public ShareHelper getShareHelper(Activity activity) {
 		return new GPPShareHelper(activity);
@@ -229,15 +238,19 @@ public class GPPProvider extends SocialProvider {
 	}
 
 	@Override
-	public void getUserInfo() {
-		String email = gppClient.getAccountName();
-		Person person = gppClient.getCurrentPerson();
+	public void getUserInfo(Activity activity) {
+		final String email = gppClient.getAccountName();
+		final Person person = gppClient.getCurrentPerson();
 		if(person == null)
 			return;
+
 		JSONObject result = new JSONObject();
 		try {
 			result.put("email", email);
-			result.put("gender", person.getGender() == Person.Gender.MALE ? "male" : "female");
+
+			if(person.hasGender())
+				result.put("gender", person.getGender() == Person.Gender.MALE ? "male" : "female");
+
 			if(person.hasPlacesLived()) {
 				JSONArray placesJSON = new JSONArray();
 				for(PlacesLived aPlace : person.getPlacesLived()) {
@@ -248,6 +261,7 @@ public class GPPProvider extends SocialProvider {
 				}
 				result.put("placesLived", placesJSON);
 			}
+
 			if(person.hasOrganizations()) {
 				JSONArray organizationsJSON = new JSONArray();
 				for(Person.Organizations aOrg : person.getOrganizations()) {
@@ -259,13 +273,48 @@ public class GPPProvider extends SocialProvider {
 				}
 				result.put("organizations", organizationsJSON);
 			}
+
 			result.put("displayName", person.getDisplayName());
-			
+
 			APIService.fire(new PostUserDataRequest(PostUserDataRequest.GPPData, result));
+			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				People p = Application.mixpanel.getPeople();
+
+				p.append("$created", new Date());
+
+				if(person.hasGender())
+					p.set("Gender", person.getGender() == Person.Gender.MALE ? "Male" : "Female");
+
+				if(person.hasBirthday()) 
+					p.set("age", calculateAge(person.getBirthday(), "yyyy-MM-dd"));
+
+				JSONObject obj = new JSONObject();
+				try {
+					Name name = person.getName();
+					if(name != null) {
+						obj.put("$first_name", name.getGivenName());
+
+						obj.put("$last_name", name.getFamilyName());
+					}
+
+					obj.put("$email", email);
+					obj.put("Google+ Id", person.getId());
+					p.set(obj);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		});
+
 	}	
 }

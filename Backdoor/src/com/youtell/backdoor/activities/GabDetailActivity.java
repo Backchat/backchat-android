@@ -1,5 +1,6 @@
 package com.youtell.backdoor.activities;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.models.Message;
 
@@ -39,8 +40,10 @@ public class GabDetailActivity extends BaseGabDetailActivity {
 	
     @Override
     protected void goUp() {
-    	if(gab.isNewAndEmpty())
+    	if(gab.isNewAndEmpty()) {
+        	Application.mixpanel.track("Cancelled Thread Compose", null);
     		gab.remove();
+    	}
     	super.goUp();
     }
 }

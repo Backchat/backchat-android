@@ -12,6 +12,7 @@ import android.util.Log;
 import com.youtell.backdoor.models.Clue;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.ClueObserver;
+import com.youtell.backdoor.services.APIService;
 
 public class PostGabClueRequest extends PostRequest {
 	private TypedArgumentHandler<Clue> clue = new TypedArgumentHandler<Clue>(Clue.class, this);
@@ -42,6 +43,8 @@ public class PostGabClueRequest extends PostRequest {
 		clue.object.setRemoteID(remoteID);
 		clue.object.inflate(clueData);
 		clue.object.save();
+		
+		APIService.mixpanel.track("Requested Clue", null);
 	}
 
 }

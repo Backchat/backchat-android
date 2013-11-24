@@ -1,5 +1,6 @@
 package com.youtell.backdoor.activities;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.fragments.GabDetailFragment;
 import com.youtell.backdoor.models.Gab;

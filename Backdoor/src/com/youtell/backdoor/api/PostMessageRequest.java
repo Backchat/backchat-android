@@ -14,6 +14,7 @@ import com.youtell.backdoor.Util;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.Message;
 import com.youtell.backdoor.models.User;
+import com.youtell.backdoor.services.APIService;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -53,6 +54,10 @@ public class PostMessageRequest extends PostRequest {
 		message.object.setRemoteID(messageData.getInt("id"));
 		message.object.inflate(messageData);
 		message.object.save();
+		
+		JSONObject prop = new JSONObject();
+		prop.put("Anonymous", gab.object.isAnonymous());
+		APIService.mixpanel.track("Sent Message", prop);
 	}
 
 	@Override

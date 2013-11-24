@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.adapters.FriendListAdapter;
 import com.youtell.backdoor.adapters.GabListAdapter;
 import com.youtell.backdoor.adapters.ItemAdapter;
@@ -177,18 +178,35 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 		super.onListItemClick(listView, view, position, id);
 		Adapter a = adapter.getAdapterForItem(position);
 		Object obj = adapter.getItem(position);
-		if(a == gabListAdapter)
+		if(a == gabListAdapter) {
+			Application.mixpanel.track("Tapped Main View / Gab Item", null);
 			mCallbacks.onGabSelected((Gab)obj);
-		else if(a == friendListAdapter || a == featuredListAdapter)
+		}
+		else if(a == friendListAdapter) {
+			Application.mixpanel.track("Tapped Main View / Friend Item", null);
 			mCallbacks.onFriendSelected((Friend)obj);
-		else if(a == buyClueAdapter) 
+			
+		}
+		else if(a == featuredListAdapter) {
+			Application.mixpanel.track("Tapped Main View / Featured Users Item", null);
+			mCallbacks.onFriendSelected((Friend)obj);
+		}
+		else if(a == buyClueAdapter) {
+			Application.mixpanel.track("Tapped Main View / Clues Item", null);
 			mCallbacks.onBuyClue();
-		else if(a == inviteAdapter)
+		}
+		else if(a == inviteAdapter) {
+			Application.mixpanel.track("Tapped Main View / Invite Friends", null);
 			mCallbacks.onInvite();
-		else if(a == shareAdapter)
+		}
+		else if(a == shareAdapter) {
+			Application.mixpanel.track("Tapped Main View / Share Item", null);
 			mCallbacks.onShareApp();
-		else if(a == moreFriendsAdapter)
+		}
+		else if(a == moreFriendsAdapter) {
+			Application.mixpanel.track("Tapped Main View / More Item", null);
 			mCallbacks.onMoreFriends();
+		}
 	}		
 	
 	@Override

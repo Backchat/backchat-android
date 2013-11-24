@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.adapters.GabDetailMessageAdapter;
 import com.youtell.backdoor.models.DatabaseObject;
@@ -161,6 +162,7 @@ implements OnClickListener, MessageObserver.Observer, GabDetailMessageAdapter.Ca
 	        		android.provider.MediaStore.Images.ImageColumns.DATA,
 	        		android.provider.MediaStore.Images.ImageColumns.ORIENTATION
 	        		}, null, null, null);
+	        
 	        cursor.moveToFirst();
 	        final int dataColumn = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.DATA);
 	        final int orientationColumn = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.ORIENTATION);
@@ -168,6 +170,8 @@ implements OnClickListener, MessageObserver.Observer, GabDetailMessageAdapter.Ca
 	        final int degrees = cursor.getInt(orientationColumn);
 	        
 	        Log.e("IMAGE_PICKER", imageFilePath);
+	        
+	        Application.mixpanel.track("Selected Image", null);
 	        
 	        final File imageFile = new File(imageFilePath);
 	        

@@ -1,7 +1,10 @@
 package com.youtell.backdoor.iap;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostPurchasedClueRequest;
 import com.youtell.backdoor.models.User;
@@ -45,7 +48,7 @@ public class BuyClueIAP implements IAP.Observer {
 	public void onUpdateItemList(final List<Item> items) {
 		if(this.user == null)
 			return;
-					
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		String[] itemsAsStringArray = new String[items.size()];
 		int i=0;
