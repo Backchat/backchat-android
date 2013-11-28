@@ -8,8 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-public abstract class LocalGabChildObjectObserver<Model extends DatabaseObject, T> extends LocalObserver<T> {
-	public static interface Observer {
+public abstract class LocalGabChildObjectObserver<Model extends DatabaseObject, T extends LocalObserver.Observer> 
+	extends LocalObserver<T> {
+	public static interface Observer extends LocalObserver.Observer {
 		public void onChange(String action, int gabID, int objectID);
 	}
 

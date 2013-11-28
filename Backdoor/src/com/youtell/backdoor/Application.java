@@ -25,6 +25,7 @@ public class Application extends android.app.Application
 	public static MixpanelAPI getMixpanelInstance(Context context) 
 	{
 	    MixpanelAPI instance = MixpanelAPI.getInstance(context, "b773675a02695460a27af2b8c2d11d39"); //TODO dynamic-ify
+	    instance.logPosts();
 	    return instance;
 	}
 }

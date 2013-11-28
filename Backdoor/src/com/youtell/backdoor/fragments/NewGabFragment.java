@@ -7,7 +7,7 @@ import com.youtell.backdoor.observers.FriendObserver;
 import com.youtell.backdoor.observers.UserObserver;
 
 public class NewGabFragment extends ListAdapterCallbackFragment<FriendListAdapter, FriendObserver, Friend, NewGabFragment.Callbacks>
-implements FriendObserver.Observer {
+{
 	public interface Callbacks extends ListAdapterCallbackFragment.Callbacks<Friend> {}
 	
 	@Override
@@ -17,18 +17,24 @@ implements FriendObserver.Observer {
 
 	@Override
 	protected FriendObserver createObserver() {
-		return new FriendObserver(this);
+		return new FriendObserver(new FriendObserver.Observer() {
+			
+			@Override
+			public void refresh() {
+				onChange();
+			}
+			
+			@Override
+			public void onChange() {
+				if(adapter != null)
+					adapter.notifyDataSetChanged();				
+			}
+		});
 	}
 
 	@Override
-	public void onChange() {
-		if(adapter != null)
-			adapter.notifyDataSetChanged();
-	}
-
-	@Override
-	protected void updateData() {
+	public void onResume() {
 		User.getCurrentUser().getFriends();
+		super.onResume();
 	}
-
 }

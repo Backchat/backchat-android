@@ -52,6 +52,23 @@ public class BuyClueIAP implements IAP.Observer {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		String[] itemsAsStringArray = new String[items.size()];
 		int i=0;
+		
+		Collections.sort(items, new Comparator<Item>() {
+			@Override
+			public int compare(Item lhs, Item rhs) {
+				String lhsPrice = lhs.price;
+				String rhsPrice = rhs.price;
+				
+				lhsPrice = lhsPrice.replaceAll("[^\\.0123456789]","");
+				rhsPrice = rhsPrice.replaceAll("[^\\.0123456789]","");
+				
+				double lhsVal = Double.parseDouble(lhsPrice);
+				double rhsVal = Double.parseDouble(rhsPrice);
+				
+				return Double.compare(lhsVal, rhsVal);
+			}		
+		});
+		
 		for(Item item : items) {
 			itemsAsStringArray[i] = String.format("%s (%s)", item.description, item.price); //TODO stringify
 			i++;

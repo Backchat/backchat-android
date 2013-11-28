@@ -97,7 +97,6 @@ public class Util {
         	matrix.postRotate(270);
         }
         Bitmap bmpRotated = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, false);
-        myBitmap.recycle();
         
         return bmpRotated;
 	}

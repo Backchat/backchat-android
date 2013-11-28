@@ -76,7 +76,6 @@ public class PostMessageRequest extends PostRequest {
 			b.compress(CompressFormat.JPEG, 85, byteStream);
 			byte[] array = byteStream.toByteArray();
 			String asBase64 = Base64.encodeToString(array, Base64.DEFAULT);
-			b.recycle();
 			content = asBase64;
 			kind = "1";
 		}

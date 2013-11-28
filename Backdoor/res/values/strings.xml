@@ -73,7 +73,6 @@
     <string name="about_us_dialog_title">About us</string>
     <string name="login_dialog_title">Logging in&#8230;</string>
 
-    <!-- new -->
     <string name="tour_page_1_title">Welcome to Backdoor</string>
     <string name="tour_page_1_text">Backdoor is half anonymous text messaging with your friends.</string>
     <string name="tour_page_1_line_1">Jas, when are you going to tell Katie you like her?</string>
@@ -93,5 +92,10 @@
     <string name="tour_page_3_share_fb">Share on Facebook</string>
     <string name="tour_page_3_share_gpp">Share on Google Plus</string>
     <string name="tour_button_cancel">No, thanks</string>
-
+    
+    <!-- new -->
+    
+    <string name="need_more_clues_dialog_title">Sorry</string>
+    <string name="need_more_clues_dialog_text">You\'ve run out of clues. Buy more?</string>
+            
 </resources>

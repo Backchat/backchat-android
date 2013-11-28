@@ -3,6 +3,7 @@ package com.youtell.backdoor.activities;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.gcm.GCM;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.social.SocialProvider;
@@ -14,7 +15,10 @@ public class StartupActivity extends android.app.Activity implements SocialProvi
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+		//destroyed and flushed in gablistactivity
+		Application.mixpanel = Application.getMixpanelInstance(getApplicationContext());
+
 		cachedUser = User.getCachedUser(this);
 
 		if(cachedUser != null) {

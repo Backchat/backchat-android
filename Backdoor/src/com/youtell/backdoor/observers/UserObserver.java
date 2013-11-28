@@ -14,7 +14,7 @@ public class UserObserver extends LocalObserver<UserObserver.Observer>  {
 		super(observer);
 	}
 	
-	public interface Observer {
+	public interface Observer extends LocalObserver.Observer {
 		public void onUserChanged();
 	}
 

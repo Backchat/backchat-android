@@ -38,7 +38,7 @@ import com.youtell.backdoor.observers.MessageObserver;
  * A fragment representing a single Gab detail screen.
  */
 public class GabDetailFragment extends ListAdapterCallbackFragment<GabDetailMessageAdapter, MessageObserver, Message, GabDetailFragment.Callbacks> 
-implements OnClickListener, MessageObserver.Observer, GabDetailMessageAdapter.Callbacks {
+implements OnClickListener, GabDetailMessageAdapter.Callbacks {
 	public static final String ARG_GAB_ID = "gab_id";
 
 	public static final String FROM_MESSAGE_RES = "FROM_MESSAGE_RES";
@@ -128,12 +128,6 @@ implements OnClickListener, MessageObserver.Observer, GabDetailMessageAdapter.Ca
 	}
 
 	@Override
-	public void onChange(String action, int gabID, int messageID) {
-		if(adapter != null)
-			adapter.notifyDataSetChanged();
-	}
-
-	@Override
 	protected GabDetailMessageAdapter createAdapter() {
 		int fromMessageRes = getArguments().getInt(FROM_MESSAGE_RES);
 		int toMessageRes = getArguments().getInt(TO_MESSAGE_RES);
@@ -145,12 +139,21 @@ implements OnClickListener, MessageObserver.Observer, GabDetailMessageAdapter.Ca
 
 	@Override
 	protected MessageObserver createObserver() {
-		return new MessageObserver(this, gab);
-	}
+		return new MessageObserver(new MessageObserver.Observer() {
 
-	@Override
-	protected void updateData() {
-		//DO nothing? TODO
+			@Override
+			public void onChange(String action, int gabID, int objectID) {
+				if(adapter != null)
+					adapter.notifyDataSetChanged();
+			}
+
+			@Override
+			public void refresh() {
+				if(adapter != null)
+					adapter.notifyDataSetChanged();
+			}
+			
+		}, gab);
 	}
 
 	@Override

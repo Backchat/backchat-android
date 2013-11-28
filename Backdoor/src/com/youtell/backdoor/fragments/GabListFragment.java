@@ -35,7 +35,7 @@ import com.youtell.backdoor.tiles.ShareTile;
 import com.youtell.backdoor.tiles.Tile;
 
 public class GabListFragment extends ListFragment
-implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
+implements OnRefreshListener {
 	private APIRequestObserver<GetGabsRequest> gabsRequestObserver;
 	private Callbacks mCallbacks = null;
 
@@ -75,6 +75,11 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 			public void onChange(String action, int gabID) {
 				gabListAdapter.notifyDataSetChanged();
 			}
+
+			@Override
+			public void refresh() {
+				gabListAdapter.notifyDataSetChanged();				
+			}
 		});
 
 		friendObserver = new FriendObserver(new FriendObserver.Observer() {			
@@ -93,9 +98,27 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 					moreFriendsAdapter.setVisible(false);
 				}
 			}
+
+			@Override
+			public void refresh() {
+				onChange();				
+			}
 		});
 
-		gabsRequestObserver = new APIRequestObserver<GetGabsRequest>(this, GetGabsRequest.class);
+		gabsRequestObserver = new APIRequestObserver<GetGabsRequest>(new APIRequestObserver.Observer<GetGabsRequest>() {
+			@Override
+			public void onSuccess() {
+				if(mCallbacks != null)		
+					mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
+			}
+
+			@Override
+			public void onFailure() {
+				if(mCallbacks != null)
+					mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
+			}
+			
+		}, GetGabsRequest.class);
 	}	
 
 	@Override 
@@ -140,19 +163,24 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 	public void onResume()
 	{		
 		super.onResume();
+		
 		gabObserver.startListening();
 		friendObserver.startListening();
 		gabsRequestObserver.startListening();
-		
-		updateData();
+
+		updateUserData();
 	}
 
+	public void pauseListening() {
+		gabObserver.stopListening();
+		friendObserver.stopListening();
+		gabsRequestObserver.stopListening();		
+	}
+	
 	@Override
 	public void onStop()
 	{
-		gabObserver.stopListening();
-		friendObserver.stopListening();
-		gabsRequestObserver.stopListening();
+		pauseListening();
 		super.onStop();
 	}
 
@@ -211,23 +239,11 @@ implements OnRefreshListener, APIRequestObserver.Observer<GetGabsRequest> {
 	
 	@Override
 	public void onRefreshStarted(View view) {
-		updateData();
-	}
-
-	@Override
-	public void onSuccess() {
-		if(mCallbacks != null)		
-			mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
-	}
-
-	@Override
-	public void onFailure() {
-		if(mCallbacks != null)
-			mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
+		updateUserData();
 	}
 
 	
-	private void updateData() {
+	private void updateUserData() {
 		User user = User.getCurrentUser();
 		user.updateGabs();
 		user.getFriends();		

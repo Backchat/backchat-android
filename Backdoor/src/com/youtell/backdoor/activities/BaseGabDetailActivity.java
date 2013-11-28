@@ -41,7 +41,6 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 		//TODO
 		gabID = getIntent().getIntExtra(BaseGabDetailActivity.ARG_GAB_ID, -1);
 		gab = Gab.getByID(gabID);
-		setTitle(gab.getTitle());
 		
 		observer = new GabObserver(this, gab);
 		toastObserver.setWatchingGab(gab);
@@ -152,5 +151,10 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 		Intent imageIntent = new Intent(this, ViewImageActivity.class);
 		imageIntent.putExtra(ViewImageActivity.IMAGE_URL, message.getImageRemotePath());
 		startActivity(imageIntent);
+	}
+	
+	@Override
+	public void refresh() {
+		setTitle(gab.getTitle());
 	}
 }

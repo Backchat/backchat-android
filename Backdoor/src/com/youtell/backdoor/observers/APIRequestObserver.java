@@ -6,10 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class APIRequestObserver<T extends Request> extends LocalObserver<APIRequestObserver.Observer<T>> {
+public class APIRequestObserver<T extends Request> extends BaseLocalObserver<APIRequestObserver.Observer<T>> {
 	public interface Observer<T extends Request> {
-		void onSuccess();
-		void onFailure();
+		public abstract void onFailure();
+		public abstract void onSuccess();
 	}
 	
 	private Class<T> clazz;

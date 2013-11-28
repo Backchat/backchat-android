@@ -60,17 +60,17 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 	public static final int STARTUP_START = 2;
 	private static final int RESUME_START = 3;
 	public static final String START_ARG = "START_ARG";
+	private GabListFragment gabListFragment;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Application.mixpanel = Application.getMixpanelInstance(getApplicationContext());
 
 		setContentView(R.layout.activity_gab_list);
 
-		GabListFragment fragment = new GabListFragment();
+		gabListFragment = new GabListFragment();
 		getFragmentManager().beginTransaction()
-		.add(R.id.gab_list, fragment)
+		.add(R.id.gab_list, gabListFragment)
 		.commit();
 
 		ActionBar actionBar = getActionBar();
@@ -129,7 +129,6 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		}
 		else {
 			BaseActivity.runOnNextScreen(this, new Runnable() {
-
 				@Override
 				public void run() {
 					Toast toast = Toast.makeText(getApplicationContext(), 
@@ -144,7 +143,12 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				SocialProvider.getActiveProvider().getUserInfo(GabListActivity.this);
+				try {
+					SocialProvider.getActiveProvider().getUserInfo(GabListActivity.this);
+				} 
+				catch(Exception e) {
+					//something bad happened, but not terrible					
+				}
 			}
 			
 		}).start();
@@ -158,9 +162,10 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		getSlidingMenu().toggle();
 	}
 
-	public void newGabClick(View v) {
+	public void newGabClick(View v) {		
 		Application.mixpanel.track("Tapped New Gab Button", null);
 		Intent intent = new Intent(this, NewGabActivity.class);
+		gabListFragment.pauseListening();
 		startActivity(intent);
 	}
 

@@ -36,8 +36,7 @@ import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.ClueObserver;
 import com.youtell.backdoor.observers.UserObserver;
 
-public class GabCluesFragment extends DialogFragment
-implements UserObserver.Observer, ClueObserver.Observer {
+public class GabCluesFragment extends DialogFragment{
 	public interface Callbacks {
 		public void onCancel();
 		public void onBuy();
@@ -48,7 +47,7 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	private GridLayout clueGrid;
 	private TextView clueLabel;
 	private ClueObserver clueObserver;
-	private UserObserver userObserver = new UserObserver(this);
+	private UserObserver userObserver;
 	private Callbacks mCallbacks;
 	private Button clueButton;
 	private boolean enabled = false;
@@ -66,7 +65,65 @@ implements UserObserver.Observer, ClueObserver.Observer {
 	public void onCreate(Bundle savedInstanceState) {
 		gab = Gab.getByID(getArguments().getInt(ARG_GAB_ID, -1)); //TODO
 		super.onCreate(savedInstanceState);
-		clueObserver = new ClueObserver(this, gab);
+		userObserver = new UserObserver(new UserObserver.Observer() {
+			
+			@Override
+			public void refresh() {
+				updateClueCount();				
+			}
+			
+			@Override
+			public void onUserChanged() {
+				updateClueCount();				
+			}
+			
+
+			private void updateClueCount()
+			{
+				if(User.getCurrentUser().getTotalClueCount() == User.UNKNOWN_CLUE_COUNT) {
+					clueLabel.setText(R.string.gab_clue_updating_remaining);
+				}
+				else {
+					clueLabel.setText(String.format(getActivity().getResources().getString(R.string.gab_clue_status_text), 
+							User.getCurrentUser().getTotalClueCount()));
+				}
+			}
+
+		});
+		
+		clueObserver = new ClueObserver(new ClueObserver.Observer() {
+			@Override
+			public void onChange(String action, int gabID, int objectID) {
+				if(action == ClueObserver.CLUE_UPDATED) {
+					Clue c = gab.getClueByID(objectID);		
+					updateClue(c);
+				}
+			}
+
+			@Override
+			public void refresh() {				
+				ForeignCollection<Clue> clues = gab.getClues();
+				//TODO move into DAO
+				ArrayList<Clue> clueList = new ArrayList<Clue>(clues);
+				Collections.sort(clueList, new Comparator<Clue>() {
+					@Override
+					public int compare(Clue lhs, Clue rhs) {
+						return lhs.getNumber() - rhs.getNumber();
+					}		
+				});
+				for(int i=0;i<clueList.size();i++) {
+					updateClue(clueList.get(i));
+				}
+			}
+			
+			private void updateClue(Clue c) {
+				if(!c.isNew()) {
+					ClueGridItem clueTile = new ClueGridItem(clueGrid, c.getNumber());
+					clueTile.fillWithClue(c);
+				}
+
+			}
+		}, gab);
 
 	}       
 
@@ -100,11 +157,29 @@ implements UserObserver.Observer, ClueObserver.Observer {
 						.show(); 	    
 					}
 					else {
-						which.startProgress();
-						Clue c = new Clue();
-						c.setRemoteID(DatabaseObject.NEW_OBJECT);
-						c.setNumber(which.getNumber());
-						gab.addClue(c);
+						if(User.getCurrentUser().getTotalClueCount() == 0) {
+							new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT)
+							.setTitle(R.string.need_more_clues_dialog_title)
+							.setMessage(R.string.need_more_clues_dialog_text)
+							.setPositiveButton(R.string.yes_button, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									if(mCallbacks != null)
+										mCallbacks.onBuy();									
+								}
+								
+							})
+							.setNegativeButton(R.string.no_button, null)
+							.show(); 
+						}
+						else {
+							which.startProgress();
+							Clue c = new Clue();
+							c.setRemoteID(DatabaseObject.NEW_OBJECT);
+							c.setNumber(which.getNumber());
+							gab.addClue(c);
+						}
 					}
 				}
 			});
@@ -130,27 +205,11 @@ implements UserObserver.Observer, ClueObserver.Observer {
 			}
 
 		});
+
 		if(!enabled)
 			clueButton.setEnabled(false); //TODO make sure color different?	
 
-
-		updateClueGrid();
 		return view;
-	}
-
-	private void updateClueGrid() {
-		ForeignCollection<Clue> clues = gab.getClues();
-		//TODO move into DAO
-		ArrayList<Clue> clueList = new ArrayList<Clue>(clues);
-		Collections.sort(clueList, new Comparator<Clue>() {
-			@Override
-			public int compare(Clue lhs, Clue rhs) {
-				return lhs.getNumber() - rhs.getNumber();
-			}		
-		});
-		for(int i=0;i<clueList.size();i++) {
-			updateClue(clueList.get(i));
-		}
 	}
 
 	@Override
@@ -158,7 +217,6 @@ implements UserObserver.Observer, ClueObserver.Observer {
 		super.onResume();
 		userObserver.startListening();
 		clueObserver.startListening();
-		updateClueCount();
 		gab.updateClues(); //in case of change
 	}
 
@@ -167,38 +225,6 @@ implements UserObserver.Observer, ClueObserver.Observer {
 		super.onPause();
 		clueObserver.stopListening();
 		userObserver.stopListening();
-	}
-
-	private void updateClueCount()
-	{
-		if(User.getCurrentUser().getTotalClueCount() == User.UNKNOWN_CLUE_COUNT) {
-			clueLabel.setText(R.string.gab_clue_updating_remaining);
-		}
-		else {
-			clueLabel.setText(String.format(getActivity().getResources().getString(R.string.gab_clue_status_text), 
-					User.getCurrentUser().getTotalClueCount()));
-		}
-	}
-
-	@Override
-	public void onUserChanged() {
-		updateClueCount();		
-	}
-
-	@Override
-	public void onChange(String action, int gabID, int objectID) {
-		if(action == ClueObserver.CLUE_UPDATED) {
-			Clue c = gab.getClueByID(objectID);		
-			updateClue(c);
-		}
-	}
-
-	private void updateClue(Clue c) {
-		if(!c.isNew()) {
-			ClueGridItem clueTile = new ClueGridItem(clueGrid, c.getNumber());
-			clueTile.fillWithClue(c);
-		}
-
 	}
 
 	@Override

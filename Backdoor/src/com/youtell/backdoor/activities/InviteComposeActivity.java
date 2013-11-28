@@ -62,7 +62,8 @@ APIRequestObserver.Observer<PostInviteRequest> {
 
 	private void goBackToGabList() {
 		Intent gabListIntent = new Intent(this, GabListActivity.class);
-		NavUtils.navigateUpTo(this, gabListIntent);
+		gabListIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		finish();
 		overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
 	}
 

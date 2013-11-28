@@ -77,4 +77,9 @@ public class NotificationSettingsFragment extends DialogFragment implements Obse
 		settings.setVisibility(View.VISIBLE);
 		progress.setVisibility(View.GONE);
 	}
+
+	@Override
+	public void refresh() {
+		
+	}
 }

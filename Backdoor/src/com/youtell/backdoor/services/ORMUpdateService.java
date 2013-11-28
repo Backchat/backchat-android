@@ -52,6 +52,9 @@ public class ORMUpdateService extends Service {
 				}				
 			}
 		
+
+			@Override
+			public void refresh() {}
 		}, null);
 		
 		gabObserver = new GabObserver(new GabObserver.Observer() {			
@@ -86,6 +89,10 @@ public class ORMUpdateService extends Service {
 					APIService.fire(new PostGabRequest(g));
 				}
 			}
+			
+
+			@Override
+			public void refresh() {}
 		});
 		
 		clueObserver = new ClueObserver(new ClueObserver.Observer() {
@@ -97,6 +104,9 @@ public class ORMUpdateService extends Service {
 					APIService.fire(new PostGabClueRequest(clue));
 				}
 			}
+			
+			@Override
+			public void refresh() {}
 		
 		}, null);
 		gabObserver.startListening();

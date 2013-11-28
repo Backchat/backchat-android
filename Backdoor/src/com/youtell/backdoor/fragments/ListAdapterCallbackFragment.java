@@ -1,21 +1,16 @@
 package com.youtell.backdoor.fragments;
 
 
-import android.R;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
-import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.LocalObserver;
-import com.youtell.backdoor.observers.UserObserver;
 
 public abstract class ListAdapterCallbackFragment<Adapter extends BaseAdapter, ModelObserverType extends LocalObserver<?>, 
 CallbackType, CallbackT extends ListAdapterCallbackFragment.Callbacks<CallbackType>> 
@@ -41,7 +36,6 @@ extends ListFragment {
 	{		
 		super.onResume();
 		observer.startListening();
-		updateData();
 	}
 	
 	@Override
@@ -99,6 +93,4 @@ extends ListFragment {
 		if(mCallbacks != null)
 			mCallbacks.onItemSelected((CallbackType)adapter.getItem(position));
 	}		
-	
-	protected abstract void updateData();
 }

@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 public class FriendObserver extends LocalObserver<FriendObserver.Observer> {
-	public interface Observer {
+	public interface Observer extends LocalObserver.Observer {
 		public void onChange();
 	}
 	
