@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
@@ -64,6 +65,8 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Log.e("gablistactivity", "create");
+
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_gab_list);
@@ -102,7 +105,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		gcmNotifications = new GCMNotificationObserver(this, null);
 
 		User user = User.getCurrentUser();
-		Application.mixpanel.identify(String.format("%d", user.getID()));
+		Application.identifyUserToMixpanel(Application.mixpanel, user);
 		Log.e("DB", String.format("%d", user.getID()));
 		Database.setDatabaseForUser(user.getID());
 		OpenHelperManager.getHelper(this, Database.class);
@@ -177,6 +180,8 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 	@Override
 	public void onResume() {
+		Log.e("gablistactivity", "resume");
+
 		super.onResume();
 		gcmNotifications.startListening(1);
 		shareHelper.onResume();
@@ -216,6 +221,8 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 	@Override
 	protected void onStop() {
+		Log.e("gablistactivity", "stop");
+
 		super.onStop();
 
 		gcmNotifications.stopListening();
@@ -224,6 +231,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 	@Override
 	protected void onDestroy() 
 	{
+		Log.e("gablistactivity", "destroy");
 		Application.mixpanel.flush();
 
 		shareHelper.onDestroy();
@@ -375,5 +383,14 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 	@Override
 	public void onReadyIAP() {
 		//TODO
+	}
+
+	@Override
+	public void onMixpanelMessage(String message) {
+		new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
+		.setTitle("Backdoor") //TODO strinifgy
+		.setMessage(message)
+		.setPositiveButton(R.string.ok_button, null) 
+		.show(); 						
 	}
 }

@@ -92,6 +92,7 @@ public class APIService extends IntentService {
 			}
 			
 			mixpanel = Application.getMixpanelInstance(applicationContext);
+			Log.e("MIXPANEL", String.format("identify %d", user.getID()));
 			mixpanel.identify(String.format("%d", user.getID()));
 		}
 		

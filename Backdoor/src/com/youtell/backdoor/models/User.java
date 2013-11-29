@@ -74,8 +74,14 @@ public class User implements InflatableObject {
 		return GCMKey;
 	}
 	
+	private String deviceID;
 	public void setDeviceID(String id) {
 		APIService.fire(new PostDeviceRequest(id));
+		deviceID = id;
+	}
+	
+	public String getDeviceID() {
+		return deviceID;
 	}
 
 	private static final String TAG = "USER";
@@ -89,6 +95,7 @@ public class User implements InflatableObject {
 		this.message_preview = b.getBoolean("message_preview");
 		setID(b.getInt("id"));
 		setIsNewUser(b.getBoolean("isNewUser"));
+		this.deviceID = b.getString("deviceID"); 
 	}
 	
 	public void serialize(Bundle b) {
@@ -101,6 +108,7 @@ public class User implements InflatableObject {
 		b.putBoolean("message_preview", message_preview);
 		b.putBoolean("isNewUser", isNewUser());
 		b.putInt("id", id);
+		b.putString("deviceID", getDeviceID());
 	}
 	
 	public User clone() {

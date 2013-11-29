@@ -3,6 +3,7 @@ package com.youtell.backdoor.services;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.activities.BaseGabDetailActivity;
+import com.youtell.backdoor.activities.GabListActivity;
 import com.youtell.backdoor.gcm.BroadcastReceiver;
 import com.youtell.backdoor.models.Gab;
 import com.youtell.backdoor.models.User;
@@ -24,6 +25,7 @@ import android.util.Log;
 public class GCMIntentService extends IntentService implements GCMNotificationObserver.Observer {
 	private static int GCM_KIND_MSG = 0;
 	private static int GCM_KIND_FRIEND = 1;
+	
 	private GCMNotificationObserver observer;
 
 	public GCMIntentService() {
@@ -49,28 +51,38 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 			 * any message types you're not interested in, or that you don't
 			 * recognize.
 			 */
-			if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {				
-				String message = extras.getString("message");
-				int kind = Integer.parseInt(extras.getString("kind"));
-
-				if(kind == GCM_KIND_MSG) {
-					int gab_id = Integer.parseInt(extras.getString("gab_id"));
-					int unread_count = Integer.parseInt(extras.getString("unread_count"));
-					
-					Gab g = Gab.getByRemoteID(gab_id);
-					
-					if(g == null) {
-						g = new Gab();
-						g.setRemoteID(gab_id);
-						g.save();
-					}
-					
-					g.updateWithMessages();
-					
-					GCMNotificationObserver.broadcastNotification(this, message, g);
+			if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+				if(extras.containsKey("mp_message")) {
+					//mixpanel message
+			        String mp_message = extras.getString("mp_message");
+			        if(mp_message != null && mp_message.length() > 0)
+			        {
+			        	GCMNotificationObserver.broadcastMixpanelMessage(this, mp_message);
+			        }
 				}
-				else if(kind == GCM_KIND_FRIEND) {
+				else {
+					String message = extras.getString("message");
+					int kind = Integer.parseInt(extras.getString("kind"));
 
+					if(kind == GCM_KIND_MSG) {
+						int gab_id = Integer.parseInt(extras.getString("gab_id"));
+						int unread_count = Integer.parseInt(extras.getString("unread_count"));
+
+						Gab g = Gab.getByRemoteID(gab_id);
+
+						if(g == null) {
+							g = new Gab();
+							g.setRemoteID(gab_id);
+							g.save();
+						}
+
+						g.updateWithMessages();
+
+						GCMNotificationObserver.broadcastMessage(this, message, g);
+					}
+					else if(kind == GCM_KIND_FRIEND) {
+
+					}
 				}
 			}
 		}
@@ -110,12 +122,32 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 		.setContentIntent(pendingIntent)
 		.setAutoCancel(true);
 		
+		fireNotification(notebuilder);
+	}
+
+	@Override
+	public void onMixpanelMessage(String message) {
+		Intent openMainApp = new Intent(this, GabListActivity.class);
+		openMainApp.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); //TODO merge this
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, openMainApp, PendingIntent.FLAG_ONE_SHOT);
+		NotificationCompat.Builder notebuilder = new NotificationCompat.Builder(this)
+		.setContentTitle("Backdoor") //TODO stringify
+		.setSmallIcon(R.drawable.ic_launcher)
+		.setContentText(message)
+		.setTicker(message)
+		.setContentIntent(pendingIntent)
+		.setAutoCancel(true);
+		fireNotification(notebuilder);
+	}
+		
+	
+	private void fireNotification(NotificationCompat.Builder notebuilder) {
 		if(User.getCurrentUser().getVibratePref(this))
 			notebuilder.setVibrate(new long[] {0, 100});
 		
 		if(User.getCurrentUser().getSoundPref(this))
 			notebuilder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
-		
+
 		Notification note = notebuilder.build();
 		//						TODO
 		int mNotificationId = 001;
@@ -123,6 +155,6 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 		NotificationManager mNotifyMgr = 
 				(NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		// Builds the notification and issues it.
-		mNotifyMgr.notify(mNotificationId, note);
+		mNotifyMgr.notify(mNotificationId, note);		
 	}
 }

@@ -36,6 +36,8 @@ public class GCMNotificationObserver extends BroadcastReceiver {
 
 	public interface Observer {
 		public void onNotification(String message, int gab_id);
+
+		public void onMixpanelMessage(String message);
 	}
 
 	@Override
@@ -44,19 +46,31 @@ public class GCMNotificationObserver extends BroadcastReceiver {
 			return;
 		
 		Bundle bundle = intent.getExtras();
-		int this_gab_id = bundle.getInt(ARG_GAB_ID);
-		String message = bundle.getString(ARG_MESSAGE);
-		if(gab_id == ALL_GABS || this_gab_id == gab_id) {
-			observer.onNotification(message, this_gab_id);
-
-			setResultCode(Activity.RESULT_CANCELED);
+		int type = bundle.getInt(ARG_TYPE);
+		
+		if(type == TYPE_MESSAGE) {
+			int this_gab_id = bundle.getInt(ARG_GAB_ID);
+			String message = bundle.getString(ARG_MESSAGE);
+			if(gab_id == ALL_GABS || this_gab_id == gab_id) {
+				observer.onNotification(message, this_gab_id);
+			}
+		}
+		else if(type == TYPE_MIXPANEL_MSG) {
+			String message = bundle.getString(ARG_MESSAGE);
+			observer.onMixpanelMessage(message);
 		}
 		
+		setResultCode(Activity.RESULT_CANCELED);
 	}
 
 	private static final String GCM_NOTIFICATION = "GCM_NOTIFICATION";
 	private static final String ARG_GAB_ID = "ARG_GAB_ID";
 	private static final String ARG_MESSAGE = "ARG_MESSAGE";
+	private static final String ARG_TYPE = "ARG_TYPE";
+	
+	private static int TYPE_MESSAGE = 1;
+	private static int TYPE_FRIENDNOTIF = 2;
+	private static int TYPE_MIXPANEL_MSG = 3;
 	
 	public void startListening(int priority) {
 		IntentFilter filter = new IntentFilter();
@@ -75,11 +89,22 @@ public class GCMNotificationObserver extends BroadcastReceiver {
 		}
 	}
 	
-	static public void broadcastNotification(Context context, String message, Gab g) {
+	static public void broadcastMessage(Context context, String message, Gab g) {
 		Bundle args = new Bundle();
 		args.putInt(ARG_GAB_ID, g.getID());
 		args.putString(ARG_MESSAGE, message);
-		//broadcastChange(GCM_NOTIFICATION, args);
+		args.putInt(ARG_TYPE, TYPE_MESSAGE);
+		Intent intent = new Intent();
+		intent.putExtras(args);
+		intent.setAction(GCM_NOTIFICATION);
+		intent.addCategory(Intent.CATEGORY_DEFAULT);
+		context.sendOrderedBroadcast(intent, null);
+	}
+	
+	static public void broadcastMixpanelMessage(Context context, String message) {
+		Bundle args = new Bundle();
+		args.putString(ARG_MESSAGE, message);
+		args.putInt(ARG_TYPE, TYPE_MIXPANEL_MSG);
 		Intent intent = new Intent();
 		intent.putExtras(args);
 		intent.setAction(GCM_NOTIFICATION);

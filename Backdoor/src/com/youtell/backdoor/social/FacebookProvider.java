@@ -247,6 +247,12 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 			public void run() {
 				People p = Application.mixpanel.getPeople();
 
+				if(p == null) {
+					Log.e("MIXPANEL", "no person");
+					return;
+				}
+				
+				Log.e("MIXPANEL", String.format("set to %s", Application.mixpanel.getDistinctId()));
 				p.append("$created", new Date());
 
 				Object gender = u.getProperty("gender");
@@ -283,8 +289,12 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 					p.set(obj);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e("MIXPANEL", "exception", e);
 				}
+				
+				registerMixpanelGCM(p);
+				
+				Application.mixpanel.flush();
 			}
 
 		});

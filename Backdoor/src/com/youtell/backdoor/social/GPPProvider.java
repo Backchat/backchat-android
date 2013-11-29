@@ -312,6 +312,10 @@ public class GPPProvider extends SocialProvider {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				registerMixpanelGCM(p);
+				
+				Application.mixpanel.flush();
 			}
 
 		});

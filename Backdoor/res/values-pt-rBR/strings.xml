@@ -71,7 +71,6 @@
     <string name="clue_information_dialog_title"> Detalhes das Pistas</string>
     <string name="privacy_dialog_title">Privacidade e Legal</string>
     <string name="about_us_dialog_title">Sobre Nos</string>
-    <!-- new -->
     <string name="tour_page_1_title">Bem-vindo ao Backdoor</string>
     <string name="tour_page_1_text">Backdoor é um meio de mensagens detexto anônimas entre seus amigos.</string>
     <string name="tour_page_1_line_1">Jonny, quando você vai falar para Katie que você quer sair com ela?</string>
@@ -91,5 +90,9 @@
     <string name="tour_page_3_share_fb">Compartilhar no Facebook</string>
     <string name="tour_page_3_share_gpp">Compartilhar no Google</string>
     <string name="tour_button_cancel">Não, obrigado.</string>
+    <!-- new -->
+
+    <string name="need_more_clues_dialog_title">Infelizmente</string>
+    <string name="need_more_clues_dialog_text">Uas pistas acabarem , quer compara mais?</string>
 
 </resources>

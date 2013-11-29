@@ -5,7 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.mixpanel.android.mpmetrics.MixpanelAPI.People;
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.api.PostFreeShareClueRequest;
+import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.services.APIService;
 
 import android.app.Activity;
@@ -98,5 +101,9 @@ public abstract class SocialProvider {
 		}
 		
 		return 0;
+	}
+	
+	protected void registerMixpanelGCM(People p) {
+		p.setPushRegistrationId(User.getCurrentUser().getDeviceID());
 	}
 }
