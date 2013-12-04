@@ -53,7 +53,10 @@ SocialProvider.Callback {
 		if(!firstStart) {
 			//we are logging outut, yo! note that this is called before we try to log in in onCreate
 			//if old is NULL AND new is NULL, we haven't checked anything yet.
-			SocialProvider.getActiveProvider().logout();
+			if(SocialProvider.getActiveProvider() != null) {
+				//it could be null if we are on the login page, and the app is resumed by the OS
+				SocialProvider.getActiveProvider().logout();
+			}
 			SocialProvider.setActiveProvider(null);
 			User.clearCachedCredentials(getApplicationContext());			
 		}
