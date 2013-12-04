@@ -12,6 +12,7 @@ import org.json.JSONException;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
@@ -65,7 +66,8 @@ public class Util {
 	public static Bitmap openBitmap(String absolutePath, boolean scaled) {
 		BitmapFactory.Options o = new BitmapFactory.Options();
         o.inPurgeable = true;
-        o.inInputShareable = true;
+        o.inInputShareable = true;        
+
         Bitmap myBitmap = BitmapFactory.decodeFile(absolutePath, o);
         ExifInterface exif;
         
@@ -82,8 +84,11 @@ public class Util {
 			double scaleFactor = 220.0 / Math.max(o.outWidth, o.outHeight); 
 			int newWidth = (int) (o.outWidth * scaleFactor);
 			int newHeight = (int) (o.outHeight * scaleFactor);
+			Bitmap oldBitmap = myBitmap;
             Bitmap bmpScaled = Bitmap.createScaledBitmap(myBitmap, newWidth, newHeight, false);
             myBitmap = bmpScaled;
+            oldBitmap.recycle();
+            oldBitmap = null;
 		}
 		
         Matrix matrix = new Matrix();
@@ -96,6 +101,7 @@ public class Util {
         } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
         	matrix.postRotate(270);
         }
+        
         Bitmap bmpRotated = Bitmap.createBitmap(myBitmap, 0, 0, myBitmap.getWidth(), myBitmap.getHeight(), matrix, false);
         
         return bmpRotated;

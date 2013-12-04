@@ -218,26 +218,32 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 				com.facebook.Request.newGraphPathRequest(session, "me/family", null),
 				com.facebook.Request.newGraphPathRequest(session, "me/interests", null),
 				com.facebook.Request.newGraphPathRequest(session, "me/likes", null));
-
+		
 		try {
+		
 			JSONObject result = null;
 
 			for(int i=0;i<names.length;i++) {
-				JSONObject rObj = responses.get(i).getGraphObject().getInnerJSONObject();
+				Response s = responses.get(i);
+				if(s == null || s.getError() != null)
+					return;
+				
+				JSONObject rObj = s.getGraphObject().getInnerJSONObject();
 				if(names[i] == null) {
 					result = rObj;
 				}
 				else {
-					result.put(names[i], rObj);
+					result.put(names[i], rObj.getJSONArray("data"));
+
 				}			
 			}
+			
+				
 			APIService.fire(new PostUserDataRequest(PostUserDataRequest.FacebookData, result));
-
-		}
-
-		catch (JSONException e) {
+			
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(String.format("bad exception with JSON %s", e.toString()));
 		}
 
 		final GraphUser u = responses.get(0).getGraphObjectAs(GraphUser.class);

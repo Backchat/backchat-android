@@ -170,18 +170,19 @@ implements OnClickListener, GabDetailMessageAdapter.Callbacks {
 	        final int dataColumn = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.DATA);
 	        final int orientationColumn = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.ORIENTATION);
 	        final String imageFilePath = cursor.getString(dataColumn);
-	        final int degrees = cursor.getInt(orientationColumn);
 	        
 	        Log.e("IMAGE_PICKER", imageFilePath);
 	        
 	        Application.mixpanel.track("Selected Image", null);
 	        
-	        final File imageFile = new File(imageFilePath);
+	        File imageFile = new File(imageFilePath);
 	        
             Message m = new Message();
 			m.setFilePath(imageFile);
 			sendMessage(m);
 			
+			imageFile = null;
+
 	        cursor.close();
 	    }
 	    super.onActivityResult(requestCode, resultCode, data);

@@ -11,6 +11,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.LocalObserver;
 import com.youtell.backdoor.services.APIService;
+import net.hockeyapp.android.CrashManager;
 
 public class Application extends android.app.Application
 {
@@ -18,6 +19,7 @@ public class Application extends android.app.Application
 	public void onCreate() {
 		LocalObserver.initialize(this);
 		APIService.initialize(this);
+
 		//TODO enable correct caching...
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
         ImageLoader.getInstance().init(config);
@@ -37,5 +39,9 @@ public class Application extends android.app.Application
 		Log.e("MIXPANEL", String.format("identified %s", distinctId));
 		api.identify(distinctId);
 		api.getPeople().identify(distinctId);
+	}
+
+	public static void checkCrashLog(Context context) {
+		CrashManager.register(context, "205f05f38db1a0bf5d795fa469d91cbe"); //TODO stringify
 	}
 }

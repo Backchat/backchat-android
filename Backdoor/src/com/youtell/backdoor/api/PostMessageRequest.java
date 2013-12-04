@@ -1,6 +1,7 @@
 package com.youtell.backdoor.api;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 
 public class PostMessageRequest extends PostRequest {
 	private TypedArgumentHandler<Gab> gab = new TypedArgumentHandler<Gab>(Gab.class, this);
@@ -71,13 +73,34 @@ public class PostMessageRequest extends PostRequest {
 		}
 		else {
 			//cloned from iOS app, JPEG @ 0.85
+			Log.e("PostMessage", String.format("opening file %s", message.object.getContent()));
 			ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-			Bitmap b = Util.openBitmap(message.object.getContent(),  false);
+			Bitmap b;
+			try {
+				b = Util.openBitmap(message.object.getContent(), false);
+			}
+			catch(OutOfMemoryError e) {
+				//if we run out of memory, use the small image.
+				
+				b = Util.openBitmap(message.object.getContent(), true);
+			}
 			b.compress(CompressFormat.JPEG, 85, byteStream);
 			byte[] array = byteStream.toByteArray();
 			String asBase64 = Base64.encodeToString(array, Base64.DEFAULT);
 			content = asBase64;
 			kind = "1";
+			b.recycle();
+			b = null;
+			array = null;
+			try {
+				byteStream.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			byteStream = null;
+			
+			System.gc();
 		}
         nameValuePairs.add(new BasicNameValuePair("content", content));
         nameValuePairs.add(new BasicNameValuePair("kind", kind));

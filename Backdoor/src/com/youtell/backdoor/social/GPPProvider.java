@@ -18,7 +18,6 @@ import com.google.android.gms.plus.PlusShare;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.plus.model.people.Person.Name;
 import com.google.android.gms.plus.model.people.Person.PlacesLived;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.mixpanel.android.mpmetrics.MixpanelAPI.People;
 import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;

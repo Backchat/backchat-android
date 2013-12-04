@@ -146,15 +146,12 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					SocialProvider.getActiveProvider().getUserInfo(GabListActivity.this);
-				} 
-				catch(Exception e) {
-					//something bad happened, but not terrible					
-				}
+				SocialProvider.getActiveProvider().getUserInfo(GabListActivity.this);
 			}
 			
 		}).start();
+		
+		Application.checkCrashLog(this);
 	}
 
 	public PullToRefreshAttacher getPullToRefreshAttacher() {
@@ -274,7 +271,8 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 	@Override
 	public void onFriendSelected(Friend f) {
-		//TODO stop the listeners so we don't refresh the gab before going across
+		gabListFragment.pauseListening();
+
 		Gab gab = f.createNewGab();
 		gab.save();
 		startActivity(BaseGabDetailActivity.getDetailIntent(this, gab));	

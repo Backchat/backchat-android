@@ -1,5 +1,7 @@
 package com.youtell.backdoor.services;
 
+import java.util.Date;
+
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.activities.BaseGabDetailActivity;
@@ -73,6 +75,7 @@ public class GCMIntentService extends IntentService implements GCMNotificationOb
 						if(g == null) {
 							g = new Gab();
 							g.setRemoteID(gab_id);
+							g.setUpdatedAt(new Date());
 							g.save();
 						}
 

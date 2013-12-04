@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.youtell.backdoor.Application;
 import com.youtell.backdoor.R;
 import com.youtell.backdoor.api.PostLoginRequest;
 import com.youtell.backdoor.models.User;
@@ -62,6 +63,8 @@ SocialProvider.Callback {
 			cachedProvider = User.getCachedSocialProvider(getApplicationContext());
 			socialProvider = SocialProvider.createByProviderName(cachedProvider, this);
 			Log.e(TAG, cachedProvider);
+			
+			Application.checkCrashLog(this);
 		}
 		
 		
