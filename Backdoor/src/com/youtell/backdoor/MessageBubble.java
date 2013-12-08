@@ -71,7 +71,7 @@ public class MessageBubble {
 		else {
 			this.imageView.setVisibility(View.VISIBLE);
 			this.message.setVisibility(View.GONE);			
-			this.imageView.setImageBitmap(m.getThumbnailBitmap());
+			this.imageView.setImageBitmap(m.getThumbnailBitmap(context.getContentResolver()));
 		}
 		
 		int gravity;

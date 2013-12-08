@@ -9,11 +9,13 @@ import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.util.Base64;
 
 import com.j256.ormlite.dao.Dao;
@@ -26,7 +28,7 @@ import com.youtell.backdoor.observers.MessageObserver;
 public class Message extends DatabaseGabObject {
 	public static final int KIND_TEXT = 0;
 	public static final int KIND_IMAGE = 1;
-	public static final int KIND_IMAGE_PATH = 2;
+	public static final int KIND_CONTENT_PATH = 2;
 	
 	private static Dao<Message, Integer> getDAO() {
 		return getDB().messageDAO;
@@ -175,14 +177,14 @@ public class Message extends DatabaseGabObject {
 			}
 	}
 
-	public void setFilePath(File imageFile) {
-		content = imageFile.getAbsolutePath();
-		setKind(KIND_IMAGE_PATH);
+	public void setContentUri(Uri contentURI) {
+		content = contentURI.toString();
+		setKind(KIND_CONTENT_PATH);
 	}
 	
 	private Bitmap cachedThumbnail = null;
 	
-	public Bitmap getThumbnailBitmap() {
+	public Bitmap getThumbnailBitmap(ContentResolver resolver) {
 		if(cachedThumbnail != null)
 			return cachedThumbnail;
 		
@@ -193,7 +195,7 @@ public class Message extends DatabaseGabObject {
 			cachedThumbnail = bmp;
 		}
 		else {			
-            cachedThumbnail = Util.openBitmap(getContent(), true);            
+            cachedThumbnail = Util.openBitmapFromUri(resolver, getContent(), true);            
 		}
 		
 		return cachedThumbnail;

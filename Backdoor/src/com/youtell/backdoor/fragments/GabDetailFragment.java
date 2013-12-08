@@ -158,32 +158,17 @@ implements OnClickListener, GabDetailMessageAdapter.Callbacks {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    if(requestCode == PICK_IMAGE && data != null && data.getData() != null) {
+	    if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && 
+	    		data != null && data.getData() != null) {
 	        Uri _uri = data.getData();
 
-	        Cursor cursor = getActivity().getContentResolver().query(_uri, new String[] { 
-	        		android.provider.MediaStore.Images.ImageColumns.DATA,
-	        		android.provider.MediaStore.Images.ImageColumns.ORIENTATION
-	        		}, null, null, null);
-	        
-	        cursor.moveToFirst();
-	        final int dataColumn = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.DATA);
-	        final int orientationColumn = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.ORIENTATION);
-	        final String imageFilePath = cursor.getString(dataColumn);
-	        
-	        Log.e("IMAGE_PICKER", imageFilePath);
+	        Log.e("IMAGE_PICKER", _uri.toString());
 	        
 	        Application.mixpanel.track("Selected Image", null);
-	        
-	        File imageFile = new File(imageFilePath);
-	        
+	        	        
             Message m = new Message();
-			m.setFilePath(imageFile);
+			m.setContentUri(_uri);
 			sendMessage(m);
-			
-			imageFile = null;
-
-	        cursor.close();
 	    }
 	    super.onActivityResult(requestCode, resultCode, data);
 	}

@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import com.youtell.backdoor.models.User;
 import com.youtell.backdoor.observers.APIRequestObserver;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -121,5 +122,11 @@ public abstract class Request {
 		handleResult(result, user);
 	}
 	
+	protected Context context;
+	
 	abstract protected void handleJSONResponse(JSONObject result, User user) throws JSONException;
+
+	public void setContext(Context applicationContext) {
+		context = applicationContext;
+	}
 }

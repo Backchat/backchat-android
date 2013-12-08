@@ -72,6 +72,7 @@ public class APIService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		Request r = Request.inflateRequest(intent.getBundleExtra(ARGS));
+		r.setContext(applicationContext);
 		User user = null;
 		
 		if(intent.hasExtra(USER_ARG)) {
