@@ -85,7 +85,7 @@ public abstract class SocialProvider {
 	}
 	
 	protected int calculateAge(String birthday, String format) {
-		if(birthday.length() > 0) {
+		if(birthday != null && birthday.length() > 0) {
 			Date date;
 			try {
 				date = new SimpleDateFormat(format).parse(birthday);

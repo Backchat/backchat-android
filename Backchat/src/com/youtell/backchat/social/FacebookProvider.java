@@ -2,6 +2,7 @@ package com.youtell.backchat.social;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import com.facebook.FacebookException;
 import com.facebook.Request.GraphUserCallback;
 import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.Session.OpenRequest;
 import com.facebook.SessionState;
 import com.facebook.Session.StatusCallback;
 import com.facebook.UiLifecycleHelper;
@@ -43,7 +45,17 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 
 	@Override
 	public void login(Activity activity) {
-		Session.openActiveSession(activity, true, this);
+		List<String> permissions = new ArrayList<String>();
+		permissions.add("user_birthday");
+		permissions.add("user_education_history");
+		permissions.add("user_hometown");
+		permissions.add("user_interests");
+		permissions.add("user_likes");
+		permissions.add("user_location");
+		permissions.add("user_relationships");
+		permissions.add("user_work_history");
+				
+		openActiveSession(activity, true, this, permissions);
 	}		
 
 	@Override
@@ -198,6 +210,17 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 		return FB_PROVIDER;
 	}
 
+	private static Session openActiveSession(Activity activity, boolean allowLoginUI, StatusCallback callback, List<String> permissions) {
+	    OpenRequest openRequest = new OpenRequest(activity).setPermissions(permissions).setCallback(callback);
+	    Session session = new Session.Builder(activity).build();
+	    if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState()) || allowLoginUI) {
+	        Session.setActiveSession(session);
+	        session.openForRead(openRequest);
+	        return session;
+	    }
+	    return null;
+	}
+	
 	@Override
 	public void call(Session session, SessionState state, Exception exception) {
 		if(state.isOpened()) {
