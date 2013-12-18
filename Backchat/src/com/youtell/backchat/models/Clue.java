@@ -135,6 +135,7 @@ public class Clue extends DatabaseGabObject {
 
 	//TODO efficiency split earlier in inflate?
 	public String getDisplayText(Context context) {
+		
 		int pos = getValue().indexOf("|");
 		String title = getValue().substring(pos+1);
 		

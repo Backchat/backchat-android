@@ -13,6 +13,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.youtell.backchat.Settings;
 import com.youtell.backchat.models.User;
 
 public class GCM {
@@ -24,7 +25,6 @@ public class GCM {
 	private static final String DEVICE_REGISTRATION_ID_PROP = "DEVICE_REGISTRATION_ID";
 	private static final String VERSION_INT_PROP = "VERSION_INT_PROP";
 	private static final String PREFS_GCM_SETTINGS = "PREFS_GCM_SETTINGS";
-	public static final String GCM_KEY = "412155847073"; //TODO dynamic		
 
 	public static void getRegistrationID(final User user, final Activity activity) {
 		Thread t = new Thread(new Runnable() {
@@ -56,7 +56,7 @@ public class GCM {
 				else {
 					//yes, we're on.					
 					SharedPreferences prefs = activity.getSharedPreferences(
-							String.format("%s_%s", PREFS_GCM_SETTINGS, user.getGCMKey()),
+							String.format("%s_%s", PREFS_GCM_SETTINGS, Settings.settings.gcmKey),
 							Context.MODE_PRIVATE);
 					
 					String deviceRegistrationID = prefs.getString(DEVICE_REGISTRATION_ID_PROP, "");
@@ -79,7 +79,7 @@ public class GCM {
 				    	Log.i("GCM", "Actually getting a new deviceRegistration");
 				    	GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(activity);
 				    	try {
-							deviceRegistrationID = gcm.register(user.getGCMKey());
+							deviceRegistrationID = gcm.register(Settings.settings.gcmKey);
 					    	
 					    	Editor edit = prefs.edit();
 					    	edit.putString(DEVICE_REGISTRATION_ID_PROP, deviceRegistrationID);

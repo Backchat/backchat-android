@@ -12,7 +12,6 @@ import com.youtell.backchat.models.User;
 
 import android.os.Bundle;
 
-//TODO merge string,int to simplehandler
 public class PostDeviceRequest extends PostRequest {
 	private StringArgumentHandler deviceToken = new StringArgumentHandler("deviceToken", this);
 	

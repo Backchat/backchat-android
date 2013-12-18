@@ -64,15 +64,6 @@ public class User implements InflatableObject {
 	public int getTotalClueCount() {
 		return totalClueCount; 
 	}
-
-	private String GCMKey;
-	public void setGCMKey(String key) {
-		GCMKey = key;
-	}
-	
-	public String getGCMKey() {
-		return GCMKey;
-	}
 	
 	private String deviceID;
 	public void setDeviceID(String id) {
@@ -87,7 +78,6 @@ public class User implements InflatableObject {
 	private static final String TAG = "USER";
 	
 	public void deserialize(Bundle b) {		
-		setGCMKey(b.getString("GCMKey"));
 		this.totalClueCount = b.getInt("totalClueCount");
 		setApiServerHostName(b.getString("hostName"));
 		setApiToken(b.getString("apiToken"));
@@ -100,7 +90,6 @@ public class User implements InflatableObject {
 	
 	public void serialize(Bundle b) {
 		Log.i(TAG, "serialized");
-		b.putString("GCMKey", getGCMKey());
 		b.putInt("totalClueCount", getTotalClueCount());
 		b.putString("hostName", getApiServerHostName());
 		b.putString("apiToken", getApiToken());
@@ -115,7 +104,6 @@ public class User implements InflatableObject {
 		User u = new User();
 		u.apiToken = apiToken;
 		u.fullName = fullName;
-		u.GCMKey = GCMKey;
 		u.hostName = hostName;
 		u.id = id;
 		u.totalClueCount = totalClueCount;

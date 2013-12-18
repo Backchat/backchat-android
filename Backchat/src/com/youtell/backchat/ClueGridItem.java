@@ -26,6 +26,7 @@ public class ClueGridItem {
 	private TextView label;
 	private ImageView button;
 	private ProgressBar progress;
+	private boolean inProgess;
 	
 	public interface Callback {
 		public void onClick(ClueGridItem which);
@@ -62,6 +63,8 @@ public class ClueGridItem {
 		
 		progress.setVisibility(View.GONE);
 		
+		inProgess = false;
+		
 		clueGrid.addView(clueItem, lp);		
 	}
 
@@ -79,6 +82,7 @@ public class ClueGridItem {
 	public void startProgress() {
 		progress.setVisibility(View.VISIBLE);
 		button.setImageResource(R.drawable.black_background);
+		inProgess = true;
 	}
 	
 	public void fillWithClue(Clue c) {	
@@ -97,6 +101,7 @@ public class ClueGridItem {
 	        @Override
 	        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 	        	progress.setVisibility(View.INVISIBLE);
+	        	ClueGridItem.this.inProgess = false;
 	        }
 		});
 	}

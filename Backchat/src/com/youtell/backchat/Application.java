@@ -15,7 +15,7 @@ import com.youtell.backchat.services.APIService;
 import net.hockeyapp.android.CrashManager;
 
 public class Application extends android.app.Application
-{
+{	
 	@Override
 	public void onCreate() {
 		LocalObserver.initialize(this);
@@ -30,7 +30,7 @@ public class Application extends android.app.Application
 
 	public static MixpanelAPI getMixpanelInstance(Context context) 
 	{
-	    MixpanelAPI instance = MixpanelAPI.getInstance(context, "b773675a02695460a27af2b8c2d11d39"); //TODO dynamic-ify
+	    MixpanelAPI instance = MixpanelAPI.getInstance(context, Settings.settings.mixpanelToken);
 	    instance.logPosts();
 	    return instance;
 	}
@@ -43,6 +43,6 @@ public class Application extends android.app.Application
 	}
 
 	public static void checkCrashLog(Context context) {
-		CrashManager.register(context, "205f05f38db1a0bf5d795fa469d91cbe"); //TODO stringify
+		CrashManager.register(context, Settings.settings.hockeyToken);
 	}
 }

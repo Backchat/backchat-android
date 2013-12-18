@@ -28,6 +28,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 import com.squareup.otto.Subscribe;
 import com.youtell.backchat.Application;
+import com.youtell.backchat.Settings;
 import com.youtell.backchat.api.PostAbuseReportRequest;
 import com.youtell.backchat.fragments.GabCluesFragment;
 import com.youtell.backchat.fragments.GabListFragment;
@@ -104,6 +105,10 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 		gcmNotifications = new GCMNotificationObserver(this, null);
 
+		if(Application.mixpanel == null) {
+			Application.mixpanel = Application.getMixpanelInstance(getApplicationContext());
+		}
+		
 		User user = User.getCurrentUser();
 		Application.identifyUserToMixpanel(Application.mixpanel, user);
 		Log.e("DB", String.format("%d", user.getID()));
@@ -126,7 +131,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 		showTour = user.isNewUser();
 		
-		if(showTour) {
+		if(showTour || Settings.settings.alwaysShowTour) {
 			Intent intent = new Intent(this, TourActivity.class);
 			startActivity(intent);
 		}
@@ -135,7 +140,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 				@Override
 				public void run() {
 					Toast toast = Toast.makeText(getApplicationContext(), 
-							getResources().getText(R.string.login_success), Toast.LENGTH_SHORT); //TODO add name
+							getResources().getText(R.string.login_success), Toast.LENGTH_SHORT); 
 
 					toast.show();					
 				}
@@ -146,9 +151,18 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				SocialProvider.getActiveProvider().getUserInfo(GabListActivity.this);
-			}
-			
+				if(Settings.settings.hideUserDataExceptions) {
+					try {
+						SocialProvider.getActiveProvider().getUserInfo(GabListActivity.this);	
+					}
+					catch(Exception e) {
+						//catch it alllll baby
+					}
+				}
+				else {
+					SocialProvider.getActiveProvider().getUserInfo(GabListActivity.this);	
+				}
+			}						
 		}).start();
 		
 		Application.checkCrashLog(this);

@@ -10,6 +10,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.squareup.otto.Produce;
+import com.youtell.backchat.Settings;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -60,11 +61,12 @@ public class Database extends OrmLiteSqliteOpenHelper {
 	public void onOpen(SQLiteDatabase DB) 
 	{
 		Log.v("ORM", "Open");
-		if(false) {//debugging
+		if(Settings.settings.alwaysWipeDB) {
 			try {
 
 				AndroidConnectionSource dsource = new AndroidConnectionSource(DB);
 				dsource.saveSpecialConnection(new AndroidDatabaseConnection(DB, true));
+				dropTables(dsource);
 				createTables(dsource);
 			}
 			catch(Exception e) {

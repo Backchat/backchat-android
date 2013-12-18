@@ -65,7 +65,6 @@ public class PostLoginRequest extends Request {
 		user.setID(userData.getInt("id"));
 		user.setTotalClueCount(userData.getInt("available_clues"));
 		user.setFullName(userData.getString("full_name"));
-		user.setGCMKey(GCM.GCM_KEY); //TODO dynamic
 		user.setIsNewUser(userData.getBoolean("new_user"));
 		User.setCurrentUser(user);
 	}

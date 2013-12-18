@@ -2,6 +2,7 @@ package com.youtell.backchat.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.youtell.backchat.Application;
 import com.youtell.backchat.gcm.GCM;
@@ -16,13 +17,14 @@ public class StartupActivity extends android.app.Activity implements SocialProvi
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		Log.e("gablistactivity", "startupcreate");
+		
 		//destroyed and flushed in gablistactivity
 		Application.mixpanel = Application.getMixpanelInstance(getApplicationContext());
 
 		cachedUser = User.getCachedUser(this);
 
 		if(cachedUser != null) {
-			cachedUser.setGCMKey(GCM.GCM_KEY); //TODO dynamic merge with postloginrequest
 			String providerName = User.getCachedSocialProvider(this);
 			socialProvider = SocialProvider.createByProviderName(providerName, this);
 			socialProvider.tryCachedLogin(this);

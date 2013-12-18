@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.youtell.backchat.Application;
+import com.youtell.backchat.Settings;
 import com.youtell.backchat.api.PostLoginRequest;
 import com.youtell.backchat.models.User;
 import com.youtell.backchat.observers.APIRequestObserver;
@@ -34,6 +35,12 @@ SocialProvider.Callback {
 	private ProgressDialog progressDialog;
 	
 	private SocialProvider socialProvider;
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		observer.stopListening();
+	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -93,7 +100,7 @@ SocialProvider.Callback {
 		lp.width = 675;
 		lp.height = 500;
 		progressDialog.getWindow().setAttributes(lp);
-		APIService.fire(new PostLoginRequest(provider, "backchat-stage.herokuapp.com")); //TODO server name
+		APIService.fire(new PostLoginRequest(provider, Settings.settings.apiServerName));
 	}
 
 	public void setButtonVisibility(int v) {
@@ -139,6 +146,7 @@ SocialProvider.Callback {
 			progressDialog = null;
 		}
 
+		Log.e("gablistactivity", "start->login activity");
 
 		Intent intent = null;	
 		intent = new Intent(this, GabListActivity.class);
@@ -179,7 +187,8 @@ SocialProvider.Callback {
 	}
 	
 	@Override
-	public void goUp() {		
+	public void goUp() {
+		finish();
 	}
 	
 }
