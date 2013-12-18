@@ -95,4 +95,5 @@
     <string name="need_more_clues_dialog_title">Sorry</string>
     <string name="need_more_clues_dialog_text">You\'ve run out of clues. Buy more?</string>
             
+    <string name="no_friends_text">Sorry, you have no friends yet.</string>
 </resources>
