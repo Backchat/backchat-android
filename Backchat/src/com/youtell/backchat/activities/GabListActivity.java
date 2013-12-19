@@ -364,7 +364,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 	@Override
 	public void onAboutUs() {
-		webViewDialog("http://backdoorapp.com/about", R.string.about_us_dialog_title);
+		webViewDialog("http://getbackchat.com/about", R.string.about_us_dialog_title);
 	}
 
 	@Override
