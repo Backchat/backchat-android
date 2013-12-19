@@ -35,7 +35,7 @@ public class IAP {
 
 	public IAP(Observer obv) {
 		observer = obv;
-		
+
 		billingConnection = new ServiceConnection() {
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
@@ -53,7 +53,7 @@ public class IAP {
 
 	public void connect(Activity act) {
 		disconnect();
-		
+
 		activity = act;
 		activity.bindService(new 
 				Intent("com.android.vending.billing.InAppBillingService.BIND"),
@@ -120,7 +120,7 @@ public class IAP {
 	}
 
 	private static final int BUY_REQUEST_CODE = 1001;
-	
+
 	public void buy(Item obj, User user) {
 		try {
 			String sku = obj.getSKU();
@@ -134,16 +134,20 @@ public class IAP {
 				/* we already bought it and we haven't consumed it; consume it so we can buy it again */
 
 				String purchaseData = buyIntentBundle.getString("INAPP_PURCHASE_DATA");
-				PurchasedItem purchased;
-				purchased = new PurchasedItem(purchaseData);
-				consume(purchased);
+				if(purchaseData != null) {
+					PurchasedItem purchased;
+					purchased = new PurchasedItem(purchaseData);
+					consume(purchased);
+				}
+				else {
+					//TODO something weont wrong
+				}
 			}
 			else {
 				activity.startIntentSenderForResult(pendingIntent.getIntentSender(),
 						IAP.BUY_REQUEST_CODE, new Intent(), Integer.valueOf(0), Integer.valueOf(0),
 						Integer.valueOf(0));
 			}
-			
 		} catch (Exception e) {
 			// aTODO Auto-generated catch block
 			Log.e("IAP", "buy", e);
@@ -152,7 +156,7 @@ public class IAP {
 
 	public void consume(final PurchasedItem item) {
 		final String token = item.getToken();
-		
+
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -165,7 +169,7 @@ public class IAP {
 							public void run() {
 								observer.onConsumeSuccess(item);
 							}
-							
+
 						});
 						//success
 					}
@@ -189,7 +193,7 @@ public class IAP {
 
 			if (resultCode == Activity.RESULT_OK) {
 				Log.e("IAP", String.format("REQUEST SUCCESS: %s", purchaseData));
-				
+
 				try {
 					PurchasedItem item = new PurchasedItem(purchaseData);
 					observer.onPurchaseSuccess(item);					

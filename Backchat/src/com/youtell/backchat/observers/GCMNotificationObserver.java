@@ -1,13 +1,18 @@
 package com.youtell.backchat.observers;
 
 import com.youtell.backchat.models.Gab;
+import com.youtell.backchat.models.User;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.provider.Settings;
 
 public class GCMNotificationObserver extends BroadcastReceiver {
 	protected int gab_id;
@@ -112,4 +117,15 @@ public class GCMNotificationObserver extends BroadcastReceiver {
 		context.sendOrderedBroadcast(intent, null);
 	}
 
+	static public void vibrateSoundNotify(Context c) {
+		if(User.getCurrentUser().getVibratePref(c)) {
+			Vibrator v = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
+			v.vibrate(100); //TODO set this value in prefs
+		}
+		
+		if(User.getCurrentUser().getSoundPref(c)) {
+			Uri uri = Settings.System.DEFAULT_NOTIFICATION_URI;
+			RingtoneManager.getRingtone(c, uri).play();
+		}
+	}
 }

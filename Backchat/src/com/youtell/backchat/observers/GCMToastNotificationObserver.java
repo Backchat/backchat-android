@@ -2,10 +2,15 @@ package com.youtell.backchat.observers;
 
 import com.youtell.backchat.Application;
 import com.youtell.backchat.models.Gab;
+import com.youtell.backchat.models.User;
 import com.youtell.backchat.R;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Vibrator;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -28,6 +33,8 @@ public class GCMToastNotificationObserver extends GCMNotificationObserver {
 			}
 			@Override
 			public void onNotification(String message, int gab_id) {
+				GCMNotificationObserver.vibrateSoundNotify(c);
+				
 				if(watching_gab_id == GCMNotificationObserver.ALL_GABS || watching_gab_id != gab_id) {
 					toastWithMessage(message);
 				}

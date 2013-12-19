@@ -275,7 +275,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 	@Override
 	public void onNotification(String message, int gab_id) {
-		//override and do nothing.
+		GCMNotificationObserver.vibrateSoundNotify(this);
 	}
 
 	@Override

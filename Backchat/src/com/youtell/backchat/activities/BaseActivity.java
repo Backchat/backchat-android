@@ -85,5 +85,6 @@ public abstract class BaseActivity extends Activity {
 		super.onStop();
 		toastObserver.stopListening();
 	}
+	 
 	
 }
