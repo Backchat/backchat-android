@@ -1,9 +1,11 @@
 package com.youtell.backchat.fragments;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,6 +14,7 @@ import android.graphics.Matrix;
 import android.graphics.BitmapFactory.Options;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -46,11 +49,15 @@ implements OnClickListener, GabDetailMessageAdapter.Callbacks {
 	public static final String FROM_MESSAGE_COLOR_RES = "FROM_MESSAGE_COLOR_RES";
 	public static final String TO_MESSAGE_COLOR_RES = "TO_MESSAGE_COLOR_RES";
 	public static final String SEND_BUTTON_RES = "SEND_BUTTON_RES";
-	
+
 	private EditText textInput;
 	private Gab gab;
 	
+	private static final String TEMP_IMAGE_FILE = "TEMP_IMAGE_FILE";
+
 	private static final int PICK_IMAGE = 0;
+
+	private String tempFileName;
 
 	public interface Callbacks extends ListAdapterCallbackFragment.Callbacks<Message> {
 		public void beforeMessageSend(Message message);
@@ -62,6 +69,9 @@ implements OnClickListener, GabDetailMessageAdapter.Callbacks {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		if (savedInstanceState != null)
+			tempFileName = savedInstanceState.getString(TEMP_IMAGE_FILE);
+
 		gab = Gab.getByID(getArguments().getInt(ARG_GAB_ID, -1)); //TODO
 		super.onCreate(savedInstanceState);       
 	}       
@@ -79,7 +89,7 @@ implements OnClickListener, GabDetailMessageAdapter.Callbacks {
 		button.setOnClickListener(this); 
 		ImageButton i_button = (ImageButton)view.findViewById(R.id.gab_detail_camera_button);
 		i_button.setOnClickListener(this);
-	    
+
 		return view;
 	}
 
@@ -95,7 +105,7 @@ implements OnClickListener, GabDetailMessageAdapter.Callbacks {
 			String text = textInput.getText().toString();
 			if(text.trim().length() == 0)
 				return;
-			
+
 			Message m = new Message();
 			m.setText(text);
 			sendMessage(m);
@@ -105,15 +115,22 @@ implements OnClickListener, GabDetailMessageAdapter.Callbacks {
 			pickIntent.setType("image/*");
 			pickIntent.setAction(Intent.ACTION_GET_CONTENT);
 
+			
+			Uri uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, 
+		            new ContentValues());
+			
+			tempFileName = uri.toString();
+			
 			Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 
 			String pickTitle = getResources().getString(R.string.gab_pick_image_description);
 			Intent chooserIntent = Intent.createChooser(pickIntent, pickTitle);
 			chooserIntent.putExtra
 			(
-			  Intent.EXTRA_INITIAL_INTENTS, 
-			  new Intent[] { takePhotoIntent }
-			);
+					Intent.EXTRA_INITIAL_INTENTS, 
+					new Intent[] { takePhotoIntent }
+					);
 
 			startActivityForResult(chooserIntent, PICK_IMAGE);
 		}
@@ -152,32 +169,39 @@ implements OnClickListener, GabDetailMessageAdapter.Callbacks {
 				if(adapter != null)
 					adapter.notifyDataSetChanged();
 			}
-			
+
 		}, gab);
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && 
-	    		data != null && data.getData() != null) {
-	        Uri _uri = data.getData();
+		if(requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
+			Application.mixpanel.track("Selected Image", null);
+			Message m = new Message();
+			Uri _uri;
+			
+			if(data != null && data.getData() != null) {
+				_uri = data.getData();
 
-	        Log.e("IMAGE_PICKER", _uri.toString());
-	        
-	        Application.mixpanel.track("Selected Image", null);
-	        	        
-            Message m = new Message();
+			}
+			else {
+				_uri = Uri.parse(tempFileName);
+			}
+			
+			Log.e("IMAGE_PICKER", _uri.toString());
 			m.setContentUri(_uri);
+			
 			sendMessage(m);
-	    }
-	    super.onActivityResult(requestCode, resultCode, data);
+		}
+		
+		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
+
 	private void sendMessage(Message m) {
 		m.setMine(true);
 		m.setCreatedAt(new Date());
 		m.setRemoteID(DatabaseObject.NEW_OBJECT);
-		
+
 		if(mCallbacks != null) {
 			mCallbacks.beforeMessageSend(m);
 		}
@@ -193,5 +217,12 @@ implements OnClickListener, GabDetailMessageAdapter.Callbacks {
 			mCallbacks.onMessageImageClick(which);
 		}
 	}
-	
+
+	@Override
+	public void onSaveInstanceState(Bundle bundle)
+	{
+		super.onSaveInstanceState(bundle);
+		bundle.putString(TEMP_IMAGE_FILE, tempFileName);
+	}
+
 }

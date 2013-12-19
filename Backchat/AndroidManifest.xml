@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.youtell.backchat"
-    android:versionCode="30"
+    android:versionCode="31"
     android:versionName="1.0" >
 
     <uses-sdk
@@ -14,7 +14,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
     <permission
         android:name="com.youtell.backchat.gcm.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
