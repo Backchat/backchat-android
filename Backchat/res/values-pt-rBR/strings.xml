@@ -92,5 +92,6 @@
     <string name="tour_button_cancel">Não, obrigado.</string>
     <string name="need_more_clues_dialog_title">Infelizmente</string>
     <string name="need_more_clues_dialog_text">Uas pistas acabarem , quer compara mais?</string>
+    <string name="no_friends_text">Desculpa mais você não tem nenhum amigo ainda.</string>
 
 </resources>
