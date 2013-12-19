@@ -7,6 +7,7 @@ import com.youtell.backchat.R;
 
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +16,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.app.LoaderManager;
 import android.view.ActionMode;
 
@@ -76,7 +79,7 @@ implements LoaderManager.LoaderCallbacks<Cursor>, InviteCursorAdapter.SelectionP
 		adapter.swapCursor(data);
 
 		selectAll();
-		
+
 		if (isResumed()) {
 			setListShown(true);
 		} else {
@@ -124,7 +127,7 @@ implements LoaderManager.LoaderCallbacks<Cursor>, InviteCursorAdapter.SelectionP
 				mode.setTitle(String.format("%d selected", selectedIndices.size()));
 				boolean showSelectAll = selectedIndices.size() != adapter.getCount();
 				menu.findItem(R.id.invite_contacts_contextual_select_all).setVisible(showSelectAll);
-				
+
 				return true;
 			}
 
@@ -155,11 +158,25 @@ implements LoaderManager.LoaderCallbacks<Cursor>, InviteCursorAdapter.SelectionP
 				return true;
 			}
 		});
+		
+		customizeActionModeCloseButton();
 	}
 
+	private void customizeActionModeCloseButton() {
+		int buttonId = Resources.getSystem().getIdentifier("action_mode_close_button", "id", "android");    
+		View v = getActivity().findViewById(buttonId);
+		if (v == null)
+			return;
+		LinearLayout ll = (LinearLayout) v;
+		if (ll.getChildCount() > 1 && ll.getChildAt(1) != null) { 
+			TextView tv = (TextView) ll.getChildAt(1);
+			tv.setText("");
+		}
+	}
+	
 	private void onInvite() 
 	{
-		if(mCallbacks != null)
+		if(selectedIndices.size() > 0 && mCallbacks != null)
 			mCallbacks.onInvite(this.selectedIndices);
 	}
 
