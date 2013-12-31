@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import com.youtell.backchat.Application;
+import com.youtell.backchat.api.GetFriendsRequest;
 import com.youtell.backchat.api.PostInviteRequest;
 import com.youtell.backchat.fragments.InviteComposeFragment;
 import com.youtell.backchat.observers.APIRequestObserver;
@@ -79,7 +80,7 @@ APIRequestObserver.Observer<PostInviteRequest> {
 	}
 
 	@Override
-	public void onSuccess() {
+	public void onSuccess(PostInviteRequest r) {
 		closeProgressDialog();
 		
 		Application.mixpanel.track("Tapped Compose Invite View / Send Button", null);
@@ -100,7 +101,7 @@ APIRequestObserver.Observer<PostInviteRequest> {
 	}
 	
 	@Override
-	public void onFailure() {
+	public void onFailure(PostInviteRequest r) {
 		closeProgressDialog();
 		//ask to retry
 		new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)

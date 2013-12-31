@@ -59,7 +59,7 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 	}		
 
 	@Override
-	public void logout() {
+	public void logout(Activity act) {
 		if(session != null) {
 			session.closeAndClearTokenInformation();
 		}		

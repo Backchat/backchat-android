@@ -22,6 +22,8 @@ import android.util.Log;
 
 public abstract class Request {
 	private static final String CLASS_NAME = "CLASS_NAME";
+	private static final String REQUEST_ID = "REQUEST_ID";
+	
 	private ArrayList<WeakReference<ArgumentHandler>> handlers = new ArrayList<WeakReference<ArgumentHandler>>();
 		
 	protected void addArguments(Bundle b) {
@@ -46,12 +48,22 @@ public abstract class Request {
 	public Bundle getArguments() {
 		Bundle bundle = new Bundle();
 		bundle.putString(CLASS_NAME, this.getClass().getName());
+		bundle.putInt(REQUEST_ID, requestID);
 		addArguments(bundle);
 		return bundle;
 	}
 	
 	protected abstract List<NameValuePair> getParameters();
 	protected abstract String getPath();
+	protected int requestID;
+	
+	public int getRequestID() {
+		return requestID;
+	}
+	
+	public void setRequestID(int id) {
+		requestID = id;
+	}
 
 	@SuppressWarnings("unchecked")
 	static public Request inflateRequest(Bundle bundle) {
@@ -62,6 +74,7 @@ public abstract class Request {
 			c = (Class<? extends Request>) Class.forName(className);
 			r = c.newInstance();
 			r.inflateArguments(bundle);
+			r.requestID = bundle.getInt(REQUEST_ID);
 			return r;
 		} catch (Exception e) {
 			Log.e("REQUEST", String.format("EXCEPTION %s %s", className, bundle.toString()), e);
@@ -69,6 +82,10 @@ public abstract class Request {
 		}
 	}	
 
+	protected void handleSuccess() {
+		APIRequestObserver.broadcastSuccess(this);
+	}
+	
 	//TODO error
 	protected void handleResult(String result, User user) {
 		try {
@@ -78,7 +95,7 @@ public abstract class Request {
 				JSONObject resultJSON = json.getJSONObject("response");
 				handleJSONResponse(resultJSON, user);
 				//success!
-				APIRequestObserver.broadcastSuccess(this);
+				handleSuccess();
 			}
 			else 
 			{

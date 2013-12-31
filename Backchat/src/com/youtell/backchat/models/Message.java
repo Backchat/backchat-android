@@ -1,8 +1,5 @@
 package com.youtell.backchat.models;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -11,10 +8,7 @@ import org.json.JSONObject;
 
 import android.content.ContentResolver;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.util.Base64;
 

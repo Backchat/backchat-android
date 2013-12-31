@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.j256.ormlite.dao.CloseableWrappedIterable;
@@ -299,6 +300,25 @@ public class Gab extends DatabaseObject {
 		}
 	}
 
+	public static void removeByNotRemoteIDs(List<Integer> remoteIDs) {
+		String query;
+		if(remoteIDs.isEmpty()) {
+			query = "DELETE FROM GABS";
+		}
+		else {
+			query = "DELETE FROM GABS WHERE REMOTE_ID NOT IN (";
+			query += TextUtils.join(", ", remoteIDs);
+			query += ")";
+		}	
+		
+		try {
+			getDAO().executeRaw(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public boolean isUnread() {
 		return getUnreadCount() != 0;
 	}

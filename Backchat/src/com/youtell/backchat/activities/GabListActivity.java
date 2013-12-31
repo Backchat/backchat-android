@@ -46,6 +46,7 @@ import com.youtell.backchat.observers.GCMNotificationObserver;
 import com.youtell.backchat.observers.UserObserver;
 import com.youtell.backchat.observers.UserObserver.Observer;
 import com.youtell.backchat.services.APIService;
+import com.youtell.backchat.services.GCMNotificationService;
 import com.youtell.backchat.services.ORMUpdateService;
 import com.youtell.backchat.social.SocialProvider;
 import com.youtell.backchat.R;
@@ -57,10 +58,12 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 	private BuyClueIAP buyClue = new BuyClueIAP(this);
 	private SocialProvider.ShareHelper shareHelper;
 	private int startFrom;
-	
+
 	public static final int LOGIN_START = 1;
 	public static final int STARTUP_START = 2;
-	private static final int RESUME_START = 3;
+	public static final int RESUME_START = 3;
+	public static final int RESUME_FROM_START = 4;
+	
 	public static final String START_ARG = "START_ARG";
 	private GabListFragment gabListFragment;
 
@@ -103,51 +106,42 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 		mPullToRefreshAttacher = PullToRefreshAttacher.get(this);
 
-		gcmNotifications = new GCMNotificationObserver(this, null);
+		gcmNotifications = new GCMNotificationObserver(this, null);		
 
-		if(Application.mixpanel == null) {
-			Application.mixpanel = Application.getMixpanelInstance(getApplicationContext());
-		}
-		
 		User user = User.getCurrentUser();
-		Application.identifyUserToMixpanel(Application.mixpanel, user);
-		Log.e("DB", String.format("%d", user.getID()));
-		Database.setDatabaseForUser(user.getID());
-		OpenHelperManager.getHelper(this, Database.class);
-		final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class);
-		getApplicationContext().startService(ormUpdateIntent);
-
 		GCM.getRegistrationID(user, this);
 
 		shareHelper = SocialProvider.getActiveProvider().getShareHelper(this);
 		shareHelper.onCreate(savedInstanceState);	
-		
+
 		boolean showTour = false;
-		Bundle extras = getIntent().getExtras();
 		startFrom = RESUME_START;
+
+		Bundle extras = getIntent().getExtras();
 		if(extras != null) {
 			startFrom = extras.getInt(START_ARG);
 		}
 
 		showTour = user.isNewUser();
-		
-		if(showTour || Settings.settings.alwaysShowTour) {
-			Intent intent = new Intent(this, TourActivity.class);
-			startActivity(intent);
-		}
-		else {
-			BaseActivity.runOnNextScreen(this, new Runnable() {
-				@Override
-				public void run() {
-					Toast toast = Toast.makeText(getApplicationContext(), 
-							getResources().getText(R.string.login_success), Toast.LENGTH_SHORT); 
 
-					toast.show();					
-				}
-				
-			});
+		if(!(startFrom == RESUME_START || startFrom == RESUME_FROM_START)) {
+			if(showTour || Settings.settings.alwaysShowTour) {
+				Intent intent = new Intent(this, TourActivity.class);
+				startActivity(intent);
+			}
+			else {
+				BaseActivity.runOnNextScreen(this, new Runnable() {
+					@Override
+					public void run() {
+						Toast toast = Toast.makeText(getApplicationContext(), 
+								getResources().getText(R.string.login_success), Toast.LENGTH_SHORT); 
+
+						toast.show();					
+					}			
+				});
+			}
 		}
-				
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -164,10 +158,10 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 				}
 			}						
 		}).start();
-		
+
 		Application.checkCrashLog(this);
 	}
-
+	
 	public PullToRefreshAttacher getPullToRefreshAttacher() {
 		return mPullToRefreshAttacher;
 	}
@@ -191,23 +185,26 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 	@Override
 	public void onResume() {
-		Log.e("gablistactivity", "resume");
+		Log.e("gablistactivity", String.format("resume mode %d", startFrom));
 
 		super.onResume();
+
 		gcmNotifications.startListening(1);
 		shareHelper.onResume();
 		if(startFrom == LOGIN_START) {
-			overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
 			startFrom = RESUME_START;
 		}
 		else if(startFrom == STARTUP_START) {
 			startFrom = RESUME_START;
 		}
+		else if(startFrom == RESUME_FROM_START) {
+			startFrom = RESUME_START;
+		}
 		else {
 			overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
 		}
-		
-    	buyClue.connect();
+
+		buyClue.connect();
 	}
 
 	@Override
@@ -218,11 +215,16 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 	@Override
 	public void onLogout() {
+		Log.e("gablistactivity", "onlogout");
+
 		User.setCurrentUser(null);
 		OpenHelperManager.releaseHelper();	
 
+		//TODO better?
 		final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class); 
 		getApplicationContext().stopService(ormUpdateIntent);	
+		final Intent notificationIntent = new Intent(getApplicationContext(), GCMNotificationService.class);
+		getApplicationContext().stopService(notificationIntent);
 
 		Intent intent = new Intent(this, LoginActivity.class);
 		startActivity(intent);
@@ -404,5 +406,19 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		.setMessage(message)
 		.setPositiveButton(R.string.ok_button, null) 
 		.show(); 						
+	}
+
+	@Override
+	public void onNewFriend(String message, int friend_id) {
+		//TODO support clicking?
+		Friend f = Friend.getByID(friend_id);
+		if(f == null)
+			return;
+
+		new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
+		.setTitle(R.string.app_name)
+		.setMessage(message)
+		.setPositiveButton(R.string.ok_button, null) 
+		.show();
 	}
 }

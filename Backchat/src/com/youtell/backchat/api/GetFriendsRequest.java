@@ -33,6 +33,10 @@ public class GetFriendsRequest extends GetListRequest<Friend> {
 	protected String getPath() {
 		return "/friends";
 	}
-
+	
+	@Override
+	protected void deleteObjects(List<Integer> remoteIDsTouched) throws JSONException {
+		Friend.removeByNotRemoteIDs(remoteIDsTouched, false);		
+	}
 
 }

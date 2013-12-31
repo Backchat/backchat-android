@@ -29,7 +29,7 @@ public abstract class SocialProvider {
 	
 	abstract public void tryCachedLogin(Activity activity);
 	abstract public void login(Activity activity);
-	abstract public void logout();
+	abstract public void logout(Activity act);
 	abstract public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data);
 	abstract public void disconnect();	
 	abstract public String getToken();

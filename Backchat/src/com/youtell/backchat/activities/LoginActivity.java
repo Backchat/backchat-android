@@ -62,7 +62,7 @@ SocialProvider.Callback {
 			//if old is NULL AND new is NULL, we haven't checked anything yet.
 			if(SocialProvider.getActiveProvider() != null) {
 				//it could be null if we are on the login page, and the app is resumed by the OS
-				SocialProvider.getActiveProvider().logout();
+				SocialProvider.getActiveProvider().logout(this);
 			}
 			SocialProvider.setActiveProvider(null);
 			User.clearCachedCredentials(getApplicationContext());			
@@ -137,7 +137,7 @@ SocialProvider.Callback {
 	}
 	
 	@Override
-	public void onSuccess() {
+	public void onSuccess(PostLoginRequest r) {
 		User.setCachedCredentials(this);
 		SocialProvider.setActiveProvider(socialProvider);
 		//yes!
@@ -148,6 +148,8 @@ SocialProvider.Callback {
 
 		Log.e("gablistactivity", "start->login activity");
 
+		StartupActivity.loginUser(User.getCurrentUser(), socialProvider, getApplicationContext());
+		
 		Intent intent = null;	
 		intent = new Intent(this, GabListActivity.class);
 		Bundle args = new Bundle();
@@ -159,7 +161,7 @@ SocialProvider.Callback {
 	}
 
 	@Override
-	public void onFailure() {
+	public void onFailure(PostLoginRequest r) {
 		//TODO a nice dialog?
 		if(progressDialog != null) {
 			progressDialog.dismiss();

@@ -1,14 +1,7 @@
 package com.youtell.backchat.services;
 
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
-import com.youtell.backchat.Application;
-import com.youtell.backchat.Util;
-import com.youtell.backchat.api.PostLoginRequest;
-import com.youtell.backchat.api.Request;
-import com.youtell.backchat.models.Database;
-import com.youtell.backchat.models.User;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -16,6 +9,13 @@ import android.content.Intent;
 import android.net.http.AndroidHttpClient;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.youtell.backchat.Application;
+import com.youtell.backchat.Util;
+import com.youtell.backchat.api.PostLoginRequest;
+import com.youtell.backchat.api.Request;
+import com.youtell.backchat.models.User;
 
 public class APIService extends IntentService {
 	public static Context applicationContext = null; //TODO
@@ -34,7 +34,6 @@ public class APIService extends IntentService {
 		if(mixpanel != null)
 			mixpanel.flush();
 		
-		OpenHelperManager.releaseHelper();
 		client.close();
 		
 		super.onDestroy();
@@ -53,9 +52,16 @@ public class APIService extends IntentService {
 
 	private static final String ARGS = "ARGS";
 	private static final String USER_ARG = "USER_ARG";
+	private static AtomicInteger requestID = new AtomicInteger(0);
+	
+	private static int getNewRequestID() {
+		int id = requestID.getAndIncrement();
+		return id;
+	}
 	
 	public static void fire(Request r)
 	{
+		r.setRequestID(getNewRequestID());
 		Bundle args = r.getArguments();
 		Intent fireIntent = new Intent(applicationContext, APIService.class);
 		fireIntent.putExtra(ARGS, args);
@@ -66,13 +72,12 @@ public class APIService extends IntentService {
 		}
 		applicationContext.startService(fireIntent);
 	}
-
-	private int lastUserID = -1;
 	
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		Request r = Request.inflateRequest(intent.getBundleExtra(ARGS));
-		r.setContext(applicationContext);
+		r.setContext(this);
+		
 		User user = null;
 		
 		if(intent.hasExtra(USER_ARG)) {
@@ -80,18 +85,7 @@ public class APIService extends IntentService {
 			user.deserialize(intent.getBundleExtra(USER_ARG));
 		}
 		
-		if(user != null && user.getID() != lastUserID) {
-			if(lastUserID != -1)
-				OpenHelperManager.releaseHelper();
-			
-			lastUserID = user.getID();
-			Database.setDatabaseForUser(user.getID());
-			OpenHelperManager.getHelper(this, Database.class);
-			
-			if(mixpanel != null) {
-				mixpanel.flush();
-			}
-			
+		if(user != null) {
 			mixpanel = Application.getMixpanelInstance(applicationContext);
 			Log.e("MIXPANEL", String.format("identify %d", user.getID()));
 			mixpanel.identify(String.format("%d", user.getID()));
@@ -107,7 +101,10 @@ public class APIService extends IntentService {
 		if(r instanceof PostLoginRequest) {//URGH TODO
 			r.execute(client, null);
 		}
-		else {
+		else {		
+			if(User.getCurrentUser() == null || User.getCurrentUser().getID() != userID)
+				return;						
+
 			r.execute(client, user);
 		}	
 	}

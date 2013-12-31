@@ -51,13 +51,13 @@ public class GabCluesFragment extends DialogFragment{
 	private Callbacks mCallbacks;
 	private Button clueButton;
 	private boolean enabled = false;
-	
+
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		Dialog d = new Dialog(getActivity(), android.R.style.Theme);
 		d.getWindow().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
-	    d.requestWindowFeature(Window.FEATURE_NO_TITLE);
-	    
+		d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		return d;
 	}
 
@@ -66,17 +66,17 @@ public class GabCluesFragment extends DialogFragment{
 		gab = Gab.getByID(getArguments().getInt(ARG_GAB_ID, -1)); //TODO
 		super.onCreate(savedInstanceState);
 		userObserver = new UserObserver(new UserObserver.Observer() {
-			
+
 			@Override
 			public void refresh() {
 				updateClueCount();				
 			}
-			
+
 			@Override
 			public void onUserChanged() {
 				updateClueCount();				
 			}
-			
+
 
 			private void updateClueCount()
 			{
@@ -90,7 +90,7 @@ public class GabCluesFragment extends DialogFragment{
 			}
 
 		});
-		
+
 		clueObserver = new ClueObserver(new ClueObserver.Observer() {
 			@Override
 			public void onChange(String action, int gabID, int objectID) {
@@ -103,19 +103,12 @@ public class GabCluesFragment extends DialogFragment{
 			@Override
 			public void refresh() {				
 				ForeignCollection<Clue> clues = gab.getClues();
-				//TODO move into DAO
 				ArrayList<Clue> clueList = new ArrayList<Clue>(clues);
-				Collections.sort(clueList, new Comparator<Clue>() {
-					@Override
-					public int compare(Clue lhs, Clue rhs) {
-						return lhs.getNumber() - rhs.getNumber();
-					}		
-				});
 				for(int i=0;i<clueList.size();i++) {
 					updateClue(clueList.get(i));
 				}
 			}
-			
+
 			private void updateClue(Clue c) {
 				if(!c.isNew()) {
 					ClueGridItem clueTile = new ClueGridItem(clueGrid, c.getNumber());
@@ -141,47 +134,43 @@ public class GabCluesFragment extends DialogFragment{
 				public void onClick(ClueGridItem which) {
 					ForeignCollection<Clue> clues = gab.getClues();
 					ArrayList<Clue> clueList = new ArrayList<Clue>(clues);
-					Collections.sort(clueList, new Comparator<Clue>() {
-						@Override
-						public int compare(Clue lhs, Clue rhs) {
-							return lhs.getNumber() - rhs.getNumber();
-						}		
-					});
-					if(clueList.size() > which.getNumber()) {
-						Clue c = clueList.get(which.getNumber());
-						//TODO move somewhere else?
+					for(Clue c : clueList) {
+						if(c.getNumber() == which.getNumber()) {
+							//TODO move somewhere else?
+							new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT)
+							.setTitle(R.string.clue_information_dialog_title)
+							.setMessage(c.getDisplayText(getActivity()))
+							.setPositiveButton(R.string.ok_button, null) 
+							.show();
+							return;
+						}
+					}
+
+					if(User.getCurrentUser().getTotalClueCount() == 0) {
 						new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT)
-						.setTitle(R.string.clue_information_dialog_title)
-						.setMessage(c.getDisplayText(getActivity()))
-						.setPositiveButton(R.string.ok_button, null) 
-						.show(); 	    
+						.setTitle(R.string.need_more_clues_dialog_title)
+						.setMessage(R.string.need_more_clues_dialog_text)
+						.setPositiveButton(R.string.yes_button, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								if(mCallbacks != null)
+									mCallbacks.onBuy();									
+							}
+
+						})
+						.setNegativeButton(R.string.no_button, null)
+						.show(); 
 					}
 					else {
-						if(User.getCurrentUser().getTotalClueCount() == 0) {
-							new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT)
-							.setTitle(R.string.need_more_clues_dialog_title)
-							.setMessage(R.string.need_more_clues_dialog_text)
-							.setPositiveButton(R.string.yes_button, new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									if(mCallbacks != null)
-										mCallbacks.onBuy();									
-								}
-								
-							})
-							.setNegativeButton(R.string.no_button, null)
-							.show(); 
-						}
-						else {
-							which.startProgress();
-							Clue c = new Clue();
-							c.setRemoteID(DatabaseObject.NEW_OBJECT);
-							c.setNumber(which.getNumber());
-							gab.addClue(c);
-						}
+						which.startProgress();
+						Clue c = new Clue();
+						c.setRemoteID(DatabaseObject.NEW_OBJECT);
+						c.setNumber(which.getNumber());
+						gab.addClue(c);
 					}
 				}
+
 			});
 		}
 

@@ -8,6 +8,9 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -201,6 +204,28 @@ public class Friend extends DatabaseObject {
 		}		
 	}
 
+	public static void removeByNotRemoteIDs(List<Integer> remoteIDs, boolean isFeatured) {
+		String query;
+		if(remoteIDs.isEmpty()) {
+			query = "DELETE FROM FRIENDS WHERE";
+		}
+		else {
+			query = "DELETE FROM FRIENDS WHERE REMOTE_ID NOT IN (";
+			query += TextUtils.join(", ", remoteIDs);
+			query += ") AND";
+		}	
+		
+		//no boolean in sqlite		
+		query += String.format(" ISFEATURED=%s", isFeatured?"1":"0");
+
+		try {
+			getDAO().executeRaw(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public boolean isFeatured() {
 		return isFeatured;
 	}

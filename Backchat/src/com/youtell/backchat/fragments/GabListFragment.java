@@ -107,13 +107,13 @@ implements OnRefreshListener {
 
 		gabsRequestObserver = new APIRequestObserver<GetGabsRequest>(new APIRequestObserver.Observer<GetGabsRequest>() {
 			@Override
-			public void onSuccess() {
+			public void onSuccess(GetGabsRequest r) {
 				if(mCallbacks != null)		
 					mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
 			}
 
 			@Override
-			public void onFailure() {
+			public void onFailure(GetGabsRequest r) {
 				if(mCallbacks != null)
 					mCallbacks.getPullToRefreshAttacher().setRefreshComplete();
 			}

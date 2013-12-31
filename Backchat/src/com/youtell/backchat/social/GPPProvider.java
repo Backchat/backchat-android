@@ -20,6 +20,7 @@ import com.google.android.gms.plus.model.people.Person.Name;
 import com.google.android.gms.plus.model.people.Person.PlacesLived;
 import com.mixpanel.android.mpmetrics.MixpanelAPI.People;
 import com.youtell.backchat.Application;
+import com.youtell.backchat.Settings;
 import com.youtell.backchat.api.PostUserDataRequest;
 import com.youtell.backchat.services.APIService;
 import com.youtell.backchat.R;
@@ -52,10 +53,13 @@ public class GPPProvider extends SocialProvider {
 					@Override
 					public void run() {
 						try {
+							String scopes = "oauth2:https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.me"; 
+							
 							GPPProvider.this.token = GoogleAuthUtil.getToken(activity, gppClient.getAccountName(), 
-									"oauth2: https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/plus.login");
+									scopes);
+							
 							//connected to GPP!
-							Log.e(TAG, token);
+							Log.e(TAG, GPPProvider.this.token);
 							activity.runOnUiThread(new Runnable() {
 								@Override
 								public void run() {
@@ -69,9 +73,31 @@ public class GPPProvider extends SocialProvider {
 							activity.startActivityForResult(recover, REQUEST_CODE_RESOLVE_ERR);
 						} catch (IOException e) {
 							Log.e(TAG, "ioexception", e);
+							//TODO clean up
+							//TODO merge
+							activity.runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									callback.onFailedLogin();									
+								}								
+							});
 						} catch (GoogleAuthException e) {
 							Log.e(TAG, "authexception", e);
-						}			
+							activity.runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									callback.onFailedLogin();									
+								}								
+							});
+						} catch(IllegalArgumentException e) {
+							Log.e(TAG, "illegalarg", e);
+							activity.runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									callback.onFailedLogin();									
+								}								
+							});
+						}
 					}
 				});
 
@@ -100,7 +126,7 @@ public class GPPProvider extends SocialProvider {
 			}
 
 		})
-		.setScopes("https://www.googleapis.com/auth/plus.login", "https://www.googleapis.com/auth/userinfo.email") // https://www.googleapis.com/auth/userinfo.profile 
+		.setScopes("https://www.googleapis.com/auth/plus.login", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/plus.me")
 		.build();
 
 		gppClient.connect();
@@ -112,9 +138,10 @@ public class GPPProvider extends SocialProvider {
 	}
 
 	@Override
-	public void logout() {
+	public void logout(Activity act) {
+		GoogleAuthUtil.invalidateToken(act, this.token);
 		if(gppClient != null) {
-			gppClient.clearDefaultAccount();
+			gppClient.clearDefaultAccount();			
 		}
 		else {
 			Log.e(TAG, "Logout with NULL GPPCLIENT");
@@ -238,6 +265,9 @@ public class GPPProvider extends SocialProvider {
 
 	@Override
 	public void getUserInfo(Activity activity) {
+		if(gppClient == null)
+			return;
+			
 		final String email = gppClient.getAccountName();
 		final Person person = gppClient.getCurrentPerson();
 		if(person == null)
@@ -273,7 +303,14 @@ public class GPPProvider extends SocialProvider {
 				result.put("organizations", organizationsJSON);
 			}
 
-			result.put("displayName", person.getDisplayName());
+			if(person.hasName()) {
+				Name name = person.getName();
+				result.put("firstName", name.getGivenName());
+				result.put("lastName", name.getFamilyName());
+			}
+			else if(person.hasDisplayName()) {
+				result.put("displayName", person.getDisplayName());
+			}
 
 			APIService.fire(new PostUserDataRequest(PostUserDataRequest.GPPData, result));
 			

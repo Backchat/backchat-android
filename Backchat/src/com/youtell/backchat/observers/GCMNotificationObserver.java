@@ -1,5 +1,6 @@
 package com.youtell.backchat.observers;
 
+import com.youtell.backchat.models.Friend;
 import com.youtell.backchat.models.Gab;
 import com.youtell.backchat.models.User;
 
@@ -41,7 +42,7 @@ public class GCMNotificationObserver extends BroadcastReceiver {
 
 	public interface Observer {
 		public void onNotification(String message, int gab_id);
-
+		public void onNewFriend(String message, int friend_id);
 		public void onMixpanelMessage(String message);
 	}
 
@@ -52,16 +53,19 @@ public class GCMNotificationObserver extends BroadcastReceiver {
 		
 		Bundle bundle = intent.getExtras();
 		int type = bundle.getInt(ARG_TYPE);
-		
+		String message = bundle.getString(ARG_MESSAGE);
+
 		if(type == TYPE_MESSAGE) {
 			int this_gab_id = bundle.getInt(ARG_GAB_ID);
-			String message = bundle.getString(ARG_MESSAGE);
 			if(gab_id == ALL_GABS || this_gab_id == gab_id) {
 				observer.onNotification(message, this_gab_id);
 			}
 		}
+		else if(type == TYPE_FRIENDNOTIF) {
+			int friend_id = bundle.getInt(ARG_FRIEND_ID);
+			observer.onNewFriend(message, friend_id);
+		}
 		else if(type == TYPE_MIXPANEL_MSG) {
-			String message = bundle.getString(ARG_MESSAGE);
 			observer.onMixpanelMessage(message);
 		}
 		
@@ -72,6 +76,7 @@ public class GCMNotificationObserver extends BroadcastReceiver {
 	private static final String ARG_GAB_ID = "ARG_GAB_ID";
 	private static final String ARG_MESSAGE = "ARG_MESSAGE";
 	private static final String ARG_TYPE = "ARG_TYPE";
+	private static final String ARG_FRIEND_ID = "ARG_FRIEND_ID";
 	
 	private static int TYPE_MESSAGE = 1;
 	private static int TYPE_FRIENDNOTIF = 2;
@@ -110,6 +115,18 @@ public class GCMNotificationObserver extends BroadcastReceiver {
 		Bundle args = new Bundle();
 		args.putString(ARG_MESSAGE, message);
 		args.putInt(ARG_TYPE, TYPE_MIXPANEL_MSG);
+		Intent intent = new Intent();
+		intent.putExtras(args);
+		intent.setAction(GCM_NOTIFICATION);
+		intent.addCategory(Intent.CATEGORY_DEFAULT);
+		context.sendOrderedBroadcast(intent, null);
+	}
+	
+	static public void broadcastFriendNotification(Context context, String message, Friend f) {
+		Bundle args = new Bundle();
+		args.putInt(ARG_FRIEND_ID, f.getID());
+		args.putString(ARG_MESSAGE, message);
+		args.putInt(ARG_TYPE, TYPE_FRIENDNOTIF);
 		Intent intent = new Intent();
 		intent.putExtras(args);
 		intent.setAction(GCM_NOTIFICATION);
