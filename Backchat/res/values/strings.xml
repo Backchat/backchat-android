@@ -49,8 +49,8 @@
     <string name="fb_share_app_name">Backchat</string>
     <string name="fb_share_app_caption">Send and receive anonymous messages</string>
     <string name="fb_share_app_description">Backchat is a new application for iOS that allows sending and receiving anonymous text and photo messages.</string>
-    <string name="share_app_link">https://itun.es/us/Y_GvN.i</string>
-    <string name="fb_share_app_picture">https://s3.amazonaws.com/backdoor_images/icon_114x114.png</string>
+    <string name="share_app_link">http://bit.ly/1cQE2qd</string>
+    <string name="fb_share_app_picture">https://s3.amazonaws.com/backchat/Icon114.png</string>
     <string name="gpp_share_text">Message me anything you want anonymously with Backchat. Backchat Me!</string>
     <string name="abuse_dialog_title">Report abuse</string>
     <string name="abuse_dialog_text">Please describe as fully as possible the situation so we can address the issue</string>
