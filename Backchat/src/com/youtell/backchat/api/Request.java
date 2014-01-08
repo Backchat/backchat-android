@@ -133,7 +133,7 @@ public abstract class Request {
 		}
 		catch (Exception e) {
 			handleInternetFailure();
-			Log.e("APISERVER", "ERROR", e);
+			Log.e("APISERVER", String.format("ERROR %s", this.getClass().getName()), e);
 			return;
 		}
 

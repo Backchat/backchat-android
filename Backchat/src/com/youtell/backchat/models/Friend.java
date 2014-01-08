@@ -186,8 +186,7 @@ public class Friend extends DatabaseObject {
 	public void save() {
 		try {
 			getDAO().createOrUpdate(this);
-			//TODO
-			FriendObserver.broadcastChange();
+			//TODO	FriendObserver.broadcastChange(); for fthis friend
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

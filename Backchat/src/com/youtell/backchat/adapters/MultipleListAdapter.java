@@ -26,7 +26,6 @@ public class MultipleListAdapter extends BaseAdapter  {
 		adapter.registerDataSetObserver(new DataSetObserver() {
 			@Override
 			public void onChanged() {
-				Log.i(TAG, "onChanged");
 				MultipleListAdapter.this.notifyDataSetChanged();
 			}
 		});

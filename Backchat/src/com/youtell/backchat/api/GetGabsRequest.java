@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.youtell.backchat.models.Gab;
+import com.youtell.backchat.models.User;
+import com.youtell.backchat.observers.GabObserver;
 
 import android.os.Bundle;
 
@@ -33,5 +35,11 @@ public class GetGabsRequest extends GetListRequest<Gab> {
 		return "/gabs";
 	}
 
+	
+	@Override
+	protected void handleJSONResponse(JSONObject result, User user) throws JSONException {
+		super.handleJSONResponse(result, user);
+		GabObserver.broadcastChange(GabObserver.GAB_BATCH_UPDATED, null);
+	}
 
 }

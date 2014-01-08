@@ -18,10 +18,13 @@
 
         <GridLayout
             android:id="@+id/gab_clues_grid"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:columnCount="3"
+            android:gravity="center"
             android:rowCount="3" >
+
         </GridLayout>
 
         <Button

@@ -73,7 +73,8 @@ implements OnRefreshListener {
 		gabObserver = new GabObserver(new GabObserver.Observer() {			
 			@Override
 			public void onChange(String action, int gabID) {
-				gabListAdapter.notifyDataSetChanged();
+				if(action == GabObserver.GAB_BATCH_UPDATED)
+					gabListAdapter.notifyDataSetChanged();
 			}
 
 			@Override

@@ -60,12 +60,10 @@ public class ORMUpdateService extends Service {
 		gabObserver = new GabObserver(new GabObserver.Observer() {			
 			@Override
 			public void onChange(String action, int gabID) {
-				Gab g = Gab.getByID(gabID);
+				if(action == GabObserver.GAB_INSERTED) {				
+					Gab g = Gab.getByID(gabID);
+					g.refresh();
 
-				g.refresh();
-				
-				
-				if(action == GabObserver.GAB_INSERTED) {
 					/* fire off post message requests for all the new messages */		
 					try {
 						g.getMessages().refreshCollection();
@@ -86,6 +84,9 @@ public class ORMUpdateService extends Service {
 					/* did we mark something as 0?
 					 * TODO make this better and use dirty markers
 					 */
+					Gab g = Gab.getByID(gabID);
+					g.refresh();
+					
 					APIService.fire(new PostGabRequest(g));
 				}
 			}
