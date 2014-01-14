@@ -78,8 +78,6 @@ implements LoaderManager.LoaderCallbacks<Cursor>, InviteCursorAdapter.SelectionP
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		adapter.swapCursor(data);
 
-		selectAll();
-
 		if (isResumed()) {
 			setListShown(true);
 		} else {

@@ -8,6 +8,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.youtell.backchat.models.User;
 import com.youtell.backchat.services.APIService;
 
@@ -26,6 +28,7 @@ public class PostUserDataRequest extends PostRequest {
 	public PostUserDataRequest(String dataType, JSONObject data) {
 		this.dataType.content = dataType;
 		userData.content = data.toString();
+		Log.e("PostUserData", userData.content);		
 	}
 
 	@Override
