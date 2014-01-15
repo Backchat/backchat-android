@@ -218,15 +218,14 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 	@Override
 	public void onLogout() {
 		Log.e("gablistactivity", "onlogout");
-
-		User.setCurrentUser(null);
-		OpenHelperManager.releaseHelper();	
-
 		//TODO better?
 		final Intent ormUpdateIntent = new Intent(getApplicationContext(), ORMUpdateService.class); 
 		getApplicationContext().stopService(ormUpdateIntent);	
 		final Intent notificationIntent = new Intent(getApplicationContext(), GCMNotificationService.class);
 		getApplicationContext().stopService(notificationIntent);
+
+		User.setCurrentUser(null);
+		OpenHelperManager.releaseHelper();
 
 		Intent intent = new Intent(this, LoginActivity.class);
 		startActivity(intent);

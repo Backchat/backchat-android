@@ -8,13 +8,16 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.j256.ormlite.dao.CloseableWrappedIterable;
+import com.squareup.otto.Subscribe;
 import com.youtell.backchat.api.PostGabClueRequest;
 import com.youtell.backchat.api.PostGabRequest;
 import com.youtell.backchat.api.PostMessageRequest;
 import com.youtell.backchat.api.PostNewGabRequest;
 import com.youtell.backchat.models.Clue;
+import com.youtell.backchat.models.DBClosedEvent;
 import com.youtell.backchat.models.Gab;
 import com.youtell.backchat.models.Message;
+import com.youtell.backchat.models.ModelBus;
 import com.youtell.backchat.observers.ClueObserver;
 import com.youtell.backchat.observers.GabObserver;
 import com.youtell.backchat.observers.MessageObserver;
@@ -113,6 +116,8 @@ public class ORMUpdateService extends Service {
 		gabObserver.startListening();
 		messageObserver.startListening();
 		clueObserver.startListening();
+		
+		ModelBus.events.register(this);
 	}
 	
 	@Override
@@ -121,12 +126,17 @@ public class ORMUpdateService extends Service {
 		return Service.START_STICKY;	
 	}
 	
+	@Subscribe public void dbIsGone(DBClosedEvent e) {
+		Log.v("ORMUpdate", "closed listeners");
+		messageObserver.stopListening();
+		gabObserver.stopListening();
+		clueObserver.stopListening();	
+	}	
+
 	@Override
     public void onDestroy() {
 		Log.v("ORMUpdate", "stopped");
-		messageObserver.stopListening();
-		gabObserver.stopListening();
-		clueObserver.stopListening();
+		ModelBus.events.unregister(this);
 		super.onDestroy();		
 	}
 
