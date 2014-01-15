@@ -97,13 +97,17 @@ public class Util {
 
 		Bitmap myBitmap = BitmapFactory.decodeStream(stream, null, o);
 
-		int orientation = 0;//metadata.get.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);
+		int orientation = 0;
 			
 		Metadata metadata;
 		try {
 			metadata = ImageMetadataReader.readMetadata(buffered, false);
-			ExifIFD0Directory directory = metadata.getDirectory(ExifIFD0Directory.class);
-			orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+			if(metadata != null) {
+				ExifIFD0Directory directory = metadata.getDirectory(ExifIFD0Directory.class);
+				if(directory != null) {
+					orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+				}
+			}
 
 		} catch (ImageProcessingException e) {
 		} catch (IOException e) {
