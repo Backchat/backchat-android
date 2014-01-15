@@ -83,6 +83,17 @@ public abstract class Request {
 		}
 	}	
 
+	@SuppressWarnings("unchecked")
+	public static Class<? extends Request> inflateClassType(Bundle bundle) {
+		String className = bundle.getString(CLASS_NAME);
+		try {
+			return (Class<? extends Request>) Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			Log.e("REQUEST", String.format("EXCEPTION %s %s", className, bundle.toString()), e);
+			return null;
+		}
+	}
+	
 	protected void handleSuccess() {
 		APIRequestObserver.broadcastSuccess(this);
 	}

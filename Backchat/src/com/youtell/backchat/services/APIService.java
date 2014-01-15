@@ -74,36 +74,40 @@ public class APIService extends IntentService {
 	}
 	
 	@Override
-	protected void onHandleIntent(Intent intent) {
-		Request r = Request.inflateRequest(intent.getBundleExtra(ARGS));
-		r.setContext(this);
-		
-		User user = null;
-		
-		if(intent.hasExtra(USER_ARG)) {
-			user = new User();
-			user.deserialize(intent.getBundleExtra(USER_ARG));
+	protected void onHandleIntent(Intent intent) {				
+		Class requestClass = Request.inflateClassType(intent.getBundleExtra(ARGS));
+		if(requestClass.equals(PostLoginRequest.class)) {//URGH TODO
+			Log.v("APIService", "intent postlogin");		
+			Request r = Request.inflateRequest(intent.getBundleExtra(ARGS));
+			r.execute(client, null);		
 		}
+		else {
+			User user = null;
+			
+				
+			if(intent.hasExtra(USER_ARG)) {
+				user = new User();
+				user.deserialize(intent.getBundleExtra(USER_ARG));
+			}
 		
-		if(user != null) {
+			if(user == null)
+				return;
+			
 			mixpanel = Application.getMixpanelInstance(applicationContext);
 			Log.e("MIXPANEL", String.format("identify %d", user.getID()));
 			mixpanel.identify(String.format("%d", user.getID()));
-		}
 		
-		int userID = -1;
-		if(user != null) {
-			userID = user.getID();
-		}
-		
-		Log.v("APIService", String.format("intent %s, user %d", r.getClass().getName(), userID));
-		
-		if(r instanceof PostLoginRequest) {//URGH TODO
-			r.execute(client, null);
-		}
-		else {		
-			if(User.getCurrentUser() == null || User.getCurrentUser().getID() != userID)
-				return;						
+			int userID = user.getID();
+
+			if(User.getCurrentUser() == null || User.getCurrentUser().getID() != userID) {
+				Log.v("APIService", String.format("intent %s dropped - user null or wrong", requestClass.getName()));
+				return;
+			}
+			
+			Request r = Request.inflateRequest(intent.getBundleExtra(ARGS));
+			r.setContext(this);	
+
+			Log.v("APIService", String.format("intent %s, user %d", r.getClass().getName(), userID));
 
 			r.execute(client, user);
 		}	
