@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
@@ -28,6 +29,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 import com.squareup.otto.Subscribe;
 import com.youtell.backchat.Application;
+import com.youtell.backchat.ProgressDialogFactory;
 import com.youtell.backchat.Settings;
 import com.youtell.backchat.api.PostAbuseReportRequest;
 import com.youtell.backchat.fragments.GabCluesFragment;
@@ -396,7 +398,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 	@Override
 	public void onReadyIAP() {
-		//TODO
+		gabListFragment.enableBuyClue();
 	}
 
 	@Override
@@ -420,5 +422,17 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 		.setMessage(message)
 		.setPositiveButton(R.string.ok_button, null) 
 		.show();
+	}
+	
+	private ProgressDialog buyProgressDialog;
+
+	@Override
+	public void onBeginLoadIAP() {
+		buyProgressDialog = ProgressDialogFactory.newDialog(this);
+	}
+
+	@Override
+	public void onEndLoadIAP() {
+		buyProgressDialog.dismiss();		
 	}
 }

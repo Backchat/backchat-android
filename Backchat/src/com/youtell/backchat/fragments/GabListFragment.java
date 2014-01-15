@@ -145,6 +145,8 @@ implements OnRefreshListener {
 		if(shouldShowFeatured)
 			adapter.addSection(featuredListAdapter);
 		
+		buyClueAdapter.setVisible(false);
+		
 		adapter.addSection(gabListAdapter);
 		adapter.addSection(friendListAdapter);
 		adapter.addSection(moreFriendsAdapter);		
@@ -248,6 +250,10 @@ implements OnRefreshListener {
 		User user = User.getCurrentUser();
 		user.updateGabs();
 		user.getFriends();		
+	}
+
+	public void enableBuyClue() {
+		buyClueAdapter.setVisible(true);
 	}
 
 

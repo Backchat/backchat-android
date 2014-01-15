@@ -71,7 +71,6 @@
     <string name="clue_information_dialog_title">Clue details</string>
     <string name="privacy_dialog_title">Privacy and Legal</string>
     <string name="about_us_dialog_title">About us</string>
-    <string name="login_dialog_title">Logging in&#8230;</string>
 
     <string name="tour_page_1_title">Welcome to Backchat</string>
     <string name="tour_page_1_text">Backchat is half anonymous text messaging with your friends.</string>

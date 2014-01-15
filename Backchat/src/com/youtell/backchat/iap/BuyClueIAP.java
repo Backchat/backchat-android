@@ -26,6 +26,8 @@ public class BuyClueIAP implements IAP.Observer {
 	
 	public interface Observer {
 		public void onReadyIAP();
+		public void onBeginLoadIAP();
+		public void onEndLoadIAP();
 	}
 
 	public <T extends Activity & Observer> BuyClueIAP(T activity) {
@@ -41,11 +43,18 @@ public class BuyClueIAP implements IAP.Observer {
 	
 	public void present(User user) {
 		this.user = user;
+		this.observer.onBeginLoadIAP();
 		iap.getItems();
 	}
 	
 	@Override
+	public void onFailedUpdateItemList() {
+		this.observer.onEndLoadIAP();
+	}
+	
+	@Override
 	public void onUpdateItemList(final List<Item> items) {
+		this.observer.onEndLoadIAP();
 		if(this.user == null)
 			return;
 		

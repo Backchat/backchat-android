@@ -12,6 +12,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.youtell.backchat.Settings;
 import com.youtell.backchat.models.User;
 import com.youtell.backchat.observers.APIRequestObserver;
 
@@ -130,7 +131,8 @@ public abstract class Request {
 
 		try {
 			result = client.execute(getRequest(user), handler);
-			Thread.sleep(1000); //sleep for a second
+			if(Settings.settings.slowInternet)
+				Thread.sleep(Settings.internetDelay);
 		}
 		catch (Exception e) {
 			handleInternetFailure();

@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.youtell.backchat.Application;
+import com.youtell.backchat.ProgressDialogFactory;
 import com.youtell.backchat.Settings;
 import com.youtell.backchat.api.PostLoginRequest;
 import com.youtell.backchat.models.User;
@@ -93,13 +94,7 @@ SocialProvider.Callback {
 		Log.e(TAG, String.format("caching login %s", provider.getProviderName()));
 		User.setCachedSocialProvider(getApplicationContext(), provider);
 		/* attempt to login and throw up a progress dialog */
-		progressDialog = ProgressDialog.show(this, getResources().getString(R.string.login_dialog_title), null, true, false);
-		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-
-		lp.copyFrom(progressDialog.getWindow().getAttributes());
-		lp.width = 675;
-		lp.height = 500;
-		progressDialog.getWindow().setAttributes(lp);
+		progressDialog = ProgressDialogFactory.newDialog(this);
 		APIService.fire(new PostLoginRequest(provider, Settings.settings.apiServerName));
 	}
 

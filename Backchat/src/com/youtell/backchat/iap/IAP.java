@@ -18,6 +18,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.android.vending.billing.IInAppBillingService;
+import com.youtell.backchat.Settings;
 import com.youtell.backchat.models.User;
 
 public class IAP {
@@ -26,6 +27,7 @@ public class IAP {
 		void onPurchaseSuccess(PurchasedItem item);
 		void onConsumeSuccess(PurchasedItem item);
 		void onConnectedToIAP();
+		void onFailedUpdateItemList();
 	}
 
 	private IInAppBillingService billingService;
@@ -83,8 +85,17 @@ public class IAP {
 							activity.getPackageName(), "inapp", querySkus);
 				} catch (RemoteException e) {
 					Log.e("IAP","error", e);
+					observer.onFailedUpdateItemList();
 					return;
 				}
+				
+				if(Settings.settings.slowInternet)
+					try {
+						Thread.sleep(Settings.internetDelay);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 
 				int response = skuDetails.getInt("RESPONSE_CODE");
 				if (response == 0) {
@@ -110,13 +121,13 @@ public class IAP {
 						public void run() {
 							observer.onUpdateItemList(items);							
 						}
-
 					});
+					
 				}
 			}
 		});
 
-		t.start();		
+		t.start();	
 	}
 
 	private static final int BUY_REQUEST_CODE = 1001;

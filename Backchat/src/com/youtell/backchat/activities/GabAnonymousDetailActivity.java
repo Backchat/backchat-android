@@ -3,6 +3,7 @@ package com.youtell.backchat.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.youtell.backchat.Application;
+import com.youtell.backchat.ProgressDialogFactory;
 import com.youtell.backchat.fragments.GabCluesFragment;
 import com.youtell.backchat.iap.BuyClueIAP;
 import com.youtell.backchat.models.User;
@@ -110,5 +112,18 @@ public class GabAnonymousDetailActivity extends BaseGabDetailActivity implements
 	@Override
 	public void onReadyIAP() {
 		cluesFragment.enableBuyButton();
+	}
+	
+	private ProgressDialog buyProgressDialog;
+
+	@Override
+	public void onBeginLoadIAP() {
+		buyProgressDialog = ProgressDialogFactory.newDialog(this);
+		
+	}
+
+	@Override
+	public void onEndLoadIAP() {
+		buyProgressDialog.dismiss();		
 	}
 }
