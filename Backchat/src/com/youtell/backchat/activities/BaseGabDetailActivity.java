@@ -103,17 +103,21 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 		goUp();
 	}
 
-	static public Intent getDetailIntent(Context context, Gab gab) {
+	static public Intent getDetailIntent(Context context, Gab gab) {		
+		Intent detailIntent = new Intent(context, getDetailIntentClass(gab));
+		detailIntent.putExtra(BaseGabDetailActivity.ARG_GAB_ID, gab.getID());
+		return detailIntent;
+	}
+
+	static public Class<? extends BaseGabDetailActivity> getDetailIntentClass(Gab gab) {
 		Class<? extends BaseGabDetailActivity> classType;
 		if(gab.isAnonymous())
 			classType = GabAnonymousDetailActivity.class;
 		else
 			classType = GabDetailActivity.class;
-		Intent detailIntent = new Intent(context, classType);
-		detailIntent.putExtra(BaseGabDetailActivity.ARG_GAB_ID, gab.getID());
-		return detailIntent;
+		return classType;
 	}
-
+	
 	@Override
 	public void onItemSelected(Message item) {
 		//never will be called.

@@ -31,7 +31,7 @@
     <string name="yes_button">Sim</string>
     <string name="no_button">Nao</string>
     <string name="gab_clues_get_more">Conseguir Dicas</string>
-    <string name="gab_clue_status_text">Voce ainda tem % mensagem</string>
+    <string name="gab_clue_status_text">Voce ainda tem %d mensagem</string>
     <string name="no_google_play_title">Google Play nao esta disponivel</string>
     <string name="no_google_play_text">Backchat precise  Google Play. por favor, instale.</string>
     <string name="ok_button">OK</string>

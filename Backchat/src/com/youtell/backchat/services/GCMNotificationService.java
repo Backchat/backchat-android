@@ -48,7 +48,8 @@ public class GCMNotificationService extends Service implements GCMNotificationOb
 		Gab g = Gab.getByID(gab_id);
 		Intent gabDetail = BaseGabDetailActivity.getDetailIntent(this, g);
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		stackBuilder.addNextIntentWithParentStack(gabDetail);
+		stackBuilder.addParentStack(BaseGabDetailActivity.getDetailIntentClass(g));
+		stackBuilder.addNextIntent(gabDetail);
 		// Gets a PendingIntent containing the entire back stack
 		PendingIntent pendingIntent =
 		        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_UPDATE_CURRENT);
