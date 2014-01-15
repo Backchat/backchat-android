@@ -371,7 +371,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 
 	@Override
 	public void onPrivacyLegal() {
-		webViewDialog("file:///android_asset/privacy.html", R.string.privacy_dialog_title);
+		webViewDialog("http://getbackchat.com/privacy", R.string.privacy_dialog_title);
 	}
 
 	private void webViewDialog(String uri, int titleRes) {
