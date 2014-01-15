@@ -1,5 +1,7 @@
 package com.youtell.backchat.iap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -40,11 +42,13 @@ public class BuyClueIAP implements IAP.Observer {
 	{
 		iap.disconnect();
 	}
-	
+
+	private static final String[] iaps = {"clue_3", "clue_9", "clue_27"};
+
 	public void present(User user) {
 		this.user = user;
 		this.observer.onBeginLoadIAP();
-		iap.getItems();
+		iap.getItems(new ArrayList<String>(Arrays.asList(iaps)));
 	}
 	
 	@Override
@@ -53,30 +57,26 @@ public class BuyClueIAP implements IAP.Observer {
 	}
 	
 	@Override
-	public void onUpdateItemList(final List<Item> items) {
+	public void onUpdateItemList(final List<Item> original_items) {
 		this.observer.onEndLoadIAP();
 		if(this.user == null)
 			return;
+
+		/* ugly workaround because we can't sort by price... */
+		final List<Item> items = new ArrayList<Item>();
+		
+		for(String iap: iaps) {
+			for(Item item: original_items) {
+				if(item.getSKU().compareTo(iap) == 0) {
+					items.add(item);
+					break;
+				}
+			}
+		}
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		String[] itemsAsStringArray = new String[items.size()];
 		int i=0;
-		
-		Collections.sort(items, new Comparator<Item>() {
-			@Override
-			public int compare(Item lhs, Item rhs) {
-				String lhsPrice = lhs.price;
-				String rhsPrice = rhs.price;
-				
-				lhsPrice = lhsPrice.replaceAll("[^\\.0123456789]","");
-				rhsPrice = rhsPrice.replaceAll("[^\\.0123456789]","");
-				
-				double lhsVal = Double.parseDouble(lhsPrice);
-				double rhsVal = Double.parseDouble(rhsPrice);
-				
-				return Double.compare(lhsVal, rhsVal);
-			}		
-		});
 		
 		for(Item item : items) {
 			itemsAsStringArray[i] = String.format("%s (%s)", item.description, item.price); //TODO stringify

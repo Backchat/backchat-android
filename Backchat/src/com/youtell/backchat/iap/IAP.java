@@ -69,13 +69,10 @@ public class IAP {
 		}
 	}
 
-	private static final String[] iaps = {"clue_3", "clue_9", "clue_27"};
-
-	public void getItems() {
+	public void getItems(final ArrayList<String> skuList) {
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				ArrayList<String> skuList = new ArrayList<String>(Arrays.asList(iaps));
 				Bundle querySkus = new Bundle();
 				querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
 
