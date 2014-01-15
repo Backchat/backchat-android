@@ -130,6 +130,7 @@ public abstract class Request {
 
 		try {
 			result = client.execute(getRequest(user), handler);
+			Thread.sleep(1000); //sleep for a second
 		}
 		catch (Exception e) {
 			handleInternetFailure();
@@ -137,6 +138,14 @@ public abstract class Request {
 			return;
 		}
 
+		//check to see if the current user is still the user we passed in originally
+		if(user != null && 
+				(User.getCurrentUser() == null || User.getCurrentUser().getID() != user.getID())) {
+			Log.e("APISERVER", String.format("ignored %s because user is now NULL or != id",
+					this.getClass().getName()));
+			return;
+		}
+					
 		handleResult(result, user);
 	}
 	
