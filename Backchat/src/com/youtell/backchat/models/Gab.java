@@ -200,8 +200,7 @@ public class Gab extends DatabaseObject {
 		try {
 			return getDAO().queryForId(gabID);
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException("SQLException", e);
 		}
 	}
 	

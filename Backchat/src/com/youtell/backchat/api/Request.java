@@ -69,18 +69,25 @@ public abstract class Request {
 	@SuppressWarnings("unchecked")
 	static public Request inflateRequest(Bundle bundle) {
 		String className = bundle.getString(CLASS_NAME);
+		Request r = null;
+		Class<? extends Request> c;
 		try {
-			Request r = null;
-			Class<? extends Request> c;
 			c = (Class<? extends Request>) Class.forName(className);
 			r = c.newInstance();
-			r.inflateArguments(bundle);
-			r.requestID = bundle.getInt(REQUEST_ID);
-			return r;
-		} catch (Exception e) {
+		} catch (ClassNotFoundException e) {
+			Log.e("REQUEST", String.format("EXCEPTION %s %s", className, bundle.toString()), e);
+			return null;
+		} catch (InstantiationException e) {
+			Log.e("REQUEST", String.format("EXCEPTION %s %s", className, bundle.toString()), e);
+			return null;				
+		} catch (IllegalAccessException e) {
 			Log.e("REQUEST", String.format("EXCEPTION %s %s", className, bundle.toString()), e);
 			return null;
 		}
+		r.inflateArguments(bundle);
+		r.requestID = bundle.getInt(REQUEST_ID);
+		return r;
+		
 	}	
 
 	@SuppressWarnings("unchecked")
