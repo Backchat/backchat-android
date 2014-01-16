@@ -16,7 +16,7 @@ import com.youtell.backchat.models.User;
 import android.annotation.SuppressLint;
 
 public class GetGabMessagesRequest extends GetRequest {
-	private TypedArgumentHandler<Gab> gab = new TypedArgumentHandler(Gab.class, this);
+	protected TypedArgumentHandler<Gab> gab = new TypedArgumentHandler(Gab.class, this);
 	
 	public GetGabMessagesRequest() {			
 	}
@@ -43,6 +43,7 @@ public class GetGabMessagesRequest extends GetRequest {
 		JSONObject gabPart = result.getJSONObject("gab");		
 		gab.object.inflate(gabPart);
 		gab.object.save();
+		gab.object.refresh(); //in case this was the first save we need to refresh to get the messages object back.
 
 		JSONArray messagePart = gabPart.getJSONArray("messages");
 			

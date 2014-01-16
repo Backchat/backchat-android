@@ -115,7 +115,7 @@ implements OnClickListener, OnCheckedChangeListener, LoaderManager.LoaderCallbac
 	
 	private void setInviteText()
 	{
-		String personalizedURL = "http://bkdr.me";
+		String personalizedURL = "http://bckcht.me"; //TODO proper personalized uRLs
 		String username = User.getCurrentUser().getFullName();
 		int stringID;
 

@@ -45,6 +45,7 @@ import com.youtell.backchat.models.Friend;
 import com.youtell.backchat.models.Gab;
 import com.youtell.backchat.models.User;
 import com.youtell.backchat.observers.GCMNotificationObserver;
+import com.youtell.backchat.observers.GabObserver;
 import com.youtell.backchat.observers.UserObserver;
 import com.youtell.backchat.observers.UserObserver.Observer;
 import com.youtell.backchat.services.APIService;
@@ -279,6 +280,7 @@ GCMNotificationObserver.Observer, SocialProvider.ShareCallback, BuyClueIAP.Obser
 	@Override
 	public void onNotification(String message, int gab_id) {
 		GCMNotificationObserver.vibrateSoundNotify(this);
+		GabObserver.broadcastChange(GabObserver.GAB_BATCH_UPDATED, null);
 	}
 
 	@Override

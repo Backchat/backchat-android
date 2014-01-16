@@ -25,7 +25,8 @@ public class TypedArgumentHandler<T extends DatabaseObject> extends ArgumentHand
 
 	@Override
 	public void addArguments(Bundle b) {
-		b.putInt(this.clazz.getName(), object.getID());
+		if(object != null)
+			b.putInt(this.clazz.getName(), object.getID());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -41,9 +42,14 @@ public class TypedArgumentHandler<T extends DatabaseObject> extends ArgumentHand
 	
 	@Override
 	public void inflateArguments(Bundle args) {
-		int id = args.getInt(this.clazz.getName());
-		getObject(id);
-		object.refresh();
+		if(args.containsKey(this.clazz.getName())) {
+			int id = args.getInt(this.clazz.getName());	
+			getObject(id);
+			object.refresh();
+		}
+		else {
+			object = null;
+		}
 	}
 
 }

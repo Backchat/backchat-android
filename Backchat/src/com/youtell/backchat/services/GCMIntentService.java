@@ -19,11 +19,13 @@ import com.youtell.backchat.activities.BaseGabDetailActivity;
 import com.youtell.backchat.activities.GabListActivity;
 import com.youtell.backchat.api.GetFriendsForNotificationRequest;
 import com.youtell.backchat.api.GetFriendsRequest;
+import com.youtell.backchat.api.Request;
 import com.youtell.backchat.gcm.BroadcastReceiver;
 import com.youtell.backchat.models.Friend;
 import com.youtell.backchat.models.Gab;
 import com.youtell.backchat.models.User;
 import com.youtell.backchat.observers.GCMNotificationObserver;
+import com.youtell.backchat.api.GetGabMessagesForNotificationRequest;
 
 public class GCMIntentService extends IntentService {
 	private static int GCM_KIND_MSG = 0;
@@ -67,18 +69,7 @@ public class GCMIntentService extends IntentService {
 					if(kind == GCM_KIND_MSG) {
 						int gab_id = Integer.parseInt(extras.getString("gab_id"));
 
-						Gab g = Gab.getByRemoteID(gab_id);
-
-						if(g == null) {
-							g = new Gab();
-							g.setRemoteID(gab_id);
-							g.setUpdatedAt(new Date());
-							g.save();
-						}
-
-						g.updateWithMessages();
-
-						GCMNotificationObserver.broadcastMessage(this, message, g);
+						APIService.fire(new GetGabMessagesForNotificationRequest(gab_id, message));
 					}
 					else if(kind == GCM_KIND_FRIEND) {
 						int friend_id = Integer.parseInt(extras.getString("friendship_id"));
