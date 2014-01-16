@@ -28,7 +28,7 @@ public class Settings {
 
 	public static final Settings productionSettings =
 			new Settings("b773675a02695460a27af2b8c2d11d39", "3509cdc42bfd782598bcbbc6907fd661", "334350433648", 
-					"api.getbackchat.com", false, false, true, true);
+					"api.getbackchat.com", false, false, true, false);
 	
 	public static final long internetDelay = 5000;
 	
