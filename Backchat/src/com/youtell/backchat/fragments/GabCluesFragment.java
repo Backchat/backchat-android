@@ -135,7 +135,7 @@ public class GabCluesFragment extends DialogFragment{
 					ForeignCollection<Clue> clues = gab.getClues();
 					ArrayList<Clue> clueList = new ArrayList<Clue>(clues);
 					for(Clue c : clueList) {
-						if(c.getNumber() == which.getNumber()) {
+						if(c.getNumber() == which.getNumber() && !which.isInProgress()) {
 							//TODO move somewhere else?
 							new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT)
 							.setTitle(R.string.clue_information_dialog_title)

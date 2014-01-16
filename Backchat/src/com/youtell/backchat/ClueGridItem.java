@@ -110,4 +110,8 @@ public class ClueGridItem {
 		return ((Integer)clueItem.getTag()).intValue();
 	}
 
+	public boolean isInProgress() {
+		return inProgess;
+	}
+
 }
