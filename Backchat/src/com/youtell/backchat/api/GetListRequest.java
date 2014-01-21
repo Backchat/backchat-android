@@ -22,7 +22,7 @@ public abstract class GetListRequest<T extends DatabaseObject> extends GetReques
 	
 	protected void deleteObjects(List<Integer> remoteIDsTouched) throws JSONException {
 		try {
-			clazz.getMethod("removeByNotRemoteIDs", List.class).invoke(null, remoteIDsTouched);
+			clazz.getMethod("markDeletedNotIn", List.class).invoke(null, remoteIDsTouched);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new JSONException(e.toString());

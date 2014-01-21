@@ -32,6 +32,7 @@ public abstract class DatabaseObject {
 	}
 
 	public static final int NEW_OBJECT = -1;
+	public static final int REQUESTED_OBJECT = -2;
 	
 	private static DBListener db = new DBListener();
 	

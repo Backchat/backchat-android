@@ -71,6 +71,9 @@ public class Gab extends DatabaseObject {
 	@DatabaseField
 	private boolean sent; //actually whether it is anon or not, e.g. "whether it was sent by us"
 	
+	@DatabaseField
+	private boolean deleted;
+	
 	/* this is cached locally only during new gab */
 	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "related_friend_id")
 	private Friend relatedFriend;
@@ -171,7 +174,11 @@ public class Gab extends DatabaseObject {
 	public boolean isNew() {
 		return remote_id == DatabaseObject.NEW_OBJECT;
 	}
-
+	
+	public boolean isRemoteObject() {
+		return  remote_id != DatabaseObject.NEW_OBJECT && remote_id != DatabaseObject.REQUESTED_OBJECT && deleted == false;
+	}
+	
 	public void setRemoteID(int remoteID) {
 		remote_id = remoteID;
 	}
@@ -190,10 +197,6 @@ public class Gab extends DatabaseObject {
 			ClueObserver.broadcastChange(ClueObserver.CLUE_INSERTED, c);
 		else
 			ClueObserver.broadcastChange(ClueObserver.CLUE_UPDATED, c);
-	}
-
-	public boolean isNewAndEmpty() {
-		return isNew() && getMessages().size() == 0;
 	}
 
 	public static Gab getByID(int gabID) {
@@ -226,9 +229,9 @@ public class Gab extends DatabaseObject {
 		setUnreadCount(gab.getInt("unread_count"));		
 		setUpdatedAt(Util.parseJSONDate(gab.getString("updated_at")));
 		setRelatedFriend(null); //clear the related friend info after inflation.
+		deleted = false;
 	}
 
-	
 	public void save() {
 		try {
 			getDAO().createOrUpdate(this);
@@ -240,20 +243,32 @@ public class Gab extends DatabaseObject {
 	}
 
 	public void remove() {
+		GabObserver.broadcastChange(GabObserver.GAB_DELETED, this);
+	}
+	
+	/* TODO move these private interface */
+
+	public void delete() {
 		try {
-			getDAO().delete(this);
-			if(!isNew()) {
-				APIService.fire(new DeleteGabRequest(getRemoteID()));
-			}
+			getDAO().delete(this);	
+		}
+		catch (SQLException e) {
+			throw new RuntimeException("getDAO exception", e);
+		}	
+	}
+	
+	public void saveWithoutNotifications() {
+		try {
+			getDAO().createOrUpdate(this);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			Log.v("DAO", "remove gab", e);
+			Log.v("DAO", "Write gab", e);
 		}
 	}
-
-	public static List<Gab> all() {
+	
+	public static List<Gab> allVisible() {
 		try {
-			return getDAO().queryBuilder().orderBy("updated_at", false).query();
+			return getDAO().queryBuilder().orderBy("updated_at", false).where().eq("deleted", false).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			Log.v("DAO", "list gab", e);
@@ -267,12 +282,12 @@ public class Gab extends DatabaseObject {
 	}
 
 	public void updateWithMessages() {
-		if(!isNew())
+		if(isRemoteObject())
 			APIService.fire(new GetGabMessagesRequest(this));
 	}
 
 	public void updateClues() {
-		if(!isNew())
+		if(isRemoteObject())
 			APIService.fire(new GetGabCluesRequest(this));
 	}
 	
@@ -299,16 +314,13 @@ public class Gab extends DatabaseObject {
 		}
 	}
 
-	public static void removeByNotRemoteIDs(List<Integer> remoteIDs) {
+	public static void markDeletedNotIn(List<Integer> remoteIDs) {
 		String query;
-		if(remoteIDs.isEmpty()) {
-			query = "DELETE FROM GABS";
-		}
-		else {
-			query = "DELETE FROM GABS WHERE REMOTE_ID NOT IN (";
-			query += TextUtils.join(", ", remoteIDs);
-			query += ")";
+		query = "UPDATE GABS SET DELETED=1 WHERE REMOTE_ID NOT IN (-1, -2";
+		if(!remoteIDs.isEmpty()) {
+			query += ", " + TextUtils.join(", ", remoteIDs);
 		}	
+		query += ")";
 		
 		try {
 			getDAO().executeRaw(query);
@@ -346,12 +358,12 @@ public class Gab extends DatabaseObject {
 	
 	//TODO change to observer & dirty
 	public void updateTag() {
-		if(!isNew())		
+		if(isRemoteObject())		
 			APIService.fire(new PostGabRequest(this));
 	}
 	
 	public void updateUnread() {
-		if(!isNew())
+		if(isRemoteObject())
 			GabObserver.broadcastChange(GabObserver.GAB_UNREAD_COUNT_CHANGED, this);
 	}
 
@@ -385,5 +397,9 @@ public class Gab extends DatabaseObject {
 		catch(SQLException e) {
 			return null;
 		}
+	}
+
+	public void setDeleted(boolean b) {
+		deleted = b;		
 	}
 }

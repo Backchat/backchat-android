@@ -39,6 +39,8 @@ public class Friend extends DatabaseObject {
 	private String social_id;
 	@DatabaseField
 	private boolean isFeatured;
+	@DatabaseField
+	private boolean deleted;
 	
 	public Friend() {}
 
@@ -85,19 +87,9 @@ public class Friend extends DatabaseObject {
 		last_name = string;
 	}
 
-	public static List<Friend> all() {
-		try {
-			return getDB().friendDAO.queryForAll();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return new ArrayList<Friend>();
-		}
-	}
-	
 	public static List<Friend> allFriends() {
 		try {
-			return getDAO().queryBuilder().orderBy("first_name", true).where().eq("isFeatured", false).query();
+			return getDAO().queryBuilder().orderBy("first_name", true).where().eq("isFeatured", false).and().eq("deleted",false).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,7 +99,7 @@ public class Friend extends DatabaseObject {
 	
 	public static List<Friend> allFeatured() {
 		try {
-			return getDAO().queryBuilder().orderBy("first_name", true).where().eq("isFeatured", true).query();
+			return getDAO().queryBuilder().orderBy("first_name", true).where().eq("isFeatured", true).and().eq("deleted", false).query();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -136,6 +128,8 @@ public class Friend extends DatabaseObject {
 			setFeatured(true);
 			setFeaturedUserID(j.getInt("featured_id"));
 		}
+		
+		deleted = false;
 		
 		//TODO unused setUserID(j.getInt("user_id"));
 		setProvider(j.getString("provider"));
@@ -203,13 +197,12 @@ public class Friend extends DatabaseObject {
 		}		
 	}
 
-	public static void removeByNotRemoteIDs(List<Integer> remoteIDs, boolean isFeatured) {
+	public static void markDeletedNotIn(List<Integer> remoteIDs, boolean isFeatured) {
 		String query;
-		if(remoteIDs.isEmpty()) {
-			query = "DELETE FROM FRIENDS WHERE";
-		}
-		else {
-			query = "DELETE FROM FRIENDS WHERE REMOTE_ID NOT IN (";
+		query = "UPDATE FRIENDS SET deleted=1 WHERE ";
+
+		if(!remoteIDs.isEmpty()) {
+			query += "REMOTE_ID NOT IN (-1, -2, ";
 			query += TextUtils.join(", ", remoteIDs);
 			query += ") AND";
 		}	

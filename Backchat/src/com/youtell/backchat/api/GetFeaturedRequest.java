@@ -35,6 +35,6 @@ public class GetFeaturedRequest extends GetListRequest<Friend> {
 
 	@Override
 	protected void deleteObjects(List<Integer> remoteIDsTouched) throws JSONException {
-		Friend.removeByNotRemoteIDs(remoteIDsTouched, true);		
+		Friend.markDeletedNotIn(remoteIDsTouched, true);		
 	}
 }

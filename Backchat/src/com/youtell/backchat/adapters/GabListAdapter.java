@@ -37,6 +37,6 @@ public class GabListAdapter extends ORMListAdapter<Gab> {
 
 	@Override
 	protected List<Gab> getList() {
-		return Gab.all();
+		return Gab.allVisible();
 	}
 }

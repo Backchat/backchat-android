@@ -19,7 +19,7 @@ import android.util.Log;
 
 public class Database extends OrmLiteSqliteOpenHelper {
 	private static String databaseName = null;
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	static {
 		OpenHelperManager.setOpenHelperClass(Database.class);

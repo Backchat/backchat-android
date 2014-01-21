@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 public class BaseGabDetailActivity extends BaseActivity implements GabDetailFragment.Callbacks, GabObserver.Observer {
@@ -75,8 +76,9 @@ public class BaseGabDetailActivity extends BaseActivity implements GabDetailFrag
 		getActionBar().setCustomView(cView, lp);
 
 		cView.findViewById(R.id.gab_clue_button).setVisibility((flags & SHOW_ANON_BUTTONS) == SHOW_ANON_BUTTONS ? View.VISIBLE : View.GONE);
-		cView.findViewById(R.id.gab_tag_button).setVisibility((flags & SHOW_ANON_BUTTONS) == SHOW_ANON_BUTTONS ? View.VISIBLE : View.GONE);	
-		cView.findViewById(R.id.gab_delete_button).setVisibility((flags & SHOW_DELETE_BUTTON) == SHOW_DELETE_BUTTON ? View.VISIBLE : View.GONE);
+		cView.findViewById(R.id.gab_tag_button).setVisibility((flags & SHOW_ANON_BUTTONS) == SHOW_ANON_BUTTONS ? View.VISIBLE : View.GONE);		
+		ImageButton deleteButton = (ImageButton) cView.findViewById(R.id.gab_delete_button);
+		deleteButton.setVisibility((flags & SHOW_DELETE_BUTTON) == SHOW_DELETE_BUTTON ? View.VISIBLE : View.GONE);
 		cView.findViewById(R.id.gab_cancel_button).setVisibility((flags & SHOW_CANCEL_BUTTON) == SHOW_CANCEL_BUTTON ? View.VISIBLE : View.GONE);		
 	}
 

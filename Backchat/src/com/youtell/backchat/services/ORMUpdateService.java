@@ -9,12 +9,14 @@ import android.util.Log;
 
 import com.j256.ormlite.dao.CloseableWrappedIterable;
 import com.squareup.otto.Subscribe;
+import com.youtell.backchat.api.DeleteGabRequest;
 import com.youtell.backchat.api.PostGabClueRequest;
 import com.youtell.backchat.api.PostGabRequest;
 import com.youtell.backchat.api.PostMessageRequest;
 import com.youtell.backchat.api.PostNewGabRequest;
 import com.youtell.backchat.models.Clue;
 import com.youtell.backchat.models.DBClosedEvent;
+import com.youtell.backchat.models.DatabaseObject;
 import com.youtell.backchat.models.Gab;
 import com.youtell.backchat.models.Message;
 import com.youtell.backchat.models.ModelBus;
@@ -47,10 +49,14 @@ public class ORMUpdateService extends Service {
 						if(first.getID() == messageID)
 						{
 							//the very first message:
+							//TODO move somewhere else?
+							g.setRemoteID(DatabaseObject.REQUESTED_OBJECT);
+							g.save();
+							
 							APIService.fire(new PostNewGabRequest(g));
 						}
 					}
-					else
+					else if(g.isRemoteObject())
 						APIService.fire(new PostMessageRequest(g, messageID));
 				}				
 			}
@@ -91,6 +97,19 @@ public class ORMUpdateService extends Service {
 					g.refresh();
 					
 					APIService.fire(new PostGabRequest(g));
+				}
+				else if(action == GabObserver.GAB_DELETED) {
+					Gab g = Gab.getByID(gabID);
+					g.refresh();
+					
+					if(!g.isNew()) {//TODO isRemoteObject()) {
+						g.setDeleted(true);
+						g.saveWithoutNotifications();
+						APIService.fire(new DeleteGabRequest(g.getRemoteID()));
+					}
+					else { //TODO if(g.isNew()) {
+						g.delete();
+					}
 				}
 			}
 			
