@@ -20,7 +20,6 @@ import com.youtell.backchat.models.User;
 public class APIService extends IntentService {
 	public static Context applicationContext = null; //TODO
 	private static String userAgentString;
-	private AndroidHttpClient client;
 	public static MixpanelAPI mixpanel;
 	
 	public static void initialize(Context c) {
@@ -34,8 +33,6 @@ public class APIService extends IntentService {
 		if(mixpanel != null)
 			mixpanel.flush();
 		
-		client.close();
-		
 		super.onDestroy();
 	}	
 
@@ -43,7 +40,6 @@ public class APIService extends IntentService {
 	public void onCreate()
 	{
 		super.onCreate();
-		client = AndroidHttpClient.newInstance(userAgentString);
 	}
 
 	public APIService() {
@@ -60,7 +56,7 @@ public class APIService extends IntentService {
 	}
 	
 	public static void fire(Request r)
-	{
+	{	
 		r.setRequestID(getNewRequestID());
 		Bundle args = r.getArguments();
 		Intent fireIntent = new Intent(applicationContext, APIService.class);
@@ -75,6 +71,8 @@ public class APIService extends IntentService {
 	
 	@Override
 	protected void onHandleIntent(Intent intent) {				
+		AndroidHttpClient client = AndroidHttpClient.newInstance(userAgentString);
+				
 		Class requestClass = Request.inflateClassType(intent.getBundleExtra(ARGS));
 		if(requestClass.equals(PostLoginRequest.class)) {//URGH TODO
 			Log.v("APIService", "intent postlogin");		
@@ -111,5 +109,7 @@ public class APIService extends IntentService {
 
 			r.execute(client, user);
 		}	
+		
+		client.close();
 	}
 }

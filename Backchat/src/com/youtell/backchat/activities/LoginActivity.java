@@ -95,7 +95,7 @@ SocialProvider.Callback {
 		User.setCachedSocialProvider(getApplicationContext(), provider);
 		/* attempt to login and throw up a progress dialog */
 		progressDialog = ProgressDialogFactory.newDialog(this);
-		APIService.fire(new PostLoginRequest(provider, Settings.settings.apiServerName));
+		APIService.fire(new PostLoginRequest(provider, Settings.settings.loginApiServerName));
 	}
 
 	public void setButtonVisibility(int v) {

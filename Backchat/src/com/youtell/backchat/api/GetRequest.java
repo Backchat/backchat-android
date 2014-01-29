@@ -17,7 +17,7 @@ public abstract class GetRequest extends Request {
 		List<NameValuePair> nameValuePairs = getParameters();
 		nameValuePairs.add(new BasicNameValuePair("access_token", user.getApiToken()));
 		String queryString = URLEncodedUtils.format(nameValuePairs, "utf-8");
-		URI uri = new URI("http", user.getApiServerHostName(), getPath(), queryString, null); 
+		URI uri = new URI("https", user.getApiServerHostName(), getPath(), queryString, null); 
 		HttpGet request = new HttpGet(uri);
 		return request;
 	}

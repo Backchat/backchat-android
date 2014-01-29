@@ -17,7 +17,7 @@ public abstract class PostRequest extends Request {
 
 		List<NameValuePair> nameValuePairs = getParameters();
 		nameValuePairs.add(new BasicNameValuePair("access_token", user.getApiToken()));
-		URI uri = new URI("http", user.getApiServerHostName(), getPath(), null, null); 
+		URI uri = new URI("https", user.getApiServerHostName(), getPath(), null, null); 
 		HttpPost request = new HttpPost(uri);
 		request.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
 		

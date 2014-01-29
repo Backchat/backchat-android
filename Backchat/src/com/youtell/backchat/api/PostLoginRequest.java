@@ -12,6 +12,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.youtell.backchat.Settings;
 import com.youtell.backchat.gcm.GCM;
 import com.youtell.backchat.models.User;
 import com.youtell.backchat.observers.UserObserver;
@@ -41,13 +42,13 @@ public class PostLoginRequest extends Request {
 
 	@Override
 	protected String getPath() {
-		return "/login";
+		return "";
 	}
 
 	@Override
 	protected HttpUriRequest getRequest(User user) throws Exception {
 		List<NameValuePair> nameValuePairs = getParameters();
-		URI uri = new URI("http", hostName.content, getPath(), null, null); 
+		URI uri = new URI("https", hostName.content, "", null, null); 
 		HttpPost request = new HttpPost(uri);
 		request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		
@@ -59,7 +60,7 @@ public class PostLoginRequest extends Request {
 		/* user is null! */
 		/* parse out the stuff into a user */
 		User user = new User();
-		user.setApiServerHostName(hostName.content);
+		user.setApiServerHostName(Settings.settings.apiServerName); //TODO
 		user.setApiToken(token.content);
 		JSONObject userData = result.getJSONObject("user");
 		user.setID(userData.getInt("id"));
