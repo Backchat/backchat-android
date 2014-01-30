@@ -55,7 +55,7 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 		permissions.add("user_relationships");
 		permissions.add("user_work_history");
 				
-		openActiveSession(activity, true, this, permissions);
+		this.session = openActiveSession(activity, true, this, permissions);
 	}		
 
 	@Override
@@ -192,7 +192,7 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 
 	@Override
 	public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-		Session.getActiveSession().onActivityResult(activity, requestCode, resultCode, data);
+		this.session.onActivityResult(activity, requestCode, resultCode, data);
 	}
 
 	@Override
