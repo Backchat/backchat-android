@@ -34,5 +34,5 @@ public class Settings {
 	
 	public static final long internetDelay = 5000;
 	
-	public static Settings settings = debugSettings;	
+	public static Settings settings = productionSettings;	
 }
