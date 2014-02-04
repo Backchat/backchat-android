@@ -11,8 +11,9 @@ public class Settings {
 	public boolean alwaysShowTour;
 	public boolean alwaysWipeDB;
 	public boolean slowInternet;	
+	public boolean alwaysShowFeatured;
 	
-	public Settings(String mixpanel, String hockey, String gcm, String servername, String loginserver, boolean show, boolean wipe, boolean hide, boolean slow) {
+	public Settings(String mixpanel, String hockey, String gcm, String servername, String loginserver, boolean show, boolean featured, boolean wipe, boolean hide, boolean slow) {
 		mixpanelToken = mixpanel;
 		hockeyToken = hockey;
 		apiServerName = servername;
@@ -22,15 +23,16 @@ public class Settings {
 		hideUserDataExceptions = hide;
 		slowInternet = slow;
 		loginApiServerName = loginserver;
+		alwaysShowFeatured = featured;
 	}
 	
 	public static final Settings debugSettings = 
 			new Settings("06e542f53ddbd2430aac9c4664e5903f", "205f05f38db1a0bf5d795fa469d91cbe", "535388359184", 
-					"backchat-stage.herokuapp.com", "backchat-login-stage.herokuapp.com", false, true, false, true); 
+					"backchat-stage.herokuapp.com", "backchat-login-stage.herokuapp.com", false, true, true, false, true); 
 
 	public static final Settings productionSettings =
 			new Settings("b773675a02695460a27af2b8c2d11d39", "3509cdc42bfd782598bcbbc6907fd661", "334350433648", 
-					"api.getbackchat.com", "login.getbackchat.com", false, false, true, false);
+					"api.getbackchat.com", "login.getbackchat.com", false, false, false, true, false);
 	
 	public static final long internetDelay = 5000;
 	

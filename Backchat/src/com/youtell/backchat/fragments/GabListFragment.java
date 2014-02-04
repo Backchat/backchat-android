@@ -16,6 +16,7 @@ import android.widget.ListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.PauseOnScrollListener;
 import com.youtell.backchat.Application;
+import com.youtell.backchat.Settings;
 import com.youtell.backchat.adapters.FriendListAdapter;
 import com.youtell.backchat.adapters.GabListAdapter;
 import com.youtell.backchat.adapters.ItemAdapter;
@@ -139,7 +140,7 @@ implements OnRefreshListener {
 		moreFriendsAdapter.setVisible(false);
 		
 		boolean shouldShowFeatured = false;
-		if(Locale.getDefault().getISO3Country().equalsIgnoreCase("BRA"))
+		if(Locale.getDefault().getISO3Country().equalsIgnoreCase("BRA") || Settings.settings.alwaysShowFeatured)
 			shouldShowFeatured = true;
 		
 		if(shouldShowFeatured)

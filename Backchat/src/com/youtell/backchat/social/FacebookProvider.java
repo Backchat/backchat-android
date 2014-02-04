@@ -54,6 +54,7 @@ public class FacebookProvider extends SocialProvider implements StatusCallback {
 		permissions.add("user_location");
 		permissions.add("user_relationships");
 		permissions.add("user_work_history");
+		permissions.add("email");
 				
 		this.session = openActiveSession(activity, true, this, permissions);
 	}		
